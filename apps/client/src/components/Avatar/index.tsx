@@ -18,7 +18,6 @@ const Avatar = ({ name, rounded = true, sizeRem = 3 }: AvatarProps) => {
 		backgroundType: ['solid','gradientLinear'],
 		size: sizeRem * 16,
 	}).toDataUriSync();
-	console.timeEnd('avatarDataUri');
 
 	return <img src={avatarDataUri} alt={`avatar of ${name}`} />;
 };

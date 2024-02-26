@@ -38,6 +38,15 @@ const createRoom = (): string => {
 	return roomCode;
 };
 
+const getSocketsInRoom = (inputCode: string) => {
+	const roomCode = inputCode.toUpperCase();
+	const room = rooms[roomCode];
+	if (!room) {
+		return [];
+	}
+	return Object.keys(room.players);
+};
+
 // TODO: playerName
 const joinRoom = (inputCode: string, socketId: string, playerName = 'Bertus') => {
 	const roomCode = inputCode.toUpperCase();
@@ -51,23 +60,6 @@ const joinRoom = (inputCode: string, socketId: string, playerName = 'Bertus') =>
 	return true;
 };
 
-const getSocketsInRoom = (inputCode: string) => {
-	const roomCode = inputCode.toUpperCase();
-	const room = rooms[roomCode];
-	if (!room) {
-		return [];
-	}
-	return Object.keys(room.players);
-};
-
-const leaveRoom = (socketId: string, inputCode: string | null) => {
-	const roomCodesToLeave = inputCode ? [inputCode.toUpperCase()] : Object.keys(rooms);
-	roomCodesToLeave.forEach((code) => {
-		delete rooms[code]?.players[socketId];
-		handleRoomDelete(code);
-	});
-};
-
 // delete room if no players for 10 seconds, prevents room deletion on reload
 const handleRoomDelete = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
@@ -78,6 +70,14 @@ const handleRoomDelete = (inputCode: string) => {
 			}
 		}, 10_000);
 	}
+};
+
+const leaveRoom = (socketId: string, inputCode: string | null) => {
+	const roomCodesToLeave = inputCode ? [inputCode.toUpperCase()] : Object.keys(rooms);
+	roomCodesToLeave.forEach((code) => {
+		delete rooms[code]?.players[socketId];
+		handleRoomDelete(code);
+	});
 };
 
 export default {

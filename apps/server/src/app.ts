@@ -6,7 +6,7 @@ import { roomHandlers } from './socketHandlers';
 import 'dotenv/config';
 
 const PORT = process.env.PORT || 3001;
-const CLIENT_URL = process.env.CLIENT_URL;
+const { CLIENT_URL } = process.env;
 
 if (!CLIENT_URL) {
 	throw new Error('No client URL set');
@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
 	roomHandlers(io, socket);
 });
 
-process.on('warning', e => console.warn(e.stack));
+process.on('warning', (e) => console.warn(e.stack));
 
 httpServer.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}`);

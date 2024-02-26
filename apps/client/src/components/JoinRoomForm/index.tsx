@@ -1,4 +1,3 @@
-import classes from './JoinRoomForm.module.css';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import { useEffect, useRef, useState } from 'react';
@@ -6,6 +5,7 @@ import socket from '@/socket';
 import { useRouter } from 'next/router';
 import { IconSearch } from '@tabler/icons-react';
 import { RoutePath, generateRoute } from '@/routes';
+import classes from './JoinRoomForm.module.css';
 
 const JoinRoomForm = () => {
 	const router = useRouter();
@@ -56,7 +56,8 @@ const JoinRoomForm = () => {
 				maxLength={6}
 				minLength={6}
 				id="joinRoomCode"
-				required>
+				required
+			>
 				<Button className={classes.joinButton} aria-label="Join room">
 					<IconSearch />
 				</Button>

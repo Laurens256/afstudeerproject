@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import { useEffect } from 'react';
 import socket from '@/socket';
-import Link from 'next/link';
+import { Button } from '@/components';
 import { useRouter } from 'next/router';
 
 const Room = () => {
@@ -50,8 +51,11 @@ const Room = () => {
 
 	return (
 		<div>
-			This is room: {roomCode} <Link href="/">Back</Link>
-			<button onClick={emitTest}>Test button emitter :0</button>
+			This is room:
+			{' '}
+			{roomCode}
+			<Link href="/">Back</Link>
+			<Button onClick={emitTest}>Test button emitter :0</Button>
 		</div>
 	);
 };

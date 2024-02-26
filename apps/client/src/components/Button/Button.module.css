@@ -1,13 +1,11 @@
-/* TODO: styles */
 .button {
 	--loader-size: 1.25rem;
-	--loader-color: #fff;
-	--loader-background-color: transparent;
+	--button-transition: 0.15s ease-in-out;
 
 	border-radius: 0.25rem;
 	padding: 0.3rem 1rem;
-	transition: background-color 0.15s, color 0.15s;
-	display: flex;
+	transition: background-color var(--button-transition), color var(--button-transition);
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
@@ -33,16 +31,29 @@
 			color: var(--primary-color);
 		}
 	}
+
+	&.light {
+		background-color: var(--primary-text-white);
+		border: 1px solid var(--primary-text-white);
+		color: var(--primary-color);
+
+		&:hover, &:focus-visible {
+			background-color: var(--primary-color);
+			color: var(--primary-text-white);
+		}
+	
+	}
 }
 
 .loader {
 	width: var(--loader-size);
 	height: var(--loader-size);
-	border: calc(var(--loader-size) / 9) solid #fff;
+	border: calc(var(--loader-size) / 9) solid currentColor;
 	border-bottom-color: transparent;
 	border-radius: 50%;
 	display: inline-block;
 	animation: loaderAnimation 1s linear infinite;
+	transition: border-color var(--button-transition);
 }
 
 @keyframes loaderAnimation {

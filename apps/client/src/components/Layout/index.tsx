@@ -1,5 +1,5 @@
+import { type RoutePath, RoutesConfig } from '@/routes';
 import { useRouter } from 'next/router';
-import { RoutePath, RoutesConfig } from '@/routes';
 import socket from '@/socket';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

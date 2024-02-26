@@ -1,24 +1,21 @@
 {
-  "name": "afstudeerproject",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "npm run server-dev & npm run client-dev",
-    "client-dev": "cd apps/client && npm run dev",
-    "server-dev": "cd apps/server && npm run dev",
-    "build": "npm run server-build & npm run client-build",
-    "client-build": "cd apps/client && npm run build",
-    "server-build": "cd apps/server && npm run build",
-    "start": "npm run server-start & npm run client-start",
-    "client-start": "cd apps/client && npm start",
-    "server-start": "cd apps/server && npm start",
-    "prepare": "husky"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "husky": "^9.0.11"
-  }
+	"name": "afstudeerproject",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "npm run server-dev & npm run client-dev",
+		"client-dev": "cd apps/client && npm run dev",
+		"server-dev": "cd apps/server && npm run dev",
+		"build": "npm run server-build & npm run client-build",
+		"client-build": "cd apps/client && npm run build",
+		"server-build": "cd apps/server && npm run build",
+		"start": "npm run server-start & npm run client-start",
+		"client-start": "cd apps/client && npm start",
+		"server-start": "cd apps/server && npm start"
+	},
+	"keywords": [],
+	"author": "Laurens Duin",
+	"license": "MIT",
+	"devDependencies": {}
 }
