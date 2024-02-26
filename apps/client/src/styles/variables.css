@@ -1,0 +1,21 @@
+:root {
+	--primary-color: #4744d3;
+	--primary-panel-bg: #ffffff;
+	--secondary-panel-bg: #f8f9fa;
+	--panel-seperator: #c8c8c8;
+
+	--primary-text-white: #ffffff;
+	--secondary-text-white: #f8f9fa;
+
+	--primary-text-black: #111111;
+	--secondary-text-black: #333333;
+
+	--link-color: #007bff;
+
+	--input-bg: #ebebf5;
+	--input-focus: var(--primary-color);
+	--input-text: #333333;
+	--input-error: #dc3545;
+
+	--md-border-radius: 1rem;
+}

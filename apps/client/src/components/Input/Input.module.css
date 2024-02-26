@@ -1,0 +1,36 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: fit-content;
+}
+
+.label {
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+}
+
+.inputContainer {
+	position: relative;
+}
+
+.input {
+	background-color: var(--input-bg);
+	border: 0;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	background-color: var(--input-bg);
+
+	&.error {
+		outline: solid 2px var(--input-error);
+	}
+	&:focus {
+		outline: solid 2px var(--input-focus);
+	}
+}
+
+.errorMsg {
+	color: var(--input-error);
+	font-size: 0.85rem;
+}
