@@ -7,6 +7,7 @@ node_modules
 out/
 build
 dist
+.turbo
 
 .DS_Store
 *.pem
@@ -14,6 +15,7 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log
 
 .vercel
 
