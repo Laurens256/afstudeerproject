@@ -13,6 +13,7 @@ module.exports = {
 		'@typescript-eslint/consistent-type-imports': 'error',
 		'@typescript-eslint/consistent-type-exports': 'error',
 
+		'import/no-extraneous-dependencies': 'off',
 
 		'react/function-component-definition': 'off',
 		'react/react-in-jsx-scope': 'off',

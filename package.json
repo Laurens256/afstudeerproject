@@ -1,21 +1,17 @@
 {
-	"name": "afstudeerproject",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"dev": "npm run server-dev & npm run client-dev",
-		"client-dev": "cd apps/client && npm run dev",
-		"server-dev": "cd apps/server && npm run dev",
-		"build": "npm run server-build & npm run client-build",
-		"client-build": "cd apps/client && npm run build",
-		"server-build": "cd apps/server && npm run build",
-		"start": "npm run server-start & npm run client-start",
-		"client-start": "cd apps/client && npm start",
-		"server-start": "cd apps/server && npm start"
-	},
-	"keywords": [],
-	"author": "Laurens Duin",
-	"license": "MIT",
-	"devDependencies": {}
+  "name": "afstudeerproject",
+  "scripts": {
+		"build": "lerna run build",
+		"start": "lerna run start",
+		"dev": "lerna run dev --stream --parallel"
+  },
+  "author": "Laurens Duin",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "8.1.2"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
 }

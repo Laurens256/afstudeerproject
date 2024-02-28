@@ -9,6 +9,8 @@ module.exports = {
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
 
+		'import/no-extraneous-dependencies': 'off',
+
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',
 		'@typescript-eslint/consistent-type-exports': 'error',
