@@ -1,15 +1,16 @@
-import classes from './Home.module.css';
 import { JoinRoomForm } from '@/components';
 import socket from '@/socket';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { RoutePath, generateRoute } from '@/routes';
+import { SocketRoomEvents } from '@shared/types';
+import classes from './Home.module.css';
 
 const Home = () => {
 	const router = useRouter();
-	
+
 	const createRoom = () => {
-		socket.emit('ROOM:create');
+		socket.emit(SocketRoomEvents.CREATE);
 	};
 
 	useEffect(() => {
@@ -17,17 +18,17 @@ const Home = () => {
 			router.push(generateRoute(RoutePath.Room, { roomCode }));
 		};
 
-		socket.on('ROOM:create', onRoomCreate);
+		socket.on(SocketRoomEvents.CREATE, onRoomCreate);
 
 		return () => {
-			socket.off('ROOM:create', onRoomCreate);
+			socket.off(SocketRoomEvents.CREATE, onRoomCreate);
 		};
 	}, [router]);
 
 	return (
 		<main className={classes.container}>
 			<JoinRoomForm />
-			<button onClick={createRoom}>Create room</button>
+			<button onClick={createRoom} type="button">Create room</button>
 		</main>
 	);
 };

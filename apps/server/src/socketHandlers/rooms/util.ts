@@ -47,17 +47,31 @@ const getSocketsInRoom = (inputCode: string) => {
 	return Object.keys(room.players);
 };
 
-// TODO: playerName
-const joinRoom = (inputCode: string, socketId: string, playerName = 'Bertus') => {
+/**
+ * @returns null if successful, error message if not
+ * */
+const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	const roomCode = inputCode.toUpperCase();
+	const username = inputname.trim();
+
 	if (!rooms[roomCode]) {
-		return false;
+		return 'Room does not exist';
+	}
+	if (username.length < 2) {
+		return 'Username must be at least 2 characters';
+	}
+	if (username.length > 20) {
+		return 'Username can\'t be longer than 20 characters';
+	}
+	if (Object.values(rooms[roomCode].players).find((player) => player.name === username)) {
+		return 'Username already taken';
 	}
 	rooms[roomCode].players[socketId] = {
-		name: playerName,
+		name: username,
 		role: getSocketsInRoom(roomCode).length === 0 ? 'admin' : 'player',
 	};
-	return true;
+
+	return null;
 };
 
 // delete room if no players for 10 seconds, prevents room deletion on reload
@@ -80,9 +94,15 @@ const leaveRoom = (socketId: string, inputCode: string | null) => {
 	});
 };
 
+const roomExists = (inputCode: string) => {
+	const roomCode = inputCode.toUpperCase();
+	return !!rooms[roomCode];
+};
+
 export default {
 	createRoom,
 	joinRoom,
 	leaveRoom,
 	getSocketsInRoom,
+	roomExists,
 };

@@ -5,9 +5,8 @@ import socket from '@/socket';
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { pathname } = useRouter();
 
-	const matchSlug = (input: string) => input.replace(/\[(\w+)\]/g, ':$1');
-
-	const routeConfig = RoutesConfig[matchSlug(pathname) as RoutePath];
+	const sluggedRoute = pathname.replace(/\[(\w+)\]/g, ':$1') as RoutePath;
+	const routeConfig = RoutesConfig[sluggedRoute];
 	const isSocketRoute = routeConfig?.hasSocket;
 
 	if (isSocketRoute) {

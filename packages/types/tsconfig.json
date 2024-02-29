@@ -1,12 +1,18 @@
 {
 	"compilerOptions": {
-			"outDir": "dist",
-			"module": "esnext",
-			"target": "esnext",
-			"declaration": true,
-			"moduleResolution": "node",
-			"allowSyntheticDefaultImports": true,
-			"jsx": "react"
+		"target": "es2017",
+    "lib": ["es6"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
 	},
-	"exclude": ["node_modules", "dist"],
+	"exclude": ["node_modules", "dist"]
 }

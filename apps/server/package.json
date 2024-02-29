@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-		"dev": "nodemon --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register src/app.ts'",
+		"dev": "nodemon --ext ts,json --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register src/app.ts'",
+		"dev-old": "nodemon src/app.ts",
     "start": "node dist/app.js",
     "build": "tsc"
   },
