@@ -1,34 +1,13 @@
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import socket from '@/socket';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { SocketRoomEvents } from '@shared/types';
-import { NameInput } from './components';
+import { NameInput, Room } from './components';
 
-const Room = () => {
+const RoomContainer = () => {
 	const router = useRouter();
 	const { roomCode } = router.query;
 	const [username, setUsername] = useState<string>('');
 
-	useEffect(() => {
-		if (!roomCode) {
-			return;
-		}
-
-		const handleRoomLeave = () => {
-			socket.emit(SocketRoomEvents.LEAVE, roomCode);
-		};
-
-		router.events.on('routeChangeStart', handleRoomLeave);
-		router.events.on('beforeHistoryChange', handleRoomLeave);
-
-		return () => {
-			router.events.off('routeChangeStart', handleRoomLeave);
-			router.events.off('beforeHistoryChange', handleRoomLeave);
-		};
-	}, [roomCode, router.events]);
-
-	// TODO
+	// TODO ?
 	if (typeof roomCode !== 'string' || roomCode.length !== 6) {
 		return null;
 	}
@@ -36,12 +15,7 @@ const Room = () => {
 	return (
 		<>
 			{username ? (
-				<div>
-					This is room:
-					{' '}
-					{roomCode}
-					<Link href="/">Back</Link>
-				</div>
+				<Room roomCode={roomCode} username={username} />
 			) : (
 				<NameInput setUsername={setUsername} roomCode={roomCode} />
 			)}
@@ -49,4 +23,4 @@ const Room = () => {
 	);
 };
 
-export default Room;
+export default RoomContainer;

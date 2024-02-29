@@ -1,17 +1,20 @@
-type Players = {
-	[socketId: string]: {
-		name: string;
-		role: 'admin' | 'player';
-	};
+type Player = {
+	username: string;
+	role: 'admin' | 'player';
 };
 type Rooms = {
 	[roomCode: string]: {
-		players: Players;
+		players: { [socketId: string]: Player };
 		// TODO: Add game type
 		currentGame: string;
 	};
 };
 const rooms: Rooms = {};
+
+const roomExists = (inputCode: string) => {
+	const roomCode = inputCode.toUpperCase();
+	return !!rooms[roomCode];
+};
 
 const generateRoomCode = () => {
 	const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
@@ -27,7 +30,7 @@ const generateRoomCode = () => {
 const createRoom = (): string => {
 	const roomCode = generateRoomCode();
 
-	if (rooms[roomCode]) {
+	if (roomExists(roomCode)) {
 		return createRoom();
 	}
 
@@ -38,12 +41,27 @@ const createRoom = (): string => {
 	return roomCode;
 };
 
+const getPlayersInRoom = (inputCode: string) => {
+	const roomCode = inputCode.toUpperCase();
+	const room = rooms[roomCode];
+	if (!room) {
+		return [];
+	}
+
+	const playersArray = Object.keys(room.players).map((socketId) => ({
+		socketId,
+		...room.players[socketId],
+	}));
+
+	return playersArray;
+};
 const getSocketsInRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const room = rooms[roomCode];
 	if (!room) {
 		return [];
 	}
+
 	return Object.keys(room.players);
 };
 
@@ -53,28 +71,34 @@ const getSocketsInRoom = (inputCode: string) => {
 const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const username = inputname.trim();
+	let error = null;
 
 	if (!rooms[roomCode]) {
-		return 'Room does not exist';
+		error = 'Room does not exist';
 	}
 	if (username.length < 2) {
-		return 'Username must be at least 2 characters';
+		error = 'Username must be at least 2 characters';
 	}
 	if (username.length > 20) {
-		return 'Username can\'t be longer than 20 characters';
+		error = 'Username can\'t be longer than 20 characters';
 	}
-	if (Object.values(rooms[roomCode].players).find((player) => player.name === username)) {
-		return 'Username already taken';
+	if (Object.values(rooms[roomCode]?.players).find((player) => player.username === username)) {
+		error = 'Username already taken';
 	}
-	rooms[roomCode].players[socketId] = {
-		name: username,
+
+	const player: Player = {
+		username,
 		role: getSocketsInRoom(roomCode).length === 0 ? 'admin' : 'player',
 	};
 
-	return null;
+	if (!error) {
+		rooms[roomCode].players[socketId] = player;
+	}
+
+	return { error, player };
 };
 
-// delete room if no players for 10 seconds, prevents room deletion on reload
+// delete room if no players for 10 seconds, timer prevents room deletion on reload
 const handleRoomDelete = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
 	if (getSocketsInRoom(roomCode).length === 0) {
@@ -86,23 +110,61 @@ const handleRoomDelete = (inputCode: string) => {
 	}
 };
 
+const setRoomAdmin = (roomCode: string, socketId: string | null) => {
+	const players = getPlayersInRoom(roomCode);
+	if (players.length === 0) {
+		return;
+	}
+
+	let newAdminId: string | null = null;
+
+	Object.keys(rooms[roomCode].players).forEach((playerSocketId, i) => {
+		if (i === 0 || (socketId && playerSocketId === socketId)) {
+			rooms[roomCode].players[playerSocketId].role = 'admin';
+			newAdminId = playerSocketId;
+		} else {
+			rooms[roomCode].players[playerSocketId].role = 'player';
+		}
+	});
+
+	return newAdminId;
+};
+
+/**
+ * @returns array of room codes that need a new admin
+ * */
 const leaveRoom = (socketId: string, inputCode: string | null) => {
 	const roomCodesToLeave = inputCode ? [inputCode.toUpperCase()] : Object.keys(rooms);
+	const roomsNeedNewAdmin: string[] = [];
 	roomCodesToLeave.forEach((code) => {
+		const isAdmin = rooms[code]?.players[socketId]?.role === 'admin';
+		if (isAdmin) {
+			roomsNeedNewAdmin.push(code);
+		}
 		delete rooms[code]?.players[socketId];
 		handleRoomDelete(code);
 	});
+
+	return roomsNeedNewAdmin;
 };
 
-const roomExists = (inputCode: string) => {
-	const roomCode = inputCode.toUpperCase();
-	return !!rooms[roomCode];
+const getAllRoomsClientIsIn = (socketId: string) => {
+	const roomsClientIsIn: string[] = [];
+	Object.entries(rooms).forEach(([roomCode, room]) => {
+		if (room.players[socketId]) {
+			roomsClientIsIn.push(roomCode);
+		}
+	});
+	return roomsClientIsIn;
 };
 
 export default {
 	createRoom,
 	joinRoom,
 	leaveRoom,
+	getPlayersInRoom,
 	getSocketsInRoom,
 	roomExists,
+	getAllRoomsClientIsIn,
+	setRoomAdmin,
 };

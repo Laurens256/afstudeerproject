@@ -14,21 +14,49 @@ const roomHandlers = (io: Server, socket: Socket) => {
 	});
 
 	socket.on(SocketRoomEvents.JOIN, (roomCode: string, username: string) => {
-		const error = util.joinRoom(roomCode, socket.id, username);
+		const { player, error } = util.joinRoom(roomCode, socket.id, username);
 		socket.emit(SocketRoomEvents.JOIN, error);
+
+		if (error === null) {
+			const socketsInRoom = util.getSocketsInRoom(roomCode);
+
+			io.to(socketsInRoom).emit(
+				SocketRoomEvents.PLAYER_JOINED,
+				{ ...player, socketId: socket.id },
+			);
+		}
 	});
 
-	// socket.on('ROOM:join', (roomCode: string) => {
-	// 	const success = util.joinRoom(roomCode, socket.id);
-	// 	socket.emit('ROOM:join', success ? roomCode : null);
-	// });
+	const emitNewAdmins = (roomCodes: string[]) => {
+		roomCodes.forEach((roomCode) => {
+			const newAdminId = util.setRoomAdmin(roomCode, null);
+			const socketsInRoom = util.getSocketsInRoom(roomCode);
+
+			if (newAdminId) {
+				io.to(socketsInRoom).emit(SocketRoomEvents.ADMIN_CHANGE, newAdminId);
+			}
+		});
+	};
 
 	socket.on(SocketRoomEvents.LEAVE, (roomCode: string) => {
-		util.leaveRoom(socket.id, roomCode);
+		const socketsInRoom = util.getSocketsInRoom(roomCode);
+		io.to(socketsInRoom).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
+
+		const roomsNeedNewAdmin = util.leaveRoom(socket.id, roomCode);
+		emitNewAdmins(roomsNeedNewAdmin);
+	});
+
+	socket.on(SocketRoomEvents.GET_ALL_PLAYERS, (roomCode: string) => {
+		const players = util.getPlayersInRoom(roomCode);
+		socket.emit(SocketRoomEvents.GET_ALL_PLAYERS, players);
 	});
 
 	socket.on('disconnect', () => {
-		util.leaveRoom(socket.id, null);
+		const rooms = util.getAllRoomsClientIsIn(socket.id);
+		io.to(rooms).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
+
+		const roomsNeedNewAdmin = util.leaveRoom(socket.id, null);
+		emitNewAdmins(roomsNeedNewAdmin);
 	});
 };
 

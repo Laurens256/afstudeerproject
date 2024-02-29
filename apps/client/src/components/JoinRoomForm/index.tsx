@@ -59,7 +59,7 @@ const JoinRoomForm = () => {
 				id="joinRoomCode"
 				required
 			>
-				<Button className={classes.joinButton} aria-label="Join room">
+				<Button className={classes.joinButton} aria-label="Join room" type="submit">
 					<IconSearch />
 				</Button>
 			</Input>

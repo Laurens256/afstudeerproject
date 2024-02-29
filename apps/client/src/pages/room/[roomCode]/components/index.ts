@@ -1,3 +1,4 @@
 import NameInput from './NameInput';
+import Room from './Room';
 
-export { NameInput };
+export { NameInput, Room };
