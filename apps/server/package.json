@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev-old": "nodemon --ext ts,json --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register src/app.ts'",
 		"dev": "NODE_ENV=dev node bin/www",
 		"start": "NODE_ENV=prod node bin/www",
-    "start-old": "node dist/app.js",
     "build": "tsc"
   },
   "keywords": [],

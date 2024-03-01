@@ -18,7 +18,7 @@ const BASE_PATH = path.resolve(__dirname, '..');
 		addr: PORT,
 		authtoken: NGROK_AUTH_TOKEN,
 		region: 'eu',
-		domain: NGROK_URL
+		domain: NGROK_URL,
 	});
 	console.log(`Ingress established at: ${listener.url()}`);
 
