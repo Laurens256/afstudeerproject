@@ -8,14 +8,15 @@ const roomHandlers = (io: Server, socket: Socket) => {
 		socket.emit(SocketRoomEvents.CREATE, roomCode);
 	});
 
-	socket.on(SocketRoomEvents.CONNECT, (roomCode: string) => {
+	socket.on(SocketRoomEvents.ROOM_EXISTS, (roomCode: string) => {
+		console.log('request to check room', roomCode)
 		const roomExists = util.roomExists(roomCode);
-		socket.emit(SocketRoomEvents.CONNECT, roomExists ? roomCode : null);
+		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomExists ? roomCode : null);
 	});
 
 	socket.on(SocketRoomEvents.JOIN, (roomCode: string, username: string) => {
 		const { player, error } = util.joinRoom(roomCode, socket.id, username);
-		socket.emit(SocketRoomEvents.JOIN, error);
+		socket.emit(SocketRoomEvents.JOIN, player.username, error);
 
 		if (error === null) {
 			const socketsInRoom = util.getSocketsInRoom(roomCode);

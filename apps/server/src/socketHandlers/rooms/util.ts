@@ -27,8 +27,8 @@ const generateRoomCode = () => {
 	return code.toUpperCase();
 };
 
-const createRoom = (): string => {
-	const roomCode = generateRoomCode();
+const createRoom = (code?: string): string => {
+	const roomCode = code || generateRoomCode();
 
 	if (roomExists(roomCode)) {
 		return createRoom();
@@ -74,16 +74,13 @@ const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	let error = null;
 
 	if (!rooms[roomCode]) {
-		error = 'Room does not exist';
+		createRoom(roomCode);
 	}
 	if (username.length < 2) {
 		error = 'Username must be at least 2 characters';
 	}
 	if (username.length > 20) {
 		error = 'Username can\'t be longer than 20 characters';
-	}
-	if (Object.values(rooms[roomCode]?.players).find((player) => player.username === username)) {
-		error = 'Username already taken';
 	}
 
 	const player: Player = {

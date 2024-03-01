@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import socket from '@/socket';
 import { SocketRoomEvents } from '@shared/types';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 type RoomProps = {
 	roomCode: string;
 	username: string;
 };
 
-// TODO: move to types
+// TODO: move to types, maybe shared
 type Player = {
 	username: string;
 	socketId: string;
@@ -18,6 +19,7 @@ type Player = {
 const Room = ({ roomCode, username }: RoomProps) => {
 	const router = useRouter();
 	const [players, setPlayers] = useState<Player[]>([]);
+	const ourPlayer = players.find((player) => player.socketId === socket.id);
 
 	useEffect(() => {
 		if (!roomCode || !username) {
@@ -42,6 +44,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			})));
 		};
 
+		// TODO: change GET_ALL_PLAYERS into more generic for initial state
 		socket.on(SocketRoomEvents.GET_ALL_PLAYERS, handleSetAllPlayers);
 		socket.on(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
 		socket.on(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
@@ -75,18 +78,23 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	}, [roomCode, router.events]);
 
 	return (
-		<div>
-			<h1>
-				Room
-				{roomCode}
-			</h1>
-			{players.map((player) => (
-				<div key={player.socketId}>
-					<p>{player.username}</p>
-					<p>{player.role}</p>
-				</div>
-			))}
-		</div>
+		<>
+			<Head>
+				<title>{`Room ${roomCode}`}</title>
+			</Head>
+			<div>
+				<h1>
+					Room
+					{roomCode}
+				</h1>
+				{players.map((player) => (
+					<div key={player.socketId}>
+						<p>{player.username}</p>
+						<p>{player.role}</p>
+					</div>
+				))}
+			</div>
+		</>
 	);
 };
 

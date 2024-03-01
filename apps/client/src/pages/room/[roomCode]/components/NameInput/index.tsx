@@ -1,7 +1,10 @@
-import { Input } from '@/components';
-import { useState, useEffect } from 'react';
+import { Input, Button } from '@/components';
+import { useState, useEffect, useRef } from 'react';
 import socket from '@/socket';
 import { SocketRoomEvents } from '@shared/types';
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
+import { IconRefresh } from '@tabler/icons-react';
+import Head from 'next/head';
 import classes from './NameInput.module.css';
 
 type NameInputProps = {
@@ -10,8 +13,12 @@ type NameInputProps = {
 };
 
 const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
-	const [unverifiedUsername, setUnverifiedUsername] = useState<string>('');
+	const [unverifiedUsername, setUnverifiedUsername] = useState(
+		localStorage.getItem('username') || '',
+	);
 	const [inputError, setInputError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -28,42 +35,69 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 				break;
 			default:
 				setInputError(null);
-				setUnverifiedUsername(username);
+				socket.emit(SocketRoomEvents.JOIN, roomCode, username);
+				localStorage.setItem('username', username);
+				setIsLoading(true);
 		}
 	};
 
-	useEffect(() => {
-		if (!unverifiedUsername) {
-			return;
-		}
+	const generateRandomName = () => {
+		setUnverifiedUsername(uniqueNamesGenerator({
+			dictionaries: [adjectives, animals],
+			separator: '-',
+			style: 'capital',
+		}));
+		inputRef.current?.focus();
+	};
 
-		const handleRoomJoin = (error: string | null) => {
+	useEffect(() => {
+		const handleRoomJoin = (username: string, error: string | null) => {
 			setInputError(error);
+			setIsLoading(false);
 			if (error === null) {
-				setUsername(unverifiedUsername);
+				setUsername(username);
 			}
 		};
 
-		socket.emit(SocketRoomEvents.JOIN, roomCode, unverifiedUsername);
 		socket.on(SocketRoomEvents.JOIN, handleRoomJoin);
 
 		return () => {
 			socket.off(SocketRoomEvents.JOIN, handleRoomJoin);
 		};
-	}, [setUsername, unverifiedUsername, roomCode]);
+	}, [setUsername]);
 
 	return (
-		<main>
-			<form onSubmit={handleNameSubmit}>
-				<Input
-					label="Choose a name"
-					id="username"
-					name="username"
-					error={inputError}
-					maxLength={20}
-				/>
-			</form>
-		</main>
+		<>
+			<Head>
+				<title>Choose a username</title>
+			</Head>
+			<main className={classes.pageContainer}>
+				<form onSubmit={handleNameSubmit} className={classes.form}>
+					<Input
+						label="Choose a name"
+						id="username"
+						name="username"
+						type="text"
+						autoComplete="off"
+						error={inputError}
+						maxLength={20}
+						value={unverifiedUsername}
+						onChange={(e) => setUnverifiedUsername(e.target.value)}
+						ref={inputRef}
+					>
+						<Button
+							onClick={generateRandomName}
+							className={classes.randomNameButton}
+							aria-label="generate random name"
+						>
+							<IconRefresh size={20} />
+						</Button>
+					</Input>
+
+					<Button type="submit" loading={isLoading}>Join</Button>
+				</form>
+			</main>
+		</>
 	);
 };
 

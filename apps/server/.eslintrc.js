@@ -3,6 +3,7 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	extends: ['airbnb-base', 'airbnb-typescript/base'],
+	ignorePatterns: ['bin'],
 	rules: {
 		'no-tabs': 'off',
 		'consistent-return': 'off',

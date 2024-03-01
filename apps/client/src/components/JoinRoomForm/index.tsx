@@ -23,7 +23,7 @@ const JoinRoomForm = () => {
 			return;
 		}
 
-		socket.emit(SocketRoomEvents.CONNECT, roomCode);
+		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomCode);
 	};
 
 	const handleRoomConnect = (code: string | null) => {
@@ -37,10 +37,10 @@ const JoinRoomForm = () => {
 	};
 
 	useEffect(() => {
-		socket.on(SocketRoomEvents.CONNECT, handleRoomConnect);
+		socket.on(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
 
 		return () => {
-			socket.off(SocketRoomEvents.CONNECT, handleRoomConnect);
+			socket.off(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
 		};
 	});
 

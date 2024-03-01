@@ -1,6 +1,6 @@
 export const SocketRoomEvents = {
 	CREATE: 'ROOM:create',
-	CONNECT: 'ROOM:connect',
+	ROOM_EXISTS: 'ROOM:exists',
 	JOIN: 'ROOM:join',
 	LEAVE: 'ROOM:leave',
 	PLAYER_JOINED: 'ROOM:playerJoined',

@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
 	cors: {
-		origin: CLIENT_URL,
+		origin: [CLIENT_URL],
 	},
 });
 
@@ -34,5 +34,5 @@ io.on('connection', (socket) => {
 process.on('warning', (e) => console.warn(e.stack));
 
 httpServer.listen(PORT, () => {
-	console.log(`Server is listening on port ${PORT}`);
+	console.log(`Server is listening on port: ${PORT}`);
 });
