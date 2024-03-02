@@ -8,14 +8,12 @@ module.exports = {
 		'consistent-return': 'off',
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
-		'max-len': ['error', { code: 100 }],
 
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',
 		'@typescript-eslint/consistent-type-exports': 'error',
 
 		'import/no-extraneous-dependencies': 'off',
-		'import/prefer-default-export': 'off',
 
 		'react/function-component-definition': 'off',
 		'react/react-in-jsx-scope': 'off',
@@ -29,8 +27,7 @@ module.exports = {
 			{
 				namedComponents: 'arrow-function'
 			}
-		],
-		'react/jsx-max-props-per-line': ['error', { maximum: { single: 4, multi: 1 } }]
+		]
 	},
 	settings: {
 		'import/parsers': {

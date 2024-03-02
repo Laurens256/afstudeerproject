@@ -9,18 +9,13 @@
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
-	outline-offset: 2px;
-
-	&:disabled {
-		cursor: default;
-	}
 
 	&.outline {
 		background-color: transparent;
 		border: 1px solid var(--primary-color);
 		color: var(--primary-color);
 
-		&:not(:disabled):where(:hover, :focus-visible) {
+		&:hover, &:focus-visible {
 			background-color: var(--primary-color);
 			color: var(--primary-text-white);
 		}
@@ -31,7 +26,7 @@
 		border: 1px solid var(--primary-color);
 		color: var(--primary-text-white);
 
-		&:not(:disabled):where(:hover, :focus-visible) {
+		&:hover, &:focus-visible {
 			background-color: var(--primary-panel-bg);
 			color: var(--primary-color);
 		}
@@ -42,7 +37,7 @@
 		border: 1px solid var(--primary-text-white);
 		color: var(--primary-color);
 
-		&:not(:disabled):where(:hover, :focus-visible) {
+		&:hover, &:focus-visible {
 			background-color: var(--primary-color);
 			color: var(--primary-text-white);
 		}

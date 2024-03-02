@@ -1,63 +1,28 @@
 import type { Server, Socket } from 'socket.io';
-import { SocketRoomEvents } from '@shared/types';
 import util from './util';
 
 const roomHandlers = (io: Server, socket: Socket) => {
-	socket.on(SocketRoomEvents.CREATE, () => {
+	socket.on('ROOM:create', () => {
 		const roomCode = util.createRoom();
-		socket.emit(SocketRoomEvents.CREATE, roomCode);
+		socket.emit('ROOM:create', roomCode);
 	});
 
-	socket.on(SocketRoomEvents.ROOM_EXISTS, (roomCode: string) => {
-		console.log('request to check room', roomCode)
-		const roomExists = util.roomExists(roomCode);
-		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomExists ? roomCode : null);
+	socket.on('ROOM:join', (roomCode: string) => {
+		const success = util.joinRoom(roomCode, socket.id);
+		socket.emit('ROOM:join', success ? roomCode : null);
 	});
 
-	socket.on(SocketRoomEvents.JOIN, (roomCode: string, username: string) => {
-		const { player, error } = util.joinRoom(roomCode, socket.id, username);
-		socket.emit(SocketRoomEvents.JOIN, player.username, error);
-
-		if (error === null) {
-			const socketsInRoom = util.getSocketsInRoom(roomCode);
-
-			io.to(socketsInRoom).emit(
-				SocketRoomEvents.PLAYER_JOINED,
-				{ ...player, socketId: socket.id },
-			);
-		}
+	socket.on('ROOM:leave', (roomCode: string) => {
+		util.leaveRoom(socket.id, roomCode);
 	});
 
-	const emitNewAdmins = (roomCodes: string[]) => {
-		roomCodes.forEach((roomCode) => {
-			const newAdminId = util.setRoomAdmin(roomCode, null);
-			const socketsInRoom = util.getSocketsInRoom(roomCode);
-
-			if (newAdminId) {
-				io.to(socketsInRoom).emit(SocketRoomEvents.ADMIN_CHANGE, newAdminId);
-			}
-		});
-	};
-
-	socket.on(SocketRoomEvents.LEAVE, (roomCode: string) => {
-		const socketsInRoom = util.getSocketsInRoom(roomCode);
-		io.to(socketsInRoom).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
-
-		const roomsNeedNewAdmin = util.leaveRoom(socket.id, roomCode);
-		emitNewAdmins(roomsNeedNewAdmin);
-	});
-
-	socket.on(SocketRoomEvents.GET_ALL_PLAYERS, (roomCode: string) => {
-		const players = util.getPlayersInRoom(roomCode);
-		socket.emit(SocketRoomEvents.GET_ALL_PLAYERS, players);
+	socket.on('test', (roomCode: string) => {
+		const sockets = util.getSocketsInRoom(roomCode);
+		io.to(sockets).except(socket.id).emit('test');
 	});
 
 	socket.on('disconnect', () => {
-		const rooms = util.getAllRoomsClientIsIn(socket.id);
-		io.to(rooms).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
-
-		const roomsNeedNewAdmin = util.leaveRoom(socket.id, null);
-		emitNewAdmins(roomsNeedNewAdmin);
+		util.leaveRoom(socket.id, null);
 	});
 };
 

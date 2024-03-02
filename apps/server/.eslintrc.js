@@ -3,16 +3,13 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	extends: ['airbnb-base', 'airbnb-typescript/base'],
-	ignorePatterns: ['bin'],
 	rules: {
 		'no-tabs': 'off',
 		'consistent-return': 'off',
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
-		'max-len': ['error', { code: 100 }],
 
 		'import/no-extraneous-dependencies': 'off',
-		'import/prefer-default-export': 'off',
 
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',

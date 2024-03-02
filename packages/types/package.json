@@ -1,11 +1,10 @@
 {
 	"name": "@shared/types",
-	"version": "1.0.0",
 	"main": "dist/index.js",
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc --watch --preserveWatchOutput"
+		"dev": "tsc --watch"
 	},
 	"author": "Laurens Duin",
 	"license": "MIT"
