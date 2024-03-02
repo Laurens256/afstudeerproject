@@ -6,24 +6,24 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '@/query-client';
 import { Layout } from '@/components';
 
-export default function Home({
+const Home = ({
 	Component,
-	pageProps
+	pageProps,
 }: {
 	Component: any;
 	pageProps: any;
-}) {
-	return (
-		<>
-			<Head>
-				<title>Create Next App</title>
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<QueryClientProvider client={queryClient}>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-			</QueryClientProvider>
-		</>
-	);
-}
+}) => (
+	<>
+		<Head>
+			<title>Create Next App</title>
+			<link rel="icon" href="/favicon.ico" />
+		</Head>
+		<QueryClientProvider client={queryClient}>
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
+		</QueryClientProvider>
+	</>
+);
+
+export default Home;

@@ -5,6 +5,7 @@ import socket from '@/socket';
 import { useRouter } from 'next/router';
 import { IconSearch } from '@tabler/icons-react';
 import { RoutePath, generateRoute } from '@/routes';
+import { SocketRoomEvents } from '@shared/types';
 import classes from './JoinRoomForm.module.css';
 
 const JoinRoomForm = () => {
@@ -22,10 +23,10 @@ const JoinRoomForm = () => {
 			return;
 		}
 
-		socket.emit('ROOM:join', roomCode);
+		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomCode);
 	};
 
-	const handleRoomJoin = (code: string | null) => {
+	const handleRoomConnect = (code: string | null) => {
 		if (code) {
 			setError(null);
 			router.push(generateRoute(RoutePath.Room, { roomCode: code }));
@@ -36,10 +37,10 @@ const JoinRoomForm = () => {
 	};
 
 	useEffect(() => {
-		socket.on('ROOM:join', handleRoomJoin);
+		socket.on(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
 
 		return () => {
-			socket.off('ROOM:join', handleRoomJoin);
+			socket.off(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
 		};
 	});
 
@@ -58,7 +59,7 @@ const JoinRoomForm = () => {
 				id="joinRoomCode"
 				required
 			>
-				<Button className={classes.joinButton} aria-label="Join room">
+				<Button className={classes.joinButton} aria-label="Join room" type="submit">
 					<IconSearch />
 				</Button>
 			</Input>

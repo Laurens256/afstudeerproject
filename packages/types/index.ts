@@ -1,1 +1,1 @@
-export const testString = 'teststring from shared types'
+export * from './socketEvents';
