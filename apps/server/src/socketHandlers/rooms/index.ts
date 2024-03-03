@@ -9,7 +9,6 @@ const roomHandlers = (io: Server, socket: Socket) => {
 	});
 
 	socket.on(SocketRoomEvents.ROOM_EXISTS, (roomCode: string) => {
-		console.log('request to check room', roomCode)
 		const roomExists = util.roomExists(roomCode);
 		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomExists ? roomCode : null);
 	});
@@ -54,7 +53,11 @@ const roomHandlers = (io: Server, socket: Socket) => {
 
 	socket.on('disconnect', () => {
 		const rooms = util.getAllRoomsClientIsIn(socket.id);
-		io.to(rooms).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
+
+		rooms.forEach((roomCode) => {
+			const socketsInRoom = util.getSocketsInRoom(roomCode);
+			io.to(socketsInRoom).except(socket.id).emit(SocketRoomEvents.PLAYER_LEFT, socket.id);
+		});
 
 		const roomsNeedNewAdmin = util.leaveRoom(socket.id, null);
 		emitNewAdmins(roomsNeedNewAdmin);

@@ -2,36 +2,32 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
-import os from 'os';
 import { roomHandlers } from './socketHandlers';
 import 'dotenv/config';
-import { PORT, CLIENT_URL, CLIENT_PORT } from './app.constants';
+import { SERVER_PORT, CLIENT_URL } from './app.constants';
 
-if (!CLIENT_URL) {
-	throw new Error('No client URL set');
+const allowedOrigins = [CLIENT_URL].filter(Boolean) as string[];
+
+if (!allowedOrigins.length) {
+	throw new Error('Allowed origins not specified');
 }
 
 const app = express();
 app.use(cors({
-	origin: CLIENT_URL,
+	origin: allowedOrigins,
 	credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const localIps = Object.values(os.networkInterfaces()).reduce<string[]>(
-	(result, list) => (list ? result.concat(list.filter((iface) => iface.family === 'IPv4'
-			&& !iface.internal && iface.address).map((iface) => iface.address)) : result),
-	[],
-);
+app.get('/', (req, res) => {
+	res.send('Hello World');
+});
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
 	cors: {
-		origin: [
-			CLIENT_URL,
-			...(CLIENT_PORT ? localIps.map((ip) => `http://${ip}:${CLIENT_PORT}`) : []),
-		],
+		origin: allowedOrigins,
 	},
 });
 
@@ -41,6 +37,6 @@ io.on('connection', (socket) => {
 
 process.on('warning', (e) => console.warn(e.stack));
 
-httpServer.listen(PORT, () => {
-	console.log(`Server is listening on port: ${PORT}`);
+httpServer.listen(SERVER_PORT, () => {
+	console.log(`Server is listening on port: ${SERVER_PORT}`);
 });
