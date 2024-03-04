@@ -1,0 +1,46 @@
+.container {
+	--header-height: 4.5rem;
+	--message-form-height: 5rem;
+	--messages-list-height: calc(100% - var(--header-height) - var(--message-form-height));
+	--base-padding: 1rem;
+
+	/* extra width so primary-panel-bg is visible a bit to the the right.
+	Needed for when cubic-bezier transition moves panel to left a bit on close */
+	width: calc(100% + 2rem);
+	padding-right: 2rem;
+	background-color: var(--primary-panel-bg);
+
+	height: 100%;
+}
+
+.header {
+	height: var(--header-height);
+	display: flex;
+	align-items: center;
+	padding-inline: var(--base-padding);
+}
+
+.messagesList {
+	height: var(--messages-list-height);
+}
+
+.messageForm {
+	--input-height: 3rem;
+	position: relative;
+	height: var(--message-form-height);
+	padding: var(--base-padding);
+}
+.messageInput {
+	height: var(--input-height);
+	padding-right: calc(var(--input-height) + 0.5rem);
+	font-size: 1.2rem;
+}
+.sendMessageButton {
+	--inset: 0.2rem;
+	width: var(--button-width);
+	position: absolute;
+	inset: var(--inset);
+	left: auto;
+	width: calc(var(--input-height) - (2 * var(--inset)));
+	background-color: var(--primary-color);
+}

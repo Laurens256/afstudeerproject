@@ -8,6 +8,7 @@ import type { Player } from '@shared/types';
 import clsx from 'clsx';
 import { ChatSection } from './components';
 import classes from './Room.module.css';
+import { IconMessage } from '@tabler/icons-react';
 
 type RoomProps = {
 	roomCode: string;
@@ -90,10 +91,11 @@ const Room = ({ roomCode, username }: RoomProps) => {
 
 		container.classList.toggle(classes.chatOpen, !isOpen);
 		chatWrapper.inert = isOpen;
-		chatToggleButton.setAttribute('aria-expanded', String(!isOpen));
+		chatToggleButton.ariaExpanded = String(!isOpen);
+		chatToggleButton.ariaLabel = isOpen ? 'Open chat' : 'Close chat';
 	};
 
-	if (!ourPlayer) {
+	if (!ourPlayer) { // should not happen
 		// TODO: 404 / loader (?)
 		return null;
 	}
@@ -115,8 +117,9 @@ const Room = ({ roomCode, username }: RoomProps) => {
 						variant="icon"
 						innerRef={chatToggleButtonRef}
 						aria-controls="chat-wrapper"
+						aria-label="close chat"
 					>
-						Chat
+						<IconMessage size={24} />
 					</Button>
 					<div ref={chatWrapperRef} id="chat-wrapper">
 						<ChatSection roomCode={roomCode} players={players} ourPlayer={ourPlayer} />

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import socket from '@/socket';
-import { Input } from '@/components';
+import { Input, Button } from '@/components';
 import type { Player, Message } from '@shared/types';
 import { SocketRoomEvents } from '@shared/types';
+import { IconSend } from '@tabler/icons-react';
 import classes from './ChatSection.module.css';
 
 const createJoinedLeftMessage = (username: string, type: 'joined' | 'left'): Message => ({
@@ -81,9 +82,11 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 	};
 
 	return (
-		<>
-			<header />
-			<ul>
+		<aside className={classes.container}>
+			<header className={classes.header}>
+				<h2>Game chat</h2>
+			</header>
+			<ul className={classes.messagesList}>
 				{messages.map((message) => (
 					<li
 						key={message.messageId}
@@ -94,16 +97,29 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 				))}
 			</ul>
 
-			<form onSubmit={handleSendMessage}>
+			<form onSubmit={handleSendMessage} className={classes.messageForm}>
 				<Input
+					className={classes.messageInput}
 					ref={messageInputRef}
 					label="send a message"
 					id="send-message"
 					name="send-message"
 					labelVisuallyHidden
-				/>
+					autoComplete="off"
+					autoCapitalize="on"
+					placeholder="Send a message"
+				>
+					<Button
+						type="submit"
+						variant="icon"
+						aria-label="send message"
+						className={classes.sendMessageButton}
+					>
+						<IconSend />
+					</Button>
+				</Input>
 			</form>
-		</>
+		</aside>
 	);
 };
 
