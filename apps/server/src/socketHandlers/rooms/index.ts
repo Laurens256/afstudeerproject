@@ -1,4 +1,5 @@
 import type { Server, Socket } from 'socket.io';
+import type { Message, Player } from '@shared/types';
 import { SocketRoomEvents } from '@shared/types';
 import util from './util';
 
@@ -49,6 +50,25 @@ const roomHandlers = (io: Server, socket: Socket) => {
 	socket.on(SocketRoomEvents.GET_ALL_PLAYERS, (roomCode: string) => {
 		const players = util.getPlayersInRoom(roomCode);
 		socket.emit(SocketRoomEvents.GET_ALL_PLAYERS, players);
+	});
+
+	socket.on(SocketRoomEvents.CHAT_MESSAGE, (roomCode: string, text: string) => {
+		const socketsInRoom = util.getSocketsInRoom(roomCode);
+		const player = util.getPlayerBySocketId(roomCode, socket.id);
+
+		if (player) {
+			const message: Message = {
+				messageId: crypto.randomUUID(),
+				type: 'user',
+				socketId: socket.id,
+				username: player.username,
+				text,
+				date: new Date(),
+			};
+			io.to(socketsInRoom).except(socket.id).emit(SocketRoomEvents.CHAT_MESSAGE, message);
+		} else {
+			console.warn('Something happened that should not have happened :0');
+		}
 	});
 
 	socket.on('disconnect', () => {

@@ -1,0 +1,49 @@
+.container {
+	--chat-window-transition: ease-in-out 0.3s;
+	--chat-window-width: min(50%, 25rem);
+	background-color: pink;
+	height: 100vh;
+	height: 100dvh;
+	display: flex;
+
+	&.chatOpen {
+		& .gameWrapper {
+			width: calc(100% - var(--chat-window-width));
+		}
+
+		& .chatWrapper {
+			transform: translateX(0);
+		}
+
+		/* TODO: chat toggle button should be somewhere else */
+		@media (max-width: 900px) {
+			& .gameWrapper {
+				width: 100%;
+			}
+
+			& .chatWrapper {
+				width: 100%;
+			}
+		}
+	}
+}
+
+.gameWrapper {
+	width: 100%;
+	background-color: blue;
+	transition: width var(--chat-window-transition);
+}
+
+.chatWrapper {
+	position: fixed;
+	right: 0;
+	width: var(--chat-window-width);
+	background-color: red;
+	transform: translateX(100%);
+	transition: transform var(--chat-window-transition);
+}
+.chatToggleButton {
+	position: absolute;
+	top: 2rem;
+	transform: translateX(-100%);
+}

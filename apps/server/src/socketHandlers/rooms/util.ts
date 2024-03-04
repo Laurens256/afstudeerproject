@@ -65,6 +65,16 @@ const getSocketsInRoom = (inputCode: string) => {
 	return Object.keys(room.players);
 };
 
+const getPlayerBySocketId = (inputCode: string, socketId: string) => {
+	const roomCode = inputCode.toUpperCase();
+	const room = rooms[roomCode];
+	if (!room) {
+		return null;
+	}
+
+	return room.players[socketId];
+};
+
 /**
  * @returns null if successful, error message if not
  * */
@@ -160,6 +170,7 @@ export default {
 	joinRoom,
 	leaveRoom,
 	getPlayersInRoom,
+	getPlayerBySocketId,
 	getSocketsInRoom,
 	roomExists,
 	getAllRoomsClientIsIn,

@@ -46,7 +46,10 @@
 			background-color: var(--primary-color);
 			color: var(--primary-text-white);
 		}
-	
+	}
+
+	&.icon {
+		padding: 0;
 	}
 }
 

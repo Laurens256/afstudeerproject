@@ -7,7 +7,7 @@ const RoomContainer = () => {
 	const { roomCode } = router.query;
 	const [username, setUsername] = useState<string>('');
 
-	// TODO ?
+	// TODO 404 page
 	if (typeof roomCode !== 'string' || roomCode.length !== 6) {
 		return null;
 	}

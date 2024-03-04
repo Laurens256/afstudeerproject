@@ -1,25 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import socket from '@/socket';
 import { SocketRoomEvents } from '@shared/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { Button } from '@/components';
+import type { Player } from '@shared/types';
+import clsx from 'clsx';
+import { ChatSection } from './components';
+import classes from './Room.module.css';
 
 type RoomProps = {
 	roomCode: string;
 	username: string;
 };
 
-// TODO: move to types, maybe shared
-type Player = {
-	username: string;
-	socketId: string;
-	role: 'admin' | 'player';
-};
-
 const Room = ({ roomCode, username }: RoomProps) => {
 	const router = useRouter();
 	const [players, setPlayers] = useState<Player[]>([]);
 	const ourPlayer = players.find((player) => player.socketId === socket.id);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const chatWrapperRef = useRef<HTMLDivElement>(null);
+	const chatToggleButtonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		if (!roomCode || !username) {
@@ -77,22 +78,50 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		};
 	}, [roomCode, router.events]);
 
+	const handleChatToggle = () => {
+		const container = containerRef.current;
+		const chatWrapper = chatWrapperRef.current;
+		const chatToggleButton = chatToggleButtonRef.current;
+
+		if (!container || !chatWrapper || !chatToggleButton) {
+			return;
+		}
+		const isOpen = container.classList.contains(classes.chatOpen);
+
+		container.classList.toggle(classes.chatOpen, !isOpen);
+		chatWrapper.inert = isOpen;
+		chatToggleButton.setAttribute('aria-expanded', String(!isOpen));
+	};
+
+	if (!ourPlayer) {
+		// TODO: 404 / loader (?)
+		return null;
+	}
+
 	return (
 		<>
 			<Head>
 				<title>{`Room ${roomCode}`}</title>
 			</Head>
-			<div>
-				<h1>
-					Room
-					{roomCode}
-				</h1>
-				{players.map((player) => (
-					<div key={player.socketId}>
-						<p>{player.username}</p>
-						<p>{player.role}</p>
+			<div className={clsx(classes.container, classes.chatOpen)} ref={containerRef}>
+				<div className={classes.gameWrapper}>
+					<span>game stuff here</span>
+				</div>
+
+				<div className={classes.chatWrapper}>
+					<Button
+						className={classes.chatToggleButton}
+						onClick={handleChatToggle}
+						variant="icon"
+						innerRef={chatToggleButtonRef}
+						aria-controls="chat-wrapper"
+					>
+						Chat
+					</Button>
+					<div ref={chatWrapperRef} id="chat-wrapper">
+						<ChatSection roomCode={roomCode} players={players} ourPlayer={ourPlayer} />
 					</div>
-				))}
+				</div>
 			</div>
 		</>
 	);
