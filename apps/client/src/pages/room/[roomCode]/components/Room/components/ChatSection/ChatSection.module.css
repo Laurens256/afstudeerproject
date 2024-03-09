@@ -13,15 +13,10 @@
 	height: 100%;
 }
 
-.header {
-	height: var(--header-height);
-	display: flex;
-	align-items: center;
-	padding-inline: var(--base-padding);
-}
-
 .messagesList {
 	height: var(--messages-list-height);
+	overflow-y: auto;
+	padding-inline: 0.5rem;
 }
 
 .messageForm {
@@ -43,4 +38,5 @@
 	left: auto;
 	width: calc(var(--input-height) - (2 * var(--inset)));
 	background-color: var(--primary-color);
+	color: var(--primary-text-white);
 }

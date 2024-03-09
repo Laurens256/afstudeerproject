@@ -8,5 +8,8 @@
 		"dev": "tsc --watch --preserveWatchOutput"
 	},
 	"author": "Laurens Duin",
-	"license": "MIT"
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^18.2.64"
+	}
 }

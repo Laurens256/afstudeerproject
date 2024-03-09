@@ -1,5 +1,5 @@
 import type { Server, Socket } from 'socket.io';
-import type { Message, Player } from '@shared/types';
+import type { Message, RoomState } from '@shared/types';
 import { SocketRoomEvents } from '@shared/types';
 import util from './util';
 
@@ -47,9 +47,27 @@ const roomHandlers = (io: Server, socket: Socket) => {
 		emitNewAdmins(roomsNeedNewAdmin);
 	});
 
-	socket.on(SocketRoomEvents.GET_ALL_PLAYERS, (roomCode: string) => {
-		const players = util.getPlayersInRoom(roomCode);
-		socket.emit(SocketRoomEvents.GET_ALL_PLAYERS, players);
+	socket.on(SocketRoomEvents.GET_ROOM_STATE, (roomCode: string) => {
+		const room = util.getRoom(roomCode);
+
+		if (!room) {
+			console.warn('GET_ROOM_STATE: this should not happen');
+			return;
+		}
+
+		const players = Object.keys(room.players).map((socketId) => ({
+			socketId,
+			...room.players[socketId],
+		}));
+
+		const roomState: RoomState = {
+			roomName: room.roomName,
+			isPrivate: room.isPrivate,
+			isStarted: room.isStarted,
+			players,
+		};
+
+		socket.emit(SocketRoomEvents.GET_ROOM_STATE, roomState);
 	});
 
 	socket.on(SocketRoomEvents.CHAT_MESSAGE, (roomCode: string, text: string) => {
@@ -65,9 +83,10 @@ const roomHandlers = (io: Server, socket: Socket) => {
 				text,
 				date: new Date(),
 			};
-			io.to(socketsInRoom).except(socket.id).emit(SocketRoomEvents.CHAT_MESSAGE, message);
+
+			io.to(socketsInRoom).emit(SocketRoomEvents.CHAT_MESSAGE, message);
 		} else {
-			console.warn('Something happened that should not have happened :0');
+			console.warn('CHAT_MESSAGE: this should not happen');
 		}
 	});
 

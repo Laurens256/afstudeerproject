@@ -1,0 +1,35 @@
+.message {
+	--icon-size: 2.25rem;
+	--icon-text-gap: 0.5rem;
+	position: relative;
+	padding-left: calc(var(--icon-size) + var(--icon-text-gap));
+
+	.iconContainer {
+		position: absolute;
+		transform: translateX(calc(-1 * var(--icon-size) - var(--icon-text-gap)));
+		width: var(--icon-size);
+		display: flex;
+		justify-content: center;
+	}
+}
+
+.userMessage {
+	&.firstByUser {
+		margin-top: 0.5rem;
+	}
+}
+
+.joinedLeftMessage {
+	margin-block: 0.75rem;
+}
+
+/* TODO: colors */
+.iconJoinedLeft {
+	width: 1.25rem;
+	&.iconJoined {
+		color: green;
+	}
+	&.iconLeft {
+		color: red;
+	}
+}

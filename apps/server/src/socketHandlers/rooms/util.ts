@@ -1,12 +1,9 @@
-type Player = {
-	username: string;
-	role: 'admin' | 'player';
-};
+import { type Player, type RoomState } from '@shared/types';
+
+type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
-	[roomCode: string]: {
-		players: { [socketId: string]: Player };
-		// TODO: Add game type
-		currentGame: string;
+	[roomCode: string]: & Omit<RoomState, 'players'> & {
+		players: Record<string, ServerPlayer>;
 	};
 };
 const rooms: Rooms = {};
@@ -35,26 +32,19 @@ const createRoom = (code?: string): string => {
 	}
 
 	rooms[roomCode] = {
+		roomName: null,
 		players: {},
-		currentGame: '',
+		isPrivate: false,
+		isStarted: false,
 	};
 	return roomCode;
 };
 
-const getPlayersInRoom = (inputCode: string) => {
+const getRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
-	const room = rooms[roomCode];
-	if (!room) {
-		return [];
-	}
-
-	const playersArray = Object.keys(room.players).map((socketId) => ({
-		socketId,
-		...room.players[socketId],
-	}));
-
-	return playersArray;
+	return rooms[roomCode];
 };
+
 const getSocketsInRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const room = rooms[roomCode];
@@ -93,13 +83,17 @@ const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 		error = 'Username can\'t be longer than 20 characters';
 	}
 
-	const player: Player = {
+	const player: ServerPlayer = {
 		username,
 		role: getSocketsInRoom(roomCode).length === 0 ? 'admin' : 'player',
 	};
 
 	if (!error) {
 		rooms[roomCode].players[socketId] = player;
+
+		if (rooms[roomCode].roomName === null) {
+			rooms[roomCode].roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
+		}
 	}
 
 	return { error, player };
@@ -117,9 +111,10 @@ const handleRoomDelete = (inputCode: string) => {
 	}
 };
 
+// TODO: setPreviousMessageSocketId(code, null) once admin change event is added to chat
 const setRoomAdmin = (roomCode: string, socketId: string | null) => {
-	const players = getPlayersInRoom(roomCode);
-	if (players.length === 0) {
+	const sockets = getSocketsInRoom(roomCode);
+	if (sockets.length === 0) {
 		return;
 	}
 
@@ -169,7 +164,7 @@ export default {
 	createRoom,
 	joinRoom,
 	leaveRoom,
-	getPlayersInRoom,
+	getRoom,
 	getPlayerBySocketId,
 	getSocketsInRoom,
 	roomExists,

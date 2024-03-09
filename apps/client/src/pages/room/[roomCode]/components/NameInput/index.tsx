@@ -66,6 +66,10 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 		};
 	}, [setUsername]);
 
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
+
 	return (
 		<>
 			<Head>

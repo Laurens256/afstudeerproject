@@ -21,10 +21,10 @@
 			& .gameWrapper, & .chatWrapper {
 				width: 100%;
 			}
-			& .chatToggleButton {
+			/* & .chatToggleButton {
 				position: static;
 				transform: translateX(0);
-			}
+			} */
 		}
 	}
 }
@@ -40,18 +40,19 @@
 	width: var(--chat-window-width);
 	transform: translateX(100%);
 	transition: transform var(--chat-window-close-transition);
-	height: 100%;
+	height: 100dvh;
 	
 	& > div {
 		height: 100%;
 	}
 }
 .chatToggleButton {
+	--curved-border-radius: 0.5rem;
 	position: absolute;
 	top: 2rem;
 	transform: translateX(-100%);
 	background-color: var(--primary-panel-bg);
-	border-radius: 0.5rem 0 0 0.5rem;
+	border-radius: var(--curved-border-radius) 0 0 var(--curved-border-radius);
 	padding: 0.5rem;
 	height: 3.5rem;
 	width: 3.5rem;

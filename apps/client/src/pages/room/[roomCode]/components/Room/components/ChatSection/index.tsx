@@ -5,11 +5,15 @@ import type { Player, Message } from '@shared/types';
 import { SocketRoomEvents } from '@shared/types';
 import { IconSend } from '@tabler/icons-react';
 import classes from './ChatSection.module.css';
+import { Message as MessageComponent, ChatHeader } from './components';
 
 const createJoinedLeftMessage = (username: string, type: 'joined' | 'left'): Message => ({
 	messageId: Date.now().toString(),
 	type: 'joined-left',
-	text: `${username} has ${type} the room`,
+	// eslint-disable-next-line react/jsx-one-expression-per-line
+	text: <>{<b>{username}</b>}{` has ${type} the room`}</>,
+	date: new Date(),
+	action: type,
 });
 
 type ChatSectionProps = {
@@ -20,11 +24,10 @@ type ChatSectionProps = {
 
 const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 	const messageInputRef = useRef<HTMLInputElement>(null);
-	const [messages, setMessages] = useState<Message[]>([{
-		messageId: ':3',
-		type: 'joined-left',
-		text: 'You joined the room',
-	}]);
+	const messageListRef = useRef<HTMLUListElement>(null);
+	const [messages, setMessages] = useState<Message[]>([
+		createJoinedLeftMessage(ourPlayer.username, 'joined'),
+	]);
 
 	useEffect(() => {
 		const handlePlayerJoined = (player: Player) => {
@@ -66,34 +69,50 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 			return;
 		}
 
-		const messageObject: Message = {
-			messageId: Date.now().toString(),
-			type: 'user',
-			socketId: ourPlayer.socketId,
-			username: ourPlayer.username,
-			text: message,
-			date: new Date(),
-		};
-		setMessages((prevMessages) => [...prevMessages, messageObject]);
-
 		socket.emit(SocketRoomEvents.CHAT_MESSAGE, roomCode, message);
-
-		(messageInputRef.current as HTMLInputElement).value = '';
+		messageInputRef.current!.value = '';
 	};
 
+	// Scroll to the bottom of the chat when a new message is received and user was at the bottom
+	useEffect(() => {
+		const list = messageListRef.current;
+		if (!list) return;
+
+		const lastMessage = list.lastElementChild as HTMLElement | null;
+		if (!lastMessage) return;
+
+		const lastMessageStyle = window.getComputedStyle(lastMessage);
+		const marginTop = parseInt(lastMessageStyle.marginTop, 10);
+		const marginBottom = parseInt(lastMessageStyle.marginBottom, 10);
+
+		const lastMessageHeight = lastMessage.offsetHeight + marginTop + marginBottom;
+		const messagesListHeight = list.scrollHeight;
+		const heightBeforeLastMessage = messagesListHeight - lastMessageHeight;
+		const scrollPosition = list.scrollTop + list.clientHeight;
+
+		if (scrollPosition >= heightBeforeLastMessage) {
+			list.scrollTo({ top: list.scrollHeight, behavior: 'auto' });
+		}
+	}, [messages]);
+
 	return (
-		<aside className={classes.container}>
-			<header className={classes.header}>
-				<h2>Game chat</h2>
-			</header>
-			<ul className={classes.messagesList}>
-				{messages.map((message) => (
-					<li
+		<aside className={classes.container} aria-label="chat">
+			<ChatHeader />
+
+			<ul className={classes.messagesList} ref={messageListRef}>
+				{messages.map((message, i) => (
+					<MessageComponent
 						key={message.messageId}
-						className={classes[message.type]}
-					>
-						{message.text}
-					</li>
+						message={message}
+						prevMsgSameUser={(() => {
+							if (i === 0 || message.type === 'joined-left') {
+								return false;
+							}
+							const prevMsg = messages[i - 1];
+							return prevMsg.type === 'user'
+								&& prevMsg.socketId === message.socketId;
+						})()}
+					/>
 				))}
 			</ul>
 
@@ -108,6 +127,7 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 					autoComplete="off"
 					autoCapitalize="on"
 					placeholder="Send a message"
+					enterKeyHint="send"
 				>
 					<Button
 						type="submit"

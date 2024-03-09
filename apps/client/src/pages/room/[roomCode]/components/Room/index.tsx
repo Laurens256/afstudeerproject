@@ -4,11 +4,11 @@ import { SocketRoomEvents } from '@shared/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Button } from '@/components';
-import type { Player } from '@shared/types';
+import type { Player, RoomState } from '@shared/types';
 import clsx from 'clsx';
-import { ChatSection } from './components';
-import classes from './Room.module.css';
 import { IconMessage } from '@tabler/icons-react';
+import { ChatSection, RoomSettings } from './components';
+import classes from './Room.module.css';
 
 type RoomProps = {
 	roomCode: string;
@@ -17,45 +17,60 @@ type RoomProps = {
 
 const Room = ({ roomCode, username }: RoomProps) => {
 	const router = useRouter();
-	const [players, setPlayers] = useState<Player[]>([]);
-	const ourPlayer = players.find((player) => player.socketId === socket.id);
+	const [roomState, setRoomState] = useState<RoomState>({
+		roomName: null,
+		isPrivate: false,
+		isStarted: false,
+		players: [],
+	});
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	const chatWrapperRef = useRef<HTMLDivElement>(null);
 	const chatToggleButtonRef = useRef<HTMLButtonElement>(null);
+
+	const ourPlayer = roomState.players.find((player) => player.username === username);
 
 	useEffect(() => {
 		if (!roomCode || !username) {
 			return;
 		}
 
-		const handleSetAllPlayers = (allPlayers: Player[]) => {
-			setPlayers(allPlayers);
+		const handleSetRoomState = (state: RoomState) => {
+			setRoomState(state);
 		};
 		const handlePlayerJoined = (player: Player) => {
-			setPlayers((prevPlayers) => [...prevPlayers, player]);
+			setRoomState((prevRoomState) => ({
+				...prevRoomState,
+				players: [...prevRoomState.players, player],
+			}));
 		};
 		const handlePlayerLeft = (socketId: string) => {
-			setPlayers((prevPlayers) => prevPlayers.filter(
-				(player) => player.socketId !== socketId,
-			));
+			setRoomState((prevRoomState) => ({
+				...prevRoomState,
+				players: prevRoomState.players.filter(
+					(player) => player.socketId !== socketId,
+				),
+			}));
 		};
 		const handleAdminChange = (newAdminId: string) => {
-			setPlayers((prevPlayers) => prevPlayers.map((player) => ({
-				...player,
-				role: player.socketId === newAdminId ? 'admin' : 'player',
-			})));
+			setRoomState((prevRoomState) => ({
+				...prevRoomState,
+				players: prevRoomState.players.map((player) => ({
+					...player,
+					role: player.socketId === newAdminId ? 'admin' : 'player',
+				})),
+			}));
 		};
 
-		// TODO: change GET_ALL_PLAYERS into more generic for initial state
-		socket.on(SocketRoomEvents.GET_ALL_PLAYERS, handleSetAllPlayers);
+		socket.on(SocketRoomEvents.GET_ROOM_STATE, handleSetRoomState);
 		socket.on(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
 		socket.on(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
 		socket.on(SocketRoomEvents.ADMIN_CHANGE, handleAdminChange);
 
-		socket.emit(SocketRoomEvents.GET_ALL_PLAYERS, roomCode);
+		socket.emit(SocketRoomEvents.GET_ROOM_STATE, roomCode);
 
 		return () => {
-			socket.off(SocketRoomEvents.GET_ALL_PLAYERS, handleSetAllPlayers);
+			socket.off(SocketRoomEvents.GET_ROOM_STATE, handleSetRoomState);
 			socket.off(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
 			socket.off(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
 			socket.off(SocketRoomEvents.ADMIN_CHANGE, handleAdminChange);
@@ -95,6 +110,20 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		chatToggleButton.ariaLabel = isOpen ? 'Open chat' : 'Close chat';
 	};
 
+	useEffect(() => {
+		const closeChatOnEscape = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && containerRef.current?.classList.contains(classes.chatOpen)) {
+				handleChatToggle();
+			}
+		};
+
+		document.addEventListener('keydown', closeChatOnEscape);
+
+		return () => {
+			document.removeEventListener('keydown', closeChatOnEscape);
+		};
+	}, []);
+
 	if (!ourPlayer) { // should not happen
 		// TODO: 404 / loader (?)
 		return null;
@@ -107,7 +136,10 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			</Head>
 			<div className={clsx(classes.container, classes.chatOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
-					<span>game stuff here</span>
+					<RoomSettings
+						roomCode={roomCode}
+						roomState={roomState}
+					/>
 				</div>
 
 				<div className={classes.chatWrapper}>
@@ -122,7 +154,11 @@ const Room = ({ roomCode, username }: RoomProps) => {
 						<IconMessage size={24} />
 					</Button>
 					<div ref={chatWrapperRef} id="chat-wrapper">
-						<ChatSection roomCode={roomCode} players={players} ourPlayer={ourPlayer} />
+						<ChatSection
+							roomCode={roomCode}
+							players={roomState.players}
+							ourPlayer={ourPlayer}
+						/>
 					</div>
 				</div>
 			</div>
