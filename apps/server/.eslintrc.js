@@ -16,7 +16,7 @@ module.exports = {
 
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',
-		'@typescript-eslint/consistent-type-exports': 'error',
+		'@typescript-eslint/consistent-type-exports': 'error'
 	},
 	settings: {
 		'import/parsers': {

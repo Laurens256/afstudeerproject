@@ -4,3 +4,12 @@
 	align-items: center;
 	padding-inline: var(--base-padding);
 }
+
+.button {
+	/* padding: 0.5rem 1rem; */
+	border-radius: 50%;
+	color: var(--primary-color);
+	border: currentColor 2px solid;
+	background-color: var(--primary-panel-bg);
+	transition: background-color 0.3s;
+}

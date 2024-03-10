@@ -70,6 +70,20 @@ const roomHandlers = (io: Server, socket: Socket) => {
 		socket.emit(SocketRoomEvents.GET_ROOM_STATE, roomState);
 	});
 
+	socket.on(SocketRoomEvents.SET_ROOM_STATE, (
+		roomCode: string,
+		roomState: Partial<RoomState>,
+	) => {
+		const { players: p, ...rest } = roomState;
+		const newState = util.setRoomState(roomCode, rest);
+
+		if (newState) {
+			const { players: p2, ...newStateRest } = newState;
+			const socketsInRoom = util.getSocketsInRoom(roomCode);
+			io.to(socketsInRoom).emit(SocketRoomEvents.GET_ROOM_STATE, newStateRest);
+		}
+	});
+
 	socket.on(SocketRoomEvents.CHAT_MESSAGE, (roomCode: string, text: string) => {
 		const socketsInRoom = util.getSocketsInRoom(roomCode);
 		const player = util.getPlayerBySocketId(roomCode, socket.id);

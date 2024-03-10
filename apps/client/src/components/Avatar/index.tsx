@@ -1,5 +1,6 @@
 import { createAvatar } from '@dicebear/core';
 import { botttsNeutral } from '@dicebear/collection';
+import { memo } from 'react';
 
 interface AvatarProps {
 	name: string;
@@ -20,4 +21,4 @@ const Avatar = ({ name, rounded = true, sizeRem = 3 }: AvatarProps) => {
 	return <img src={avatarDataUri} alt="" />;
 };
 
-export default Avatar;
+export default memo(Avatar);

@@ -44,6 +44,20 @@ const getRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
 	return rooms[roomCode];
 };
+const setRoomState = (inputCode: string, roomState: Partial<Omit<RoomState, 'players'>>) => {
+	const roomCode = inputCode.toUpperCase();
+	const room = rooms[roomCode];
+	if (!room) {
+		return null;
+	}
+
+	const mergedRoomState = {
+		...room,
+		...roomState,
+	};
+	rooms[roomCode] = mergedRoomState;
+	return mergedRoomState;
+};
 
 const getSocketsInRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
@@ -111,7 +125,6 @@ const handleRoomDelete = (inputCode: string) => {
 	}
 };
 
-// TODO: setPreviousMessageSocketId(code, null) once admin change event is added to chat
 const setRoomAdmin = (roomCode: string, socketId: string | null) => {
 	const sockets = getSocketsInRoom(roomCode);
 	if (sockets.length === 0) {
@@ -165,6 +178,7 @@ export default {
 	joinRoom,
 	leaveRoom,
 	getRoom,
+	setRoomState,
 	getPlayerBySocketId,
 	getSocketsInRoom,
 	roomExists,

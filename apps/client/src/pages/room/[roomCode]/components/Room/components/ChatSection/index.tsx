@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import socket from '@/socket';
-import { Input, Button } from '@/components';
+import { Input, Button, AudioContext } from '@/components';
 import type { Player, Message } from '@shared/types';
 import { SocketRoomEvents } from '@shared/types';
 import { IconSend } from '@tabler/icons-react';
@@ -29,6 +29,8 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 		createJoinedLeftMessage(ourPlayer.username, 'joined'),
 	]);
 
+	const audioContext = useContext(AudioContext);
+
 	useEffect(() => {
 		const handlePlayerJoined = (player: Player) => {
 			setMessages((prevMessages) => [...prevMessages,
@@ -51,7 +53,17 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 	}, [players]);
 
 	useEffect(() => {
+		const handleAudioNotification = (message: Message) => {
+			if (
+				message.type === 'user'
+			&& message.socketId !== ourPlayer.socketId
+			) {
+				audioContext.gameChat('messageReceived');
+			}
+		};
+
 		const handleReceiveMessage = (message: Message) => {
+			handleAudioNotification(message);
 			setMessages((prevMessages) => [...prevMessages, message]);
 		};
 		socket.on(SocketRoomEvents.CHAT_MESSAGE, handleReceiveMessage);
@@ -59,7 +71,7 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 		return () => {
 			socket.off(SocketRoomEvents.CHAT_MESSAGE, handleReceiveMessage);
 		};
-	}, []);
+	}, [audioContext, ourPlayer.socketId]);
 
 	const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

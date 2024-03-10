@@ -36,7 +36,10 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		}
 
 		const handleSetRoomState = (state: RoomState) => {
-			setRoomState(state);
+			setRoomState((prev) => ({
+				...prev,
+				...state,
+			}));
 		};
 		const handlePlayerJoined = (player: Player) => {
 			setRoomState((prevRoomState) => ({
