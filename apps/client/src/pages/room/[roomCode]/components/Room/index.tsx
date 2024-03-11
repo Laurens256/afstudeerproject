@@ -7,7 +7,7 @@ import { Button } from '@/components';
 import type { Player, RoomState } from '@shared/types';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
-import { ChatSection, RoomSettings } from './components';
+import { Sidebar, RoomSettings } from './components';
 import classes from './Room.module.css';
 
 type RoomProps = {
@@ -157,7 +157,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 						<IconMessage size={24} />
 					</Button>
 					<div ref={chatWrapperRef} id="chat-wrapper">
-						<ChatSection
+						<Sidebar
 							roomCode={roomCode}
 							players={roomState.players}
 							ourPlayer={ourPlayer}

@@ -50,6 +50,11 @@
 
 	&:where(.icon) {
 		padding: 0;
+
+		&:not(:disabled):where(:hover, :focus-visible) {
+			background-color: var(--primary-color);
+			color: var(--primary-text-white);
+		}
 	}
 }
 

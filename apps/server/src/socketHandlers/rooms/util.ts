@@ -79,9 +79,6 @@ const getPlayerBySocketId = (inputCode: string, socketId: string) => {
 	return room.players[socketId];
 };
 
-/**
- * @returns null if successful, error message if not
- * */
 const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const username = inputname.trim();
@@ -93,8 +90,8 @@ const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	if (username.length < 2) {
 		error = 'Username must be at least 2 characters';
 	}
-	if (username.length > 20) {
-		error = 'Username can\'t be longer than 20 characters';
+	if (username.length > 30) {
+		error = 'Username can\'t be longer than 30 characters';
 	}
 
 	const player: ServerPlayer = {

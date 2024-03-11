@@ -1,0 +1,21 @@
+.messageForm {
+	--input-height: 3rem;
+	position: relative;
+	height: var(--message-form-height);
+	padding: var(--base-padding);
+}
+.messageInput {
+	height: var(--input-height);
+	padding-right: calc(var(--input-height) + 0.5rem);
+	font-size: 1.2rem;
+}
+.sendMessageButton {
+	--inset: 0.2rem;
+	width: var(--button-width);
+	position: absolute;
+	inset: var(--inset);
+	left: auto;
+	width: calc(var(--input-height) - (2 * var(--inset)));
+	background-color: var(--primary-color);
+	color: var(--primary-text-white);
+}

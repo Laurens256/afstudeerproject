@@ -16,6 +16,7 @@ export type UserMessage = GenericMessage & {
 	type: 'user';
 	socketId: string;
 	username: string;
+	tempId?: string;
 };
 export type JoinedLeftMessage = GenericMessage & {
 	type: 'joined-left';

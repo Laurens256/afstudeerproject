@@ -2,14 +2,24 @@
 	height: var(--header-height);
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding-inline: var(--base-padding);
 }
 
+.buttonGroup {
+	display: flex;
+	gap: 0.3rem;
+}
 .button {
-	/* padding: 0.5rem 1rem; */
+	padding: 0.25rem;
 	border-radius: 50%;
 	color: var(--primary-color);
-	border: currentColor 2px solid;
+	border: var(--primary-color) 2px solid;
 	background-color: var(--primary-panel-bg);
-	transition: background-color 0.3s;
+
+
+	& svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
 }

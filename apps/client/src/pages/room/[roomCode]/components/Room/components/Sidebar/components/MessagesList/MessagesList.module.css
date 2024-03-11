@@ -1,0 +1,5 @@
+.messagesList {
+	height: var(--messages-list-height);
+	overflow-y: auto;
+	padding-inline: 0.5rem;
+}

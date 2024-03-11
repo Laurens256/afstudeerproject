@@ -1,7 +1,7 @@
-import ChatSection from './ChatSection';
+import Sidebar from './Sidebar';
 import RoomSettings from './RoomSettings';
 
 export {
-	ChatSection,
+	Sidebar,
 	RoomSettings,
 };
