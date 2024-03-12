@@ -15,7 +15,7 @@ const Home = ({
 }) => (
 	<>
 		<Head>
-			<title>Create Next App</title>
+			<title>Play games</title>
 			<link rel="icon" href="/favicon.ico" />
 		</Head>
 		<QueryClientProvider client={queryClient}>

@@ -1,6 +1,7 @@
 import { type RoutePath, RoutesConfig } from '@/routes';
 import { useRouter } from 'next/router';
 import socket from '@/socket';
+import { AudioProvider } from '../AudioProvider';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { pathname } = useRouter();
@@ -15,7 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 		socket.disconnect();
 	}
 
-	return <>{children}</>;
+	return <AudioProvider>{children}</AudioProvider>;
 };
 
 export default Layout;

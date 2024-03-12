@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-	res.send('Hello World');
+	res.json('api is running :3');
 });
 
 const httpServer = http.createServer(app);

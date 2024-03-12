@@ -1,12 +1,9 @@
-type Player = {
-	username: string;
-	role: 'admin' | 'player';
-};
+import { type Player, type RoomState } from '@shared/types';
+
+type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
-	[roomCode: string]: {
-		players: { [socketId: string]: Player };
-		// TODO: Add game type
-		currentGame: string;
+	[roomCode: string]: & Omit<RoomState, 'players'> & {
+		players: Record<string, ServerPlayer>;
 	};
 };
 const rooms: Rooms = {};
@@ -35,26 +32,33 @@ const createRoom = (code?: string): string => {
 	}
 
 	rooms[roomCode] = {
+		roomName: null,
 		players: {},
-		currentGame: '',
+		isPrivate: false,
+		isStarted: false,
 	};
 	return roomCode;
 };
 
-const getPlayersInRoom = (inputCode: string) => {
+const getRoom = (inputCode: string) => {
+	const roomCode = inputCode.toUpperCase();
+	return rooms[roomCode];
+};
+const setRoomState = (inputCode: string, roomState: Partial<Omit<RoomState, 'players'>>) => {
 	const roomCode = inputCode.toUpperCase();
 	const room = rooms[roomCode];
 	if (!room) {
-		return [];
+		return null;
 	}
 
-	const playersArray = Object.keys(room.players).map((socketId) => ({
-		socketId,
-		...room.players[socketId],
-	}));
-
-	return playersArray;
+	const mergedRoomState = {
+		...room,
+		...roomState,
+	};
+	rooms[roomCode] = mergedRoomState;
+	return mergedRoomState;
 };
+
 const getSocketsInRoom = (inputCode: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const room = rooms[roomCode];
@@ -65,9 +69,16 @@ const getSocketsInRoom = (inputCode: string) => {
 	return Object.keys(room.players);
 };
 
-/**
- * @returns null if successful, error message if not
- * */
+const getPlayerBySocketId = (inputCode: string, socketId: string) => {
+	const roomCode = inputCode.toUpperCase();
+	const room = rooms[roomCode];
+	if (!room) {
+		return null;
+	}
+
+	return room.players[socketId];
+};
+
 const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const username = inputname.trim();
@@ -79,17 +90,21 @@ const joinRoom = (inputCode: string, socketId: string, inputname: string) => {
 	if (username.length < 2) {
 		error = 'Username must be at least 2 characters';
 	}
-	if (username.length > 20) {
-		error = 'Username can\'t be longer than 20 characters';
+	if (username.length > 30) {
+		error = 'Username can\'t be longer than 30 characters';
 	}
 
-	const player: Player = {
+	const player: ServerPlayer = {
 		username,
 		role: getSocketsInRoom(roomCode).length === 0 ? 'admin' : 'player',
 	};
 
 	if (!error) {
 		rooms[roomCode].players[socketId] = player;
+
+		if (rooms[roomCode].roomName === null) {
+			rooms[roomCode].roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
+		}
 	}
 
 	return { error, player };
@@ -108,8 +123,8 @@ const handleRoomDelete = (inputCode: string) => {
 };
 
 const setRoomAdmin = (roomCode: string, socketId: string | null) => {
-	const players = getPlayersInRoom(roomCode);
-	if (players.length === 0) {
+	const sockets = getSocketsInRoom(roomCode);
+	if (sockets.length === 0) {
 		return;
 	}
 
@@ -159,7 +174,9 @@ export default {
 	createRoom,
 	joinRoom,
 	leaveRoom,
-	getPlayersInRoom,
+	getRoom,
+	setRoomState,
+	getPlayerBySocketId,
 	getSocketsInRoom,
 	roomExists,
 	getAllRoomsClientIsIn,

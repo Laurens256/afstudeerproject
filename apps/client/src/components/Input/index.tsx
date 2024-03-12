@@ -39,9 +39,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
 			{label}
 			{error
 					&& castArray(error).map((err) => (
-						<span key={err} className={classes.errorMsg}>
+						<p key={err} className={classes.errorMsg}>
 							{err}
-						</span>
+						</p>
 					))}
 		</label>
 

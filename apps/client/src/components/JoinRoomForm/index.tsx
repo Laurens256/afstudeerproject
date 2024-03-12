@@ -54,10 +54,11 @@ const JoinRoomForm = () => {
 				error={error}
 				onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
 				labelClassName={classes.label}
-				maxLength={6}
-				minLength={6}
 				id="joinRoomCode"
 				required
+				autoComplete="off"
+				enterKeyHint="go"
+				placeholder="Room code"
 			>
 				<Button className={classes.joinButton} aria-label="Join room" type="submit">
 					<IconSearch />

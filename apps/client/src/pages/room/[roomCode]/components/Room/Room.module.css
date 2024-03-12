@@ -1,0 +1,59 @@
+.container {
+	--chat-window-close-transition: cubic-bezier(.6, -0.34, .72, 1.03) 0.4s;
+	--chat-window-open-transition: ease-out 0.3s;
+	--chat-window-width: min(50%, 25rem);
+	height: 100vh;
+	height: 100dvh;
+	display: flex;
+
+	&.chatOpen {
+		& .gameWrapper {
+			width: calc(100% - var(--chat-window-width));
+			transition: width var(--chat-window-open-transition);
+		}
+		& .chatWrapper {
+			transform: translateX(0);
+			transition: transform var(--chat-window-open-transition);
+		}
+
+		/* TODO: chat toggle button should be somewhere else */
+		@media (max-width: 900px) {
+			& .gameWrapper, & .chatWrapper {
+				width: 100%;
+			}
+			/* & .chatToggleButton {
+				position: static;
+				transform: translateX(0);
+			} */
+		}
+	}
+}
+
+.gameWrapper {
+	width: 100%;
+	transition: width var(--chat-window-close-transition);
+}
+
+.chatWrapper {
+	position: fixed;
+	right: 0;
+	width: var(--chat-window-width);
+	transform: translateX(100%);
+	transition: transform var(--chat-window-close-transition);
+	height: 100dvh;
+	
+	& > div {
+		height: 100%;
+	}
+}
+.chatToggleButton {
+	--curved-border-radius: 0.5rem;
+	position: absolute;
+	top: 2rem;
+	transform: translateX(-100%);
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--curved-border-radius) 0 0 var(--curved-border-radius);
+	padding: 0.5rem;
+	height: 3.5rem;
+	width: 3.5rem;
+}

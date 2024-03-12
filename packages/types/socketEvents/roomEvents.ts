@@ -5,6 +5,8 @@ export const SocketRoomEvents = {
 	LEAVE: 'ROOM:leave',
 	PLAYER_JOINED: 'ROOM:playerJoined',
 	PLAYER_LEFT: 'ROOM:playerLeft',
-	GET_ALL_PLAYERS: 'ROOM:getAllPlayers',
+	GET_ROOM_STATE: 'ROOM:getRoomState',
+	SET_ROOM_STATE: 'ROOM:setRoomState',
 	ADMIN_CHANGE: 'ROOM:adminChange',
+	CHAT_MESSAGE: 'ROOM:chatMessage',
 } as const;
