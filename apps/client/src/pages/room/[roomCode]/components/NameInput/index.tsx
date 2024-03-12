@@ -1,7 +1,6 @@
 import { Input, Button } from '@/components';
 import { useState, useEffect, useRef } from 'react';
 import socket from '@/socket';
-import { SocketRoomEvents } from '@shared/types';
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
 import { IconRefresh } from '@tabler/icons-react';
 import Head from 'next/head';
@@ -35,7 +34,7 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 				break;
 			default:
 				setInputError(null);
-				socket.emit(SocketRoomEvents.JOIN, roomCode, username);
+				socket.emit('ROOM_JOIN', roomCode, username);
 				localStorage.setItem('username', username);
 				setIsLoading(true);
 		}
@@ -59,10 +58,10 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 			}
 		};
 
-		socket.on(SocketRoomEvents.JOIN, handleRoomJoin);
+		socket.on('ROOM_JOIN', handleRoomJoin);
 
 		return () => {
-			socket.off(SocketRoomEvents.JOIN, handleRoomJoin);
+			socket.off('ROOM_JOIN', handleRoomJoin);
 		};
 	}, [setUsername]);
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { Games } from '../gameTypes';
 
 export type Player = {
 	username: string;
@@ -9,7 +10,6 @@ export type Player = {
 type GenericMessage = {
 	messageId: string;
 	date: Date;
-	text: ReactNode;
 };
 export type Message = UserMessage | JoinedLeftMessage;
 export type UserMessage = GenericMessage & {
@@ -17,10 +17,12 @@ export type UserMessage = GenericMessage & {
 	socketId: string;
 	username: string;
 	tempId?: string;
+	text: string;
 };
 export type JoinedLeftMessage = GenericMessage & {
 	type: 'joined-left';
 	action: 'joined' | 'left';
+	text: ReactNode;
 };
 
 export type RoomState = {
@@ -28,4 +30,5 @@ export type RoomState = {
 	isPrivate: boolean;
 	isStarted: boolean;
 	players: Player[];
+	selectedGame: Games | null;
 };

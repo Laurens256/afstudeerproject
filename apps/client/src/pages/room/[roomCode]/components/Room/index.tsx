@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import socket from '@/socket';
-import { SocketRoomEvents } from '@shared/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Button } from '@/components';
 import type { Player, RoomState } from '@shared/types';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
-import { Sidebar, RoomSettings } from './components';
+import { Sidebar, RoomSettings, GameContainer } from './components';
 import classes from './Room.module.css';
 
 type RoomProps = {
@@ -22,6 +21,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		isPrivate: false,
 		isStarted: false,
 		players: [],
+		selectedGame: null,
 	});
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -35,12 +35,6 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			return;
 		}
 
-		const handleSetRoomState = (state: RoomState) => {
-			setRoomState((prev) => ({
-				...prev,
-				...state,
-			}));
-		};
 		const handlePlayerJoined = (player: Player) => {
 			setRoomState((prevRoomState) => ({
 				...prevRoomState,
@@ -65,18 +59,25 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			}));
 		};
 
-		socket.on(SocketRoomEvents.GET_ROOM_STATE, handleSetRoomState);
-		socket.on(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
-		socket.on(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
-		socket.on(SocketRoomEvents.ADMIN_CHANGE, handleAdminChange);
+		const handleSetRoomState = (state: Partial<RoomState>) => {
+			setRoomState((prev) => ({
+				...prev,
+				...state,
+			}));
+		};
 
-		socket.emit(SocketRoomEvents.GET_ROOM_STATE, roomCode);
+		socket.on('ROOM_SET_STATE', handleSetRoomState);
+		socket.on('ROOM_PLAYER_JOINED', handlePlayerJoined);
+		socket.on('ROOM_PLAYER_LEFT', handlePlayerLeft);
+		socket.on('ROOM_ADMIN_CHANGE', handleAdminChange);
+
+		socket.emit('ROOM_GET_STATE', roomCode);
 
 		return () => {
-			socket.off(SocketRoomEvents.GET_ROOM_STATE, handleSetRoomState);
-			socket.off(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
-			socket.off(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
-			socket.off(SocketRoomEvents.ADMIN_CHANGE, handleAdminChange);
+			socket.off('ROOM_SET_STATE', handleSetRoomState);
+			socket.off('ROOM_PLAYER_JOINED', handlePlayerJoined);
+			socket.off('ROOM_PLAYER_LEFT', handlePlayerLeft);
+			socket.off('ROOM_ADMIN_CHANGE', handleAdminChange);
 		};
 	}, [roomCode, username]);
 
@@ -85,7 +86,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			return;
 		}
 		const handleRoomLeave = () => {
-			socket.emit(SocketRoomEvents.LEAVE, roomCode);
+			socket.emit('ROOM_LEAVE', roomCode);
 		};
 
 		router.events.on('routeChangeStart', handleRoomLeave);
@@ -139,10 +140,14 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			</Head>
 			<div className={clsx(classes.container, classes.chatOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
-					<RoomSettings
-						roomCode={roomCode}
-						roomState={roomState}
-					/>
+					{roomState.isStarted && roomState.selectedGame ? (
+						<GameContainer game={roomState.selectedGame} />
+					) : (
+						<RoomSettings
+							roomCode={roomCode}
+							roomState={roomState}
+						/>
+					)}
 				</div>
 
 				<div className={classes.chatWrapper}>

@@ -1,4 +1,4 @@
-import { SocketRoomEvents, type RoomState } from '@shared/types';
+import { type RoomState } from '@shared/types';
 import socket from '@/socket';
 import { Input } from '@/components';
 
@@ -10,8 +10,10 @@ type RoomSettingsProps = {
 const RoomSettings = ({ roomCode, roomState }: RoomSettingsProps) => {
 	const onRoomNameChange = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const roomName = e.currentTarget.roomName.value;
-		socket.emit(SocketRoomEvents.SET_ROOM_STATE, roomCode, { roomName });
+		const roomName = (e.currentTarget.roomName.value).trim();
+		if (roomName && roomName !== roomState.roomName) {
+			socket.emit('ROOM_SET_STATE', roomCode, { roomName });
+		}
 	};
 
 	return (

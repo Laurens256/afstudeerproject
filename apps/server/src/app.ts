@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { roomHandlers } from './socketHandlers';
 import 'dotenv/config';
 import { SERVER_PORT, CLIENT_URL } from './app.constants';
+import type { ServerToClientEvents, ClientToServerEvents } from '@shared/types';
 
 const allowedOrigins = [CLIENT_URL].filter(Boolean) as string[];
 
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
 	cors: {
 		origin: allowedOrigins,
 	},
