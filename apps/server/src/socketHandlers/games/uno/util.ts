@@ -1,4 +1,4 @@
-import type { UnoCard, UnoColor, UnoNumber, UnoSpecialColorCards, UnoWildCards, UnoGameState } from '@shared/types';
+import type { UnoCard, UnoColor, UnoNumber, UnoSpecialColorCards, UnoWildCards, UnoGameState, Player } from '@shared/types';
 import { arrayUtil } from '@/util';
 
 const games: { [roomCode: string]: UnoGameState } = {};
@@ -40,7 +40,7 @@ const drawCards = (roomCode: string, numCards: number): UnoCard[] => {
 	return cards;
 };
 
-const initializeGame = (roomCode: string, players: string[]) => {
+const initializeGame = (roomCode: string, players: Player[]) => {
 	const deck = generateDeck();
 	const startingCard = deck.find((card) => card.type === 'number-card') as UnoCard;
 	const index = deck.indexOf(startingCard);
@@ -49,13 +49,13 @@ const initializeGame = (roomCode: string, players: string[]) => {
 	const game: UnoGameState = {
 		drawPile: deck,
 		droppedPile: [],
-		players: players.reduce((acc, playerId) => {
+		players: players.map((p) => p.socketId).reduce((acc, playerId) => {
 			acc[playerId] = {
 				cards: deck.splice(0, 7),
 			};
 			return acc;
 		}, {} as UnoGameState['players']),
-		currentPlayerId: players[0],
+		currentPlayerId: players[0].socketId,
 		currentCard: startingCard,
 	};
 
@@ -63,7 +63,10 @@ const initializeGame = (roomCode: string, players: string[]) => {
 	return game;
 };
 
+const getGame = (roomCode: string) => games[roomCode];
+
 export default {
 	drawCards,
 	initializeGame,
+	getGame,
 };

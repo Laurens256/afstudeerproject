@@ -23,9 +23,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		players: [],
 		selectedGame: null,
 	});
-	const socketsInGame = roomState.players.filter(
-		(player) => player.inGame,
-	).map((player) => player.socketId);
+	const playersInGame = roomState.players.filter((player) => player.inGame);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const sidebarWrapperRef = useRef<HTMLDivElement>(null);
@@ -146,11 +144,11 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			<div className={clsx(classes.container, classes.sidebarOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
 					{roomState.isStarted && roomState.selectedGame
-					&& socketsInGame.includes(ourPlayer.socketId)
+					&& playersInGame.find((player) => player.socketId === ourPlayer.socketId)
 						? (
 							<GameContainer
 								game={roomState.selectedGame}
-								socketsInGame={socketsInGame}
+								playersInGame={playersInGame}
 							/>
 						) : (
 							<RoomSettings

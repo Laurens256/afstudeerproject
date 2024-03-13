@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
-import type { UnoGameState } from '@shared/types';
+import type { Player, UnoGameState } from '@shared/types';
 
-const Uno = () => {
+type UnoProps = {
+	playersInGame: Player[]
+};
+const Uno = ({ playersInGame }: UnoProps) => {
 	const [gameState, setGameState] = useState<UnoGameState | null>(null);
 
 	useEffect(() => {
@@ -14,11 +17,11 @@ const Uno = () => {
 		};
 
 		socket.on('UNO_GET_GAME_STATE', handleGetGameState);
-		socket.emit('UNO_GET_GAME_STATE');
+		socket.emit('UNO_INITIALIZE_GAME', playersInGame);
 		return () => {
 			socket.off('UNO_GET_GAME_STATE', handleGetGameState);
 		};
-	}, [gameState]);
+	}, [gameState, playersInGame]);
 
 	return (
 		<div>
