@@ -5,6 +5,7 @@ export type SocketMetaData = {
 	roomCode?: string;
 	role?: Player['role'];
 	username?: Player['username'];
+	inGame?: boolean;
 };
 
 export type ExtendedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketMetaData>;

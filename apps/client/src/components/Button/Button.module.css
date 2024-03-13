@@ -56,6 +56,13 @@
 			color: var(--primary-text-white);
 		}
 	}
+
+	&:where(.unstyled) {
+		background-color: transparent;
+		border: none;
+		color: inherit;
+		padding: 0;
+	}
 }
 
 .loader {

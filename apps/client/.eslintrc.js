@@ -8,7 +8,10 @@ module.exports = {
 		'consistent-return': 'off',
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
-		'max-len': ['error', { code: 100 }],
+		'max-len': ['error', { 
+			code: 100,
+			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$'
+		 }],
 
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',

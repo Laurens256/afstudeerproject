@@ -1,6 +1,6 @@
 import { type Player, type RoomState } from '@shared/types';
 import socket from '@/socket';
-import { Input } from '@/components';
+import { Button } from '@/components';
 import classes from './RoomSettings.module.css';
 
 type RoomSettingsProps = {
@@ -10,7 +10,7 @@ type RoomSettingsProps = {
 };
 
 const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => {
-	const onRoomNameChange = (e: React.FormEvent<HTMLFormElement>) => {
+	const changeRoomName = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const roomName = (e.currentTarget.roomName.value).trim();
 		if (roomName && roomName !== roomState.roomName) {
@@ -18,34 +18,27 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 		}
 	};
 
+	const handleStartGame = () => {
+		socket.emit('ROOM_START_GAME');
+	};
+
 	return (
 		<div className={classes.container}>
-			<main className={classes.inner}>
+			<header className={classes.header}>
+				<h1
+					className={classes.roomName}
+				>
+					{roomState.roomName}
+				</h1>
+				<h2 className={classes.roomCodeContainer}>
+					{`Room Code: ${roomCode}`}
+				</h2>
+			</header>
 
-				<h1>{`Code: ${roomCode}`}</h1>
+			{ourPlayer.role === 'admin' && (
+				<Button onClick={handleStartGame}>Start game</Button>
+			)}
 
-				<h2>Players:</h2>
-				<ul>
-					{roomState.players.map((player) => (
-						<li key={player.socketId}>
-							{player.username}
-							{' '}
-							{player.role === 'admin' ? '(admin)' : ''}
-						</li>
-					))}
-				</ul>
-
-				<form onSubmit={onRoomNameChange}>
-					<Input
-						name="roomName"
-						id="roomName"
-						defaultValue={roomState.roomName ?? ''}
-						placeholder="Room name"
-						label="Room name"
-						disabled={ourPlayer.role !== 'admin'}
-					/>
-				</form>
-			</main>
 		</div>
 	);
 };

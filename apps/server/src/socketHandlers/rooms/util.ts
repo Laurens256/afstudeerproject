@@ -2,7 +2,7 @@ import { type Player, type RoomState } from '@shared/types';
 
 export type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
-	[roomCode: string]: & Omit<RoomState, 'players'> & {
+	[roomCode: string]: & Omit<RoomState, 'players' | 'socketsInGame'> & {
 	};
 };
 const rooms: Rooms = {};

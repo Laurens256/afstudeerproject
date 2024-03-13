@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import type { Games } from '../gameTypes';
+import type { GamesType } from '../gameTypes';
 
 export type Player = {
 	username: string;
 	socketId: string;
 	role: 'admin' | 'player';
+	inGame: boolean | undefined;
 };
 
 type GenericMessage = {
@@ -31,5 +32,5 @@ export type RoomState = {
 	isPrivate: boolean;
 	isStarted: boolean;
 	players: Player[];
-	selectedGame: Games | null;
+	selectedGame: GamesType | null;
 };

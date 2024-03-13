@@ -1,4 +1,13 @@
 .container {
-	background-color: red;
+	/* background-color: red; */
 	height: 100%;
+
+	/* background color panel */
+	&::before {
+		content: '';
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		background-color: red;
+	}
 }

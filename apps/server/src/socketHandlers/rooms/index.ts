@@ -12,24 +12,24 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 	const getRoomPlayers = (roomCode: string) => {
 		const socketsInRoom = getRoomSockets(roomCode);
 		const dataObjects: (Player | null)[] = socketsInRoom.map((id) => {
-			const { username, role } = io.sockets.sockets.get(id)?.data || {};
+			const { username, role, inGame } = io.sockets.sockets.get(id)?.data || {};
 
 			if (username && role) {
 				return {
 					socketId: id,
 					username,
 					role,
+					inGame,
 				};
 			}
 			return null;
 		});
-		return dataObjects.filter((p) => p !== null) as Player[];
+		return dataObjects.filter(
+			(p) => p !== null,
+		) as Player[];
 	};
 
-	const setRoomAdmin = (
-		roomCode: string,
-		socketId: string | null,
-	): string | null => {
+	const setRoomAdmin = (roomCode: string, socketId: string | null): string | null => {
 		const sockets = getRoomSockets(roomCode);
 		let newAdminId: string | null = null;
 
@@ -73,13 +73,14 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 			const role = getRoomSockets(roomCode).length === 0
 				? 'admin' : 'player';
 
-			socket.data = { roomCode, role, username };
+			socket.data = { roomCode, role, username, inGame: false };
 			socket.join(roomCode);
 
 			io.to(roomCode).emit('ROOM_PLAYER_JOINED', {
 				socketId: socket.id,
 				username,
 				role,
+				inGame: false,
 			});
 		}
 	});
@@ -106,6 +107,7 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const newState = util.setRoomState(roomCode, roomState);
 
 		if (newState) {
+			// TODO: check if roomState emit would be okay
 			io.to(roomCode).emit('ROOM_SET_STATE', newState);
 		}
 	});
@@ -140,6 +142,32 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 			}
 		}
 	};
+
+	socket.on('ROOM_START_GAME', () => {
+		const { roomCode } = socket.data;
+		if (!roomCode) return;
+		const sockets = getRoomSockets(roomCode).slice(0, 4);
+
+		sockets.forEach((id) => {
+			const socketObj = io.sockets.sockets.get(id);
+			if (socketObj) {
+				socketObj.data.inGame = true;
+			}
+		});
+
+		const playerObjects = getRoomPlayers(roomCode);
+
+		util.setRoomState(roomCode, {
+			isStarted: true,
+		});
+
+		// TODO selected game
+		io.to(roomCode).emit('ROOM_SET_STATE', {
+			isStarted: true,
+			selectedGame: 'uno',
+			players: playerObjects,
+		});
+	});
 
 	socket.on('ROOM_LEAVE', () => {
 		const { roomCode, role } = socket.data;

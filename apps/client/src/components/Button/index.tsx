@@ -3,7 +3,7 @@ import classes from './Button.module.css';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children?: React.ReactNode;
-	variant?: 'filled' | 'outline' | 'light' | 'icon';
+	variant?: 'filled' | 'outline' | 'light' | 'icon' | 'unstyled';
 	loading?: boolean;
 	innerRef?: React.Ref<HTMLButtonElement>;
 	inert?: string;

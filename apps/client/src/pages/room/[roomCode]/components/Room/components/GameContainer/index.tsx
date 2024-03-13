@@ -1,11 +1,12 @@
 import { Uno } from '@/components/games';
-import type { Games } from '@shared/types/gameTypes';
+import type { GamesType } from '@shared/types';
 import classes from './GameContainer.module.css';
 
 type GameContainerProps = {
-	game: Games
+	game: GamesType;
+	socketsInGame: string[];
 };
-const GameContainer = ({ game }: GameContainerProps) => (
+const GameContainer = ({ game, socketsInGame }: GameContainerProps) => (
 	<main className={classes.container}>
 		{game === 'uno' && <Uno />}
 	</main>

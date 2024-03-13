@@ -7,7 +7,7 @@ const nextConfig = {
 	typescript: {
 		ignoreBuildErrors: true
 	},
-	pageExtensions: ['page.tsx']
+	pageExtensions: ['page.tsx'],
 };
 
 module.exports = nextConfig;
