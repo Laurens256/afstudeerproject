@@ -1,0 +1,13 @@
+.container {
+	height: min(100%, 45rem);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inner {
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+	padding: 2rem;
+	width: min(95%, 30rem);
+}

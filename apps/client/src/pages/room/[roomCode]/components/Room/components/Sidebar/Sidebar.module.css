@@ -4,11 +4,9 @@
 	--messages-list-height: calc(100% - var(--header-height) - var(--message-form-height));
 	--base-padding: 1rem;
 
-	/* extra width so primary-panel-bg is visible a bit to the the right.
-	Needed for when cubic-bezier transition moves panel to left a bit on close */
-	width: calc(100% + 2rem);
-	padding-right: 2rem;
+	width: 100%;
 	background-color: var(--primary-panel-bg);
 	height: 100%;
+	border-radius: var(--md-border-radius);
 }
 

@@ -1,15 +1,21 @@
 import { Button } from '@/components';
-import { IconBell, IconBellOff, IconUsers } from '@tabler/icons-react';
+import { IconBell, IconBellOff, IconUsers, IconX } from '@tabler/icons-react';
 import { useLocalStorage } from '@/hooks';
 import classes from './ChatHeader.module.css';
 
 type ChatHeaderProps = {
+	closeSidebar: () => void;
 };
-const ChatHeader = ({ }: ChatHeaderProps) => {
+const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
 	const [audioEnabled, setAudioEnabled] = useLocalStorage('audioEnabled', false);
 	return (
 		<header className={classes.header}>
-			<h2 id="game-chat-heading">Game chat</h2>
+			<div className={classes.headingCloseButtonWrapper}>
+				<Button onClick={closeSidebar} aria-label="close chat" variant="icon">
+					<IconX />
+				</Button>
+				<h2 id="game-chat-heading">Game chat</h2>
+			</div>
 
 			<div className={classes.buttonGroup}>
 				<Button

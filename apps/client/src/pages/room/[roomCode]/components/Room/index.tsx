@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { Button } from '@/components';
 import type { Player, RoomState } from '@shared/types';
 import clsx from 'clsx';
-import { IconMessage } from '@tabler/icons-react';
+import { IconChevronLeft } from '@tabler/icons-react';
 import { Sidebar, RoomSettings, GameContainer } from './components';
 import classes from './Room.module.css';
 
@@ -25,8 +25,8 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	});
 
 	const containerRef = useRef<HTMLDivElement>(null);
-	const chatWrapperRef = useRef<HTMLDivElement>(null);
-	const chatToggleButtonRef = useRef<HTMLButtonElement>(null);
+	const sidebarWrapperRef = useRef<HTMLDivElement>(null);
+	const openSidebarButtonRef = useRef<HTMLButtonElement>(null);
 
 	const ourPlayer = roomState.players.find((player) => player.username === username);
 
@@ -71,7 +71,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		socket.on('ROOM_PLAYER_LEFT', handlePlayerLeft);
 		socket.on('ROOM_ADMIN_CHANGE', handleAdminChange);
 
-		socket.emit('ROOM_GET_STATE', roomCode);
+		socket.emit('ROOM_GET_STATE');
 
 		return () => {
 			socket.off('ROOM_SET_STATE', handleSetRoomState);
@@ -86,7 +86,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			return;
 		}
 		const handleRoomLeave = () => {
-			socket.emit('ROOM_LEAVE', roomCode);
+			socket.emit('ROOM_LEAVE');
 		};
 
 		router.events.on('routeChangeStart', handleRoomLeave);
@@ -98,33 +98,35 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		};
 	}, [roomCode, router.events]);
 
-	const handleChatToggle = () => {
+	const handleSidebarToggle = () => {
 		const container = containerRef.current;
-		const chatWrapper = chatWrapperRef.current;
-		const chatToggleButton = chatToggleButtonRef.current;
+		const wrapper = sidebarWrapperRef.current;
+		const button = openSidebarButtonRef.current;
 
-		if (!container || !chatWrapper || !chatToggleButton) {
+		if (!container || !wrapper || !button) {
 			return;
 		}
-		const isOpen = container.classList.contains(classes.chatOpen);
+		const isOpen = container.classList.contains(classes.sidebarOpen);
 
-		container.classList.toggle(classes.chatOpen, !isOpen);
-		chatWrapper.inert = isOpen;
-		chatToggleButton.ariaExpanded = String(!isOpen);
-		chatToggleButton.ariaLabel = isOpen ? 'Open chat' : 'Close chat';
+		container.classList.toggle(classes.sidebarOpen, !isOpen);
+		wrapper.inert = isOpen;
+		button.inert = !isOpen;
 	};
 
 	useEffect(() => {
-		const closeChatOnEscape = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && containerRef.current?.classList.contains(classes.chatOpen)) {
-				handleChatToggle();
+		const closeSidebarOnEscape = (e: KeyboardEvent) => {
+			if (
+				e.key === 'Escape'
+			&& containerRef.current?.classList.contains(classes.sidebarOpen)
+			) {
+				handleSidebarToggle();
 			}
 		};
 
-		document.addEventListener('keydown', closeChatOnEscape);
+		document.addEventListener('keydown', closeSidebarOnEscape);
 
 		return () => {
-			document.removeEventListener('keydown', closeChatOnEscape);
+			document.removeEventListener('keydown', closeSidebarOnEscape);
 		};
 	}, []);
 
@@ -138,7 +140,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			<Head>
 				<title>{`Room ${roomCode}`}</title>
 			</Head>
-			<div className={clsx(classes.container, classes.chatOpen)} ref={containerRef}>
+			<div className={clsx(classes.container, classes.sidebarOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
 					{roomState.isStarted && roomState.selectedGame ? (
 						<GameContainer game={roomState.selectedGame} />
@@ -146,28 +148,28 @@ const Room = ({ roomCode, username }: RoomProps) => {
 						<RoomSettings
 							roomCode={roomCode}
 							roomState={roomState}
+							ourPlayer={ourPlayer}
 						/>
 					)}
 				</div>
 
-				<div className={classes.chatWrapper}>
-					<Button
-						className={classes.chatToggleButton}
-						onClick={handleChatToggle}
-						variant="icon"
-						innerRef={chatToggleButtonRef}
-						aria-controls="chat-wrapper"
-						aria-label="close chat"
-					>
-						<IconMessage size={24} />
-					</Button>
-					<div ref={chatWrapperRef} id="chat-wrapper">
-						<Sidebar
-							roomCode={roomCode}
-							players={roomState.players}
-							ourPlayer={ourPlayer}
-						/>
-					</div>
+				<Button
+					className={classes.openSidebarButton}
+					onClick={handleSidebarToggle}
+					variant="icon"
+					aria-label="open chat"
+					innerRef={openSidebarButtonRef}
+					inert=""
+					aria-controls="chat-wrapper"
+				>
+					<IconChevronLeft size={40} />
+				</Button>
+				<div ref={sidebarWrapperRef} id="chat-wrapper" className={classes.sidebarWrapper}>
+					<Sidebar
+						players={roomState.players}
+						ourPlayer={ourPlayer}
+						closeSidebar={handleSidebarToggle}
+					/>
 				</div>
 			</div>
 		</>

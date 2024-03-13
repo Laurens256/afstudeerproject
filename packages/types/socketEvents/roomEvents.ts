@@ -15,8 +15,8 @@ export type ClientToServerRoomEvents = {
 	ROOM_EXISTS: (roomCode: string) => void;
 	ROOM_CREATE: () => void;
 	ROOM_JOIN: (roomCode: string, username: string) => void;
-	ROOM_GET_STATE: (roomCode: string) => void;
-	ROOM_SET_STATE: (roomCode: string, roomState: Partial<RoomState>) => void;
-	ROOM_CHAT_MESSAGE: (roomCode: string, message: string) => void;
-	ROOM_LEAVE: (roomCode: string) => void;
+	ROOM_GET_STATE: () => void;
+	ROOM_SET_STATE: (roomState: Partial<RoomState>) => void;
+	ROOM_CHAT_MESSAGE: (message: string) => void;
+	ROOM_LEAVE: () => void;
 };

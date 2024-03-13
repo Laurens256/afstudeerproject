@@ -11,12 +11,13 @@ type GenericMessage = {
 	messageId: string;
 	date: Date;
 };
+
 export type Message = UserMessage | JoinedLeftMessage;
+
 export type UserMessage = GenericMessage & {
 	type: 'user';
 	socketId: string;
 	username: string;
-	tempId?: string;
 	text: string;
 };
 export type JoinedLeftMessage = GenericMessage & {

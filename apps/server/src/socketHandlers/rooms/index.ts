@@ -1,12 +1,60 @@
-import type { Server, Socket } from 'socket.io';
-import type { Message, RoomState, ClientToServerEvents, ServerToClientEvents } from '@shared/types';
+/* eslint no-param-reassign: 0 */
+
+import type { Message, Player, RoomState } from '@shared/types';
+import type { ExtendedServer, ExtendedSocket } from '@/types';
 import util from './util';
 
-// TODO move to types
-type ExtendedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
-type ExtendedServer = Server<ClientToServerEvents, ServerToClientEvents>;
-
 const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
+	const getRoomSockets = (roomCode: string) => Array.from(
+		io.sockets.adapter.rooms.get(roomCode) || [],
+	);
+
+	const getRoomPlayers = (roomCode: string) => {
+		const socketsInRoom = getRoomSockets(roomCode);
+		const dataObjects: (Player | null)[] = socketsInRoom.map((id) => {
+			const { username, role } = io.sockets.sockets.get(id)?.data || {};
+
+			if (username && role) {
+				return {
+					socketId: id,
+					username,
+					role,
+				};
+			}
+			return null;
+		});
+		return dataObjects.filter((p) => p !== null) as Player[];
+	};
+
+	const setRoomAdmin = (
+		roomCode: string,
+		socketId: string | null,
+	): string | null => {
+		const sockets = getRoomSockets(roomCode);
+		let newAdminId: string | null = null;
+
+		if (sockets.length === 0) {
+			return newAdminId;
+		}
+
+		sockets.forEach((playerSocketId, i) => {
+			if ((i === 0 && !socketId) || (socketId && playerSocketId === socketId)) {
+				const socketObj = io.sockets.sockets.get(playerSocketId);
+				if (socketObj) {
+					socketObj.data.role = 'admin';
+					newAdminId = playerSocketId;
+				}
+			} else {
+				const socketObj = io.sockets.sockets.get(playerSocketId);
+				if (socketObj) {
+					socketObj.data.role = 'player';
+				}
+			}
+		});
+
+		return newAdminId;
+	};
+
 	socket.on('ROOM_CREATE', () => {
 		const roomCode = util.createRoom();
 		socket.emit('ROOM_CREATE', roomCode);
@@ -17,98 +65,90 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		socket.emit('ROOM_EXISTS', roomExists ? roomCode : null);
 	});
 
-	socket.on('ROOM_JOIN', (roomCode, username) => {
-		const { player, error } = util.joinRoom(roomCode, socket.id, username);
-		socket.emit('ROOM_JOIN', player.username, error);
+	socket.on('ROOM_JOIN', (roomCode, inputName) => {
+		const { username, error } = util.joinRoom(roomCode, inputName);
+		socket.emit('ROOM_JOIN', username, error);
 
 		if (error === null) {
-			const socketsInRoom = util.getSocketsInRoom(roomCode);
+			const role = getRoomSockets(roomCode).length === 0
+				? 'admin' : 'player';
 
-			io.to(socketsInRoom).emit('ROOM_PLAYER_JOINED', { socketId: socket.id, ...player });
+			socket.data = { roomCode, role, username };
+			socket.join(roomCode);
+
+			io.to(roomCode).emit('ROOM_PLAYER_JOINED', {
+				socketId: socket.id,
+				username,
+				role,
+			});
 		}
 	});
 
-	const emitNewAdmins = (roomCodes: string[]) => {
-		roomCodes.forEach((roomCode) => {
-			const newAdminId = util.setRoomAdmin(roomCode, null);
-			const sockets = util.getSocketsInRoom(roomCode);
-
-			if (newAdminId) {
-				io.to(sockets).emit('ROOM_ADMIN_CHANGE', newAdminId);
-			}
-		});
-	};
-
-	socket.on('ROOM_LEAVE', (roomCode: string) => {
-		const sockets = util.getSocketsInRoom(roomCode);
-		io.to(sockets).except(socket.id).emit('ROOM_PLAYER_LEFT', socket.id); // TODO
-
-		const roomsNeedNewAdmin = util.leaveRoom(socket.id, roomCode);
-		emitNewAdmins(roomsNeedNewAdmin);
-	});
-
-	socket.on('ROOM_GET_STATE', (roomCode) => {
+	socket.on('ROOM_GET_STATE', () => {
+		const { roomCode } = socket.data;
+		if (!roomCode) return;
 		const room = util.getRoom(roomCode);
+		if (!room) return;
 
-		if (!room) {
-			console.warn('GET_ROOM_STATE: this should not happen');
-			return;
-		}
-
-		const players = Object.keys(room.players).map((socketId) => ({
-			socketId,
-			...room.players[socketId],
-		}));
+		const playerObjects = getRoomPlayers(roomCode);
 
 		const roomState: RoomState = {
 			...room,
-			players,
+			players: playerObjects,
 		};
 
 		socket.emit('ROOM_SET_STATE', roomState);
 	});
 
-	socket.on('ROOM_SET_STATE', (roomCode, roomState) => {
-		const { players: p, ...rest } = roomState;
-		const newState = util.setRoomState(roomCode, rest);
+	socket.on('ROOM_SET_STATE', (roomState) => {
+		const { roomCode } = socket.data;
+		if (!roomCode) return;
+		const newState = util.setRoomState(roomCode, roomState);
 
 		if (newState) {
-			const { players: p2, ...newStateRest } = newState;
-			const socketsInRoom = util.getSocketsInRoom(roomCode);
-			io.to(socketsInRoom).emit('ROOM_SET_STATE', newStateRest); // TODO
+			io.to(roomCode).emit('ROOM_SET_STATE', newState);
 		}
 	});
 
-	socket.on('ROOM_CHAT_MESSAGE', (roomCode: string, text: string) => {
-		const socketsInRoom = util.getSocketsInRoom(roomCode);
-		const player = util.getPlayerBySocketId(roomCode, socket.id);
+	socket.on('ROOM_CHAT_MESSAGE', (text) => {
+		const { roomCode, username } = socket.data;
+		if (!roomCode || !username) return;
 
-		if (player) {
-			const message: Message = {
-				messageId: crypto.randomUUID(),
-				type: 'user',
-				socketId: socket.id,
-				username: player.username,
-				text,
-				date: new Date(),
-			};
+		const message: Message = {
+			messageId: crypto.randomUUID(),
+			type: 'user',
+			socketId: socket.id,
+			text,
+			date: new Date(),
+			username,
+		};
 
-			io.to(socketsInRoom).emit('ROOM_CHAT_MESSAGE', message);
-		} else {
-			console.warn('CHAT_MESSAGE: this should not happen');
+		io.to(roomCode).emit('ROOM_CHAT_MESSAGE', message);
+	});
+
+	const handleRoomLeave = (roomCode: string | undefined, role: string | undefined) => {
+		if (!roomCode) return;
+		io.to(roomCode).except(socket.id).emit('ROOM_PLAYER_LEFT', socket.id);
+		socket.leave(roomCode);
+		socket.data = {};
+
+		const wasAdmin = role === 'admin';
+		if (wasAdmin) {
+			const newAdminId = setRoomAdmin(roomCode, null);
+			if (newAdminId) {
+				io.to(roomCode).emit('ROOM_ADMIN_CHANGE', newAdminId);
+			}
 		}
+	};
+
+	socket.on('ROOM_LEAVE', () => {
+		const { roomCode, role } = socket.data;
+		handleRoomLeave(roomCode, role);
 	});
 
 	socket.on('disconnect', () => {
-		const rooms = util.getAllRoomsClientIsIn(socket.id);
-
-		rooms.forEach((roomCode) => {
-			const sockets = util.getSocketsInRoom(roomCode);
-			io.to(sockets).emit('ROOM_PLAYER_LEFT', socket.id);
-		});
-
-		const roomsNeedNewAdmin = util.leaveRoom(socket.id, null);
-		emitNewAdmins(roomsNeedNewAdmin);
+		const { roomCode, role } = socket.data;
+		handleRoomLeave(roomCode, role);
 	});
 };
 

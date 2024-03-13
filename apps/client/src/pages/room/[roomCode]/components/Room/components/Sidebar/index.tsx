@@ -14,12 +14,12 @@ const createJoinedLeftMessage = (username: string, type: 'joined' | 'left'): Mes
 });
 
 type ChatSectionProps = {
-	roomCode: string;
 	players: Player[];
 	ourPlayer: Player;
+	closeSidebar: () => void;
 };
 
-const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
+const ChatSection = ({ players, ourPlayer, closeSidebar }: ChatSectionProps) => {
 	const [messages, setMessages] = useState<Message[]>([
 		createJoinedLeftMessage(ourPlayer.username, 'joined'),
 	]);
@@ -29,7 +29,7 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 	};
 
 	const handleSendMessage = (message: string) => {
-		socket.emit('ROOM_CHAT_MESSAGE', roomCode, message);
+		socket.emit('ROOM_CHAT_MESSAGE', message);
 	};
 
 	useEffect(() => {
@@ -62,7 +62,7 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 
 	return (
 		<aside className={classes.container} aria-labelledby="game-chat-heading">
-			<ChatHeader />
+			<ChatHeader closeSidebar={closeSidebar} />
 			<MessagesList messages={messages} ourPlayer={ourPlayer} />
 			<MessageInput onMessageSend={handleSendMessage} />
 		</aside>

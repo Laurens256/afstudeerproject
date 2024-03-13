@@ -6,6 +6,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: 'filled' | 'outline' | 'light' | 'icon';
 	loading?: boolean;
 	innerRef?: React.Ref<HTMLButtonElement>;
+	inert?: string;
 }
 
 const Button = ({

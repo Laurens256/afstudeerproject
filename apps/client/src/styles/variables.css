@@ -17,5 +17,6 @@
 	--input-text: #333333;
 	--input-error: #dc3545;
 
+	--sm-border-radius: 0.5rem;
 	--md-border-radius: 1rem;
 }
