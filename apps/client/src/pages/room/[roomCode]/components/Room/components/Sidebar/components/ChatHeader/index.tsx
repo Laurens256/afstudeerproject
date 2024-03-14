@@ -22,7 +22,10 @@ const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
 					variant="icon"
 					className={classes.button}
 					onClick={() => setAudioEnabled(!audioEnabled)}
-					aria-label={`${audioEnabled ? 'disable' : 'enable'} notification sound`}
+					aria-label={`toggle notification sound`}
+					// aria-label={`${audioEnabled ? 'disable' : 'enable'} notification sound`}
+					role="switch"
+					aria-checked={audioEnabled}
 				>
 					{audioEnabled ? <IconBell /> : <IconBellOff />}
 				</Button>

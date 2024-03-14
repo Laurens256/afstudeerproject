@@ -13,19 +13,23 @@ export type UnoSpecialColorCards = {
 };
 export type UnoWildCards = {
 	type: 'wild-card';
-	value: 'wild' | 'draw-four';
+	value: 'wild' | 'wild-draw-four';
 };
-export type UnoCard = UnoNumberCard | UnoSpecialColorCards | UnoWildCards;
+export type UnoCard =  { cardId: number } & (UnoNumberCard | UnoSpecialColorCards | UnoWildCards);
 export type UnoPlayer = {
+	socketId: string;
 	cards: UnoCard[];
 };
 
 export type UnoGameState = {
 	drawPile: UnoCard[];
 	droppedPile: UnoCard[];
-	players: {
-		[id: string]: UnoPlayer;
-	};
+	// players: {
+	// 	[id: string]: UnoPlayer;
+	// };
+	players: UnoPlayer[];
 	currentPlayerId: string;
 	currentCard: UnoCard;
+	isClockwise: boolean;
+	wildcardColor: UnoColor | null;
 };

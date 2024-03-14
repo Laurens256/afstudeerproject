@@ -149,6 +149,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 							<GameContainer
 								game={roomState.selectedGame}
 								playersInGame={playersInGame}
+								ourPlayer={ourPlayer}
 							/>
 						) : (
 							<RoomSettings

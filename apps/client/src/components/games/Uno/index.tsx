@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
 import type { Player, UnoGameState } from '@shared/types';
+import UnoGame from './UnoGame';
 
 type UnoProps = {
 	playersInGame: Player[]
@@ -23,11 +24,12 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		};
 	}, [gameState, playersInGame]);
 
-	return (
-		<div>
-			<h1>Uno</h1>
-		</div>
-	);
+	if (!gameState) {
+		// TODO loader
+		return <div>Loading...</div>;
+	}
+
+	return <UnoGame gameState={gameState} players={playersInGame} />;
 };
 
 export default Uno;

@@ -8,6 +8,6 @@
 		position: fixed;
 		inset: 0;
 		z-index: -1;
-		background-color: red;
+		/* background-color: red; */
 	}
 }

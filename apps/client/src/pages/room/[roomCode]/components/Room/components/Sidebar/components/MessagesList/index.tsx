@@ -48,7 +48,8 @@ const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 		if (lastMessage) {
 			checkShouldPlayAudioNotification(lastMessage);
 		}
-	}, [checkShouldPlayAudioNotification, messages]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [messages]);
 
 	return (
 		<ol

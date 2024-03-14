@@ -7,26 +7,33 @@ const generateDeck = (): UnoCard[] => {
 	const colorVals: UnoColor[] = ['red', 'blue', 'green', 'yellow'];
 	const numberVals: UnoNumber[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 	const specialCardVals: UnoSpecialColorCards['value'][] = ['skip', 'reverse', 'draw-two'];
-	const wildCardVals: UnoWildCards['value'][] = ['wild', 'draw-four'];
+	const wildCardVals: UnoWildCards['value'][] = ['wild', 'wild-draw-four'];
 
+	let cardIndex = 0;
 	const numberCards: UnoCard[] = colorVals.flatMap((color) => numberVals.flatMap((value) => {
-		const card: UnoCard = { type: 'number-card', color, value: value as UnoNumber };
-		if (value === 0) {
-			return [card];
+		const cards: UnoCard[] = [];
+		for (let i = 0; i < (value === 0 ? 1 : 2); i++) {
+			cards.push({ cardId: cardIndex++, type: 'number-card', color, value });
 		}
-		return [card, card];
+		return cards;
 	}));
 
 	const specialCards: UnoCard[] = colorVals.flatMap((color) => specialCardVals.flatMap(
 		(value) => {
-			const card: UnoCard = { type: 'special-card', color, value };
-			return [card, card];
+			const cards: UnoCard[] = [];
+			for (let i = 0; i < 2; i++) {
+				cards.push({ cardId: cardIndex++, type: 'special-card', color, value });
+			}
+			return cards;
 		},
 	));
 
 	const wildCards: UnoCard[] = wildCardVals.flatMap((value) => {
-		const card: UnoCard = { type: 'wild-card', value };
-		return [card, card, card, card];
+		const cards: UnoCard[] = [];
+		for (let i = 0; i < 4; i++) {
+			cards.push({ cardId: cardIndex++, type: 'wild-card', value });
+		}
+		return cards;
 	});
 
 	return arrayUtil.shuffleArray([...wildCards, ...specialCards, ...numberCards]);
@@ -43,20 +50,19 @@ const drawCards = (roomCode: string, numCards: number): UnoCard[] => {
 const initializeGame = (roomCode: string, players: Player[]) => {
 	const deck = generateDeck();
 	const startingCard = deck.find((card) => card.type === 'number-card') as UnoCard;
-	const index = deck.indexOf(startingCard);
-	deck.splice(index, 1);
+	deck.splice(deck.indexOf(startingCard), 1);
 
 	const game: UnoGameState = {
 		drawPile: deck,
 		droppedPile: [],
-		players: players.map((p) => p.socketId).reduce((acc, playerId) => {
-			acc[playerId] = {
-				cards: deck.splice(0, 7),
-			};
-			return acc;
-		}, {} as UnoGameState['players']),
+		players: players.map((p) => ({
+			socketId: p.socketId,
+			cards: deck.splice(0, 7),
+		})),
 		currentPlayerId: players[0].socketId,
 		currentCard: startingCard,
+		isClockwise: true,
+		wildcardColor: null,
 	};
 
 	games[roomCode] = game;

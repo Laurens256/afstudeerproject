@@ -15,7 +15,7 @@ const Button = ({
 	<button
 		{...props}
 		ref={innerRef}
-		disabled={loading}
+		disabled={loading || props.disabled}
 		// eslint-disable-next-line react/button-has-type
 		type={props.type || 'button'}
 		className={clsx(classes.button, props.className, classes[variant])}
