@@ -34,7 +34,7 @@ const createRoom = (code?: string): string => {
 		roomName: null,
 		isPrivate: false,
 		isStarted: false,
-		selectedGame: null,
+		selectedGame: 'uno', // TODO
 	};
 	return roomCode;
 };
@@ -76,10 +76,15 @@ const joinRoom = (inputCode: string, inputname: string) => {
 	return { error, username };
 };
 
+const deleteRoom = (roomCode: string) => {
+	delete rooms[roomCode];
+};
+
 export default {
 	createRoom,
 	joinRoom,
 	getRoom,
 	setRoomState,
 	roomExists,
+	deleteRoom,
 };

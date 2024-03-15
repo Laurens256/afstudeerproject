@@ -1,25 +1,19 @@
-import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
+import type { Player, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
-import socket from '@/socket';
 import { CardsList, CenterSection } from './components';
 import classes from './UnoGame.module.css';
 
 type UnoGameProps = {
 	gameState: UnoGameState;
 	players: Player[];
+	ourPlayer: Player;
+	canDoAction: boolean;
+	disableCanDoAction: () => void;
 };
 
-const UnoGame = ({ gameState, players }: UnoGameProps) => {
-	const ourPlayer = players.find((player) => player.socketId === socket.id);
-	const ourCards = gameState.players.find(
-		(player) => player.socketId === ourPlayer?.socketId,
-	)?.cards;
-
-	if (!ourPlayer || !ourCards) {
-		// TODO shouldn't happen, probably throw error here
-		return <p>something bad happened :0</p>;
-	}
-
+const UnoGame = ({
+	gameState, players, ourPlayer, canDoAction, disableCanDoAction,
+}: UnoGameProps) => {
 	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string) => {
 		const ourPlayerIndex = playersArr.findIndex((player) => player.socketId === ourPlayerId);
 		const playersCopy = [...playersArr];
@@ -29,14 +23,14 @@ const UnoGame = ({ gameState, players }: UnoGameProps) => {
 
 	const sortedPlayers = setCorrectPlayerOrder(gameState.players, ourPlayer.socketId);
 
-	const onCardClick = (card: UnoCard) => {
-		console.log(card);
-	};
-
 	return (
 		<div className={clsx(classes.container, classes[`players${players.length}`])}>
 			<section className={classes.middleSection} aria-label="card pile">
-				<CenterSection currentCard={gameState.currentCard} />
+				<CenterSection
+					currentCard={gameState.currentCard}
+					canDoAction={canDoAction}
+					disableCanDoAction={disableCanDoAction}
+				/>
 			</section>
 
 			{sortedPlayers.map((player, i) => {
@@ -49,18 +43,23 @@ const UnoGame = ({ gameState, players }: UnoGameProps) => {
 				const username = players.find(
 					(p) => p.socketId === player.socketId,
 				)?.username || 'someone';
+				const isCurrentPlayer = gameState.currentPlayerId === player.socketId;
 
 				return (
-					<div className={clsx(classes[`player${i + 1}`], classes.cardListContainer)}>
+					<div
+						key={player.socketId}
+						className={clsx(classes[`${position}Position`], classes.cardListContainer)}
+					>
 						<CardsList
-							key={player.socketId}
 							cards={player.cards}
 							username={username}
 							isVisible={isOurPlayer}
 							currentCard={gameState.currentCard}
 							wildcardColor={gameState.wildcardColor}
-							onClick={isOurPlayer ? onCardClick : undefined}
 							position={position}
+							canDoAction={canDoAction}
+							disableCanDoAction={disableCanDoAction}
+							isCurrentPlayer={isCurrentPlayer}
 						/>
 					</div>
 				);

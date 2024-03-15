@@ -2,24 +2,28 @@
 	display: flex;
 	width: 100%;
 	justify-content: center;
+	padding: 0.5rem;
+
+	&.currentPlayer {
+		background-color: red;
+	}
 
 	&.bottomPosition {
 		flex-wrap: wrap;
 	}
 	&.topPosition {
-		transform: rotate(180deg);
+		rotate: 180deg;
 		flex-wrap: wrap;
 	}
 	&.leftPosition {
-		transform: rotate(90deg);
+		rotate: 90deg;
 	}
 	&.rightPosition {
-		transform: rotate(270deg);
+		rotate: 270deg;
 	}
 }
 
 .cardContainer {
-	/* margin-left: -2rem; */
 	flex-shrink: 0;
 }
 .cardButtonWrapper {

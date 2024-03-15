@@ -10,7 +10,9 @@ module.exports = {
 		'no-plusplus': 'off',
 		'max-len': ['error', { 
 			code: 100,
-			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$'
+			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$',
+			ignoreStrings: true,
+			ignoreTemplateLiterals: true
 		 }],
 
 		'@typescript-eslint/indent': ['error', 'tab'],

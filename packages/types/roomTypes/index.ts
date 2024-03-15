@@ -5,7 +5,7 @@ export type Player = {
 	username: string;
 	socketId: string;
 	role: 'admin' | 'player';
-	inGame: boolean | undefined;
+	inGame: GamesType | null;
 };
 
 type GenericMessage = {

@@ -40,11 +40,67 @@ const generateDeck = (): UnoCard[] => {
 };
 
 // TODO check if enough cards are in deck
-const drawCards = (roomCode: string, numCards: number): UnoCard[] => {
+const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 	const game = games[roomCode];
 	const { drawPile } = game;
 	const cards = drawPile.splice(0, numCards);
+
+	const player = game.players.find((p) => p.socketId === socketId);
+	if (player) {
+		player.cards.push(...cards);
+	}
 	return cards;
+};
+
+// MAYBE TODO: check if card is playable, already done in client
+const playCard = (roomCode: string, socketId: string, cardId: number) => {
+	const game = games[roomCode];
+	const player = game.players.find((p) => p.socketId === socketId);
+	if (!player) return;
+
+	const cardIndex = player.cards.findIndex((c) => c.cardId === cardId);
+	if (cardIndex === -1) return;
+
+	const card = player.cards[cardIndex];
+
+	player.cards.splice(cardIndex, 1);
+	game.droppedPile.push(card);
+	game.currentCard = card;
+
+	let newCardDrawCounter = game.cardDrawCounter;
+	if (card.type === 'special-card' && card.value === 'draw-two') {
+		newCardDrawCounter += 2;
+	} else if (card.type === 'wild-card' && card.value === 'wild-draw-four') {
+		newCardDrawCounter += 4;
+	}
+
+	const newState: Partial<UnoGameState> = {
+		currentCard: card,
+		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
+		cardDrawCounter: newCardDrawCounter,
+	};
+
+	return {
+		isChooseColorCard: card.type === 'wild-card' && card.value === 'wild',
+		newState,
+	};
+};
+
+const setNextPlayer = (roomCode: string) => {
+	const game = games[roomCode];
+	const { players, currentPlayerId, isClockwise, currentCard } = game;
+	const isSkipTurn = currentCard.type === 'special-card' && currentCard.value === 'skip';
+
+	const currentPlayerIndex = players.findIndex((p) => p.socketId === currentPlayerId);
+	const moveAmount = isSkipTurn ? 2 : 1;
+
+	const nextPlayerIndex = isClockwise
+		? (currentPlayerIndex + moveAmount) % players.length
+		: (currentPlayerIndex - moveAmount + players.length) % players.length;
+
+	const { socketId: nextPlayerSocketId } = players[nextPlayerIndex];
+	game.currentPlayerId = nextPlayerSocketId;
+	return nextPlayerSocketId;
 };
 
 const initializeGame = (roomCode: string, players: Player[]) => {
@@ -63,10 +119,30 @@ const initializeGame = (roomCode: string, players: Player[]) => {
 		currentCard: startingCard,
 		isClockwise: true,
 		wildcardColor: null,
+		cardDrawCounter: 0,
 	};
 
 	games[roomCode] = game;
 	return game;
+};
+
+const handlePlayerLeave = (roomCode: string, socketId: string) => {
+	const game = games[roomCode];
+	if (!game) return;
+
+	const playerIndex = game.players.findIndex((p) => p.socketId === socketId);
+	if (playerIndex === -1) return;
+
+	game.players.splice(playerIndex, 1);
+
+	if (game.players.length === 0) {
+		delete games[roomCode];
+		return;
+	}
+
+	if (game.currentPlayerId === socketId) {
+		setNextPlayer(roomCode);
+	}
 };
 
 const getGame = (roomCode: string) => games[roomCode];
@@ -75,4 +151,7 @@ export default {
 	drawCards,
 	initializeGame,
 	getGame,
+	setNextPlayer,
+	playCard,
+	handlePlayerLeave,
 };

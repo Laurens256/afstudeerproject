@@ -2,6 +2,7 @@ import type { UnoCard, UnoColor } from '@shared/types';
 import { useRef } from 'react';
 import { Button } from '@/components';
 import clsx from 'clsx';
+import socket from '@/socket';
 import classes from './CardsList.module.css';
 import UnoCardComponent from '../UnoCard';
 
@@ -33,45 +34,79 @@ type CardsListProps = {
 	username: string;
 	currentCard: UnoCard;
 	wildcardColor: UnoColor | null;
-	onClick?: (card: UnoCard) => void;
 	className?: string;
 	position: 'top' | 'right' | 'bottom' | 'left';
+	canDoAction: boolean;
+	disableCanDoAction: () => void;
+	isCurrentPlayer: boolean;
 };
 const CardsList = ({
-	cards, isVisible, username, currentCard, wildcardColor, onClick, className, position,
+	cards,
+	isVisible,
+	username,
+	currentCard,
+	wildcardColor,
+	className,
+	position,
+	canDoAction,
+	disableCanDoAction,
+	isCurrentPlayer,
 }: CardsListProps) => {
 	const listRef = useRef<HTMLUListElement>(null);
 
 	const canPlayCard = (card: UnoCard) => {
-		if (!onClick) return false;
-		if (card.type === 'wild-card') return cards.length !== 1;
+		let canPlay: boolean | string = true;
 
-		const { type: currentCardType, value: currentCardValue } = currentCard;
-		const { color: cardColor, value: cardValue } = card;
-		if (currentCardType === 'wild-card') {
-			return wildcardColor === cardColor;
+		// TODO add check if drawCardCounter is active
+		if (!canDoAction) {
+			canPlay = 'It\'s not your turn';
+		} else if (card.type === 'wild-card') {
+			if (cards.length === 1) {
+				canPlay = 'You can\'t play a wild card when you have only one card left';
+			}
+		} else {
+			const { type: currentCardType, value: currentCardValue } = currentCard;
+			const { color: cardColor, value: cardValue } = card;
+			if (currentCardType === 'wild-card') {
+				if (wildcardColor !== cardColor) {
+					canPlay = `Can't play a ${cardColor} card. Chosen color is: ${wildcardColor}`;
+				}
+			} else if (cardColor !== currentCard.color && cardValue !== currentCardValue) {
+				canPlay = `You can't play a card that doesn't match the current card's color or value. Current card: ${currentCard.color} ${currentCard.value}`;
+			}
 		}
 
-		return cardColor === currentCard.color || cardValue === currentCardValue;
+		return canPlay;
+	};
+
+	const onCardClick = (card: UnoCard) => {
+		const canPlay = canPlayCard(card);
+
+		if (canPlay === true) {
+			// disableCanDoAction();
+			console.log(card.cardId, socket.id); // TODO
+			socket.emit('UNO_PLAY_CARD', card.cardId);
+		} else {
+			alert(canPlay); // TODO
+		}
 	};
 
 	return (
 		<div>
 			<ul
-				className={clsx(classes.container, className, classes[`${position}Position`])}
+				className={clsx(
+					classes.container,
+					className,
+					classes[`${position}Position`],
+					isCurrentPlayer && classes.currentPlayer,
+				)}
 				aria-label={`${username} cards`}
 				ref={listRef}
 			>
 				{cards.map((card) => (
-					<li
-						key={card.cardId}
-						className={classes.cardContainer}
-						style={{
-							outline: `5px solid ${canPlayCard(card) ? 'green' : 'red'}`,
-						}}
-					>
+					<li key={card.cardId} className={classes.cardContainer}>
 						<CardItemWrapper
-							onClick={() => onClick && onClick(card)}
+							onClick={() => onCardClick(card)}
 							className={classes.cardButtonWrapper}
 							isVisible={isVisible}
 						>

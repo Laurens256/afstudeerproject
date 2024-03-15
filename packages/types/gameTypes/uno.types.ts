@@ -24,12 +24,10 @@ export type UnoPlayer = {
 export type UnoGameState = {
 	drawPile: UnoCard[];
 	droppedPile: UnoCard[];
-	// players: {
-	// 	[id: string]: UnoPlayer;
-	// };
 	players: UnoPlayer[];
 	currentPlayerId: string;
 	currentCard: UnoCard;
 	isClockwise: boolean;
 	wildcardColor: UnoColor | null;
+	cardDrawCounter: number;
 };
