@@ -23,12 +23,17 @@ const Uno = ({ playersInGame }: UnoProps) => {
 			return;
 		}
 		const handleGetGameState = (serverGameState: UnoGameState) => {
-			console.log('here')
 			setGameState(serverGameState);
 		};
 
 		socket.on('UNO_GET_GAME_STATE', handleGetGameState);
-		socket.emit('UNO_GET_GAME_STATE');
+
+		if (playersInGame.map((player) => player.socketId).includes(socket.id)) {
+			const expectedSocketIds = playersInGame.map((player) => player.socketId);
+			socket.emit('UNO_PLAYER_GET_INITIAL_STATE', expectedSocketIds);
+		} else {
+			socket.emit('UNO_GET_GAME_STATE');
+		}
 		return () => {
 			socket.off('UNO_GET_GAME_STATE', handleGetGameState);
 		};
@@ -103,7 +108,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 
 	if (!gameState || !ourPlayer || !ourCards) {
 		// TODO loader or error
-		return <div>Loading...</div>;
+		return <p>Loading...</p>;
 	}
 
 	return (

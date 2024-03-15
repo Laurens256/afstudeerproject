@@ -3,7 +3,6 @@
 import type { Message, Player, RoomState } from '@shared/types';
 import type { ExtendedServer, ExtendedSocket } from '@/types';
 import util from './util';
-import initializeGame from '../games/initializeGame';
 
 const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 	const getRoomSockets = (roomCode: string) => Array.from(
@@ -108,7 +107,6 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const newState = util.setRoomState(roomCode, roomState);
 
 		if (newState) {
-			// TODO: check if roomState emit would be okay
 			io.to(roomCode).emit('ROOM_SET_STATE', newState);
 		}
 	});
@@ -162,17 +160,15 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		});
 
 		const playersObjects = getRoomPlayers(roomCode);
-		const playersInGame = playersObjects.filter((p) => p.inGame === game);
-		initializeGame(roomCode, game, playersInGame);
 
 		util.setRoomState(roomCode, {
 			isStarted: true,
+			selectedGame: game,
 		});
 
 		io.to(roomCode).emit('ROOM_SET_STATE', {
 			isStarted: true,
 			selectedGame: game,
-			// update players state because of inGame change
 			players: playersObjects,
 		});
 	});

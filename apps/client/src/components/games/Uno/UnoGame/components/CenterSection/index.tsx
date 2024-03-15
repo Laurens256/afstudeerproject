@@ -12,7 +12,7 @@ type CenterSectionProps = {
 const CenterSection = ({ currentCard, canDoAction, disableCanDoAction }: CenterSectionProps) => {
 	const onDrawCard = () => {
 		if (canDoAction) {
-			// disableCanDoAction();
+			disableCanDoAction();
 			socket.emit('UNO_DRAW_CARDS', 1);
 		}
 	};

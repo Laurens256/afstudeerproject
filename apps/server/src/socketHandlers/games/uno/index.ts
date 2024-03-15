@@ -1,15 +1,35 @@
+/* eslint no-param-reassign: 0 */
+
 import type { ExtendedServer, ExtendedSocket } from '@/types';
 import type { UnoGameState } from '@shared/types';
 import util from './util';
 
 const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
+	socket.on('UNO_PLAYER_GET_INITIAL_STATE', (expectedSockets) => {
+		const { roomCode } = socket.data;
+		if (!roomCode) return;
+		let game = util.getGame(roomCode);
+		if (!game) {
+			game = util.initializeGame(roomCode, expectedSockets);
+		}
+		util.setSocketConnected(roomCode, socket.id);
+
+		const allConnectedSocketIds = game.connectedPlayerSockets;
+
+		if (expectedSockets.every((id) => allConnectedSocketIds.includes(id))) {
+			io.to(roomCode).emit('UNO_GET_GAME_STATE', game);
+		}
+	});
+
 	socket.on('UNO_GET_GAME_STATE', () => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
 			const game = util.getGame(roomCode);
+			if (!game) return;
 			socket.emit('UNO_GET_GAME_STATE', game);
 		}
 	});
+
 	socket.on('UNO_DRAW_CARDS', (amount) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {

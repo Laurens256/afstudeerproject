@@ -8,6 +8,7 @@ export type ServerToClientUnoEvents = {
 };
 
 export type ClientToServerUnoEvents = {
+	UNO_PLAYER_GET_INITIAL_STATE: (expectedSockets: string[]) => void;
 	UNO_GET_GAME_STATE: () => void;
 	UNO_PLAY_CARD: (cardId: number) => void;
 	UNO_DRAW_CARDS: (amount: number) => void;

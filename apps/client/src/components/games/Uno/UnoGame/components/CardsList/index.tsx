@@ -83,8 +83,7 @@ const CardsList = ({
 		const canPlay = canPlayCard(card);
 
 		if (canPlay === true) {
-			// disableCanDoAction();
-			console.log(card.cardId, socket.id); // TODO
+			disableCanDoAction();
 			socket.emit('UNO_PLAY_CARD', card.cardId);
 		} else {
 			alert(canPlay); // TODO

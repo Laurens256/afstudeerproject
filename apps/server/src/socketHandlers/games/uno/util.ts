@@ -103,7 +103,7 @@ const setNextPlayer = (roomCode: string) => {
 	return nextPlayerSocketId;
 };
 
-const initializeGame = (roomCode: string, players: Player[]) => {
+const initializeGame = (roomCode: string, sockets: string[]) => {
 	const deck = generateDeck();
 	const startingCard = deck.find((card) => card.type === 'number-card') as UnoCard;
 	deck.splice(deck.indexOf(startingCard), 1);
@@ -111,15 +111,16 @@ const initializeGame = (roomCode: string, players: Player[]) => {
 	const game: UnoGameState = {
 		drawPile: deck,
 		droppedPile: [],
-		players: players.map((p) => ({
-			socketId: p.socketId,
+		players: sockets.map((socketId) => ({
+			socketId,
 			cards: deck.splice(0, 7),
 		})),
-		currentPlayerId: players[0].socketId,
+		currentPlayerId: sockets[0],
 		currentCard: startingCard,
 		isClockwise: true,
 		wildcardColor: null,
 		cardDrawCounter: 0,
+		connectedPlayerSockets: [],
 	};
 
 	games[roomCode] = game;
@@ -145,6 +146,13 @@ const handlePlayerLeave = (roomCode: string, socketId: string) => {
 	}
 };
 
+const setSocketConnected = (roomCode: string, socketId: string) => {
+	const game = games[roomCode];
+	if (!game) return;
+
+	game.connectedPlayerSockets.push(socketId);
+};
+
 const getGame = (roomCode: string) => games[roomCode];
 
 export default {
@@ -154,4 +162,5 @@ export default {
 	setNextPlayer,
 	playCard,
 	handlePlayerLeave,
+	setSocketConnected,
 };

@@ -30,4 +30,5 @@ export type UnoGameState = {
 	isClockwise: boolean;
 	wildcardColor: UnoColor | null;
 	cardDrawCounter: number;
+	connectedPlayerSockets: string[];
 };
