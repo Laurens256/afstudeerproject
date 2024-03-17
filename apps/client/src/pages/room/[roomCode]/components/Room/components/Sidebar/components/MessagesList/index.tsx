@@ -34,7 +34,7 @@ const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 		if (message.type === 'user' && message.socketId !== ourPlayer.socketId) {
 			audioContext.gameChat('messageReceived');
 		} else if (message.type === 'joined-left') {
-			// TODO audio
+			audioContext.gameChat(`player${message.action === 'joined' ? 'Joined' : 'Left'}`);
 		}
 	}, [audioContext, ourPlayer.socketId]);
 

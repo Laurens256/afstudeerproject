@@ -36,7 +36,6 @@ const generateDeck = (): UnoCard[] => {
 		return cards;
 	});
 
-	// return [...wildCards, ...wildCards, ...wildCards, ...wildCards];
 	return arrayUtil.shuffleArray([...wildCards, ...specialCards, ...numberCards]);
 };
 
@@ -50,6 +49,7 @@ const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 	if (player) {
 		player.cards.push(...cards);
 	}
+	games[roomCode].cardDrawCounter = 0;
 	return cards;
 };
 
@@ -73,10 +73,8 @@ type PlayCardProps = {
 	roomCode: string;
 	socketId: string;
 	cardId: number;
-	chosenColor: UnoColor | null;
-	skipNextPlayer: boolean | undefined;
 };
-const playCard = ({ roomCode, socketId, cardId, chosenColor, skipNextPlayer }: PlayCardProps) => {
+const playCard = ({ roomCode, socketId, cardId }: PlayCardProps) => {
 	const game = games[roomCode];
 	const player = game.players.find((p) => p.socketId === socketId);
 	if (!player) return;
@@ -96,17 +94,23 @@ const playCard = ({ roomCode, socketId, cardId, chosenColor, skipNextPlayer }: P
 	const newState: Partial<UnoGameState> = {
 		droppedPile: [...game.droppedPile, card],
 		currentCard: card,
-		wildcardColor: chosenColor,
 		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
 		cardDrawCounter: newCardDrawCounter,
 	};
 
+	const shouldSkipNextPlayer = (card.type === 'special-card' && card.value === 'skip')
+	|| (game.players.length === 2 && card.value === 'reverse');
 	// set newState before setting next player because direction or skip might change
 	games[roomCode] = { ...game, ...newState };
-	const nextPlayerId = setNextPlayer(roomCode, skipNextPlayer);
+	const nextPlayerId = setNextPlayer(roomCode, shouldSkipNextPlayer);
 	newState.currentPlayerId = nextPlayerId;
 
 	return newState;
+};
+
+const chooseColor = (roomCode: string, color: UnoColor) => {
+	const game = games[roomCode];
+	game.wildcardColor = color;
 };
 
 const initializeGame = (roomCode: string, sockets: string[]) => {
@@ -169,4 +173,5 @@ export default {
 	playCard,
 	handlePlayerLeave,
 	setSocketConnected,
+	chooseColor,
 };

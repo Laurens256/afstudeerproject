@@ -1,5 +1,5 @@
 import { Button } from '@/components';
-import type { UnoCard } from '@shared/types';
+import type { UnoCard, UnoColor } from '@shared/types';
 import socket from '@/socket';
 import classes from './CenterSection.module.css';
 import UnoCardComponent from '../UnoCard';
@@ -12,6 +12,7 @@ type CenterSectionProps = {
 	hasDrawnCard: boolean;
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	cardDrawCounter: number;
+	getColorFromPicker: () => Promise<UnoColor>;
 };
 const CenterSection = ({
 	currentCard,
@@ -21,11 +22,20 @@ const CenterSection = ({
 	hasDrawnCard,
 	setHasDrawnCard,
 	cardDrawCounter,
+	getColorFromPicker,
 }: CenterSectionProps) => {
-	const onDrawCard = () => {
+	const onDrawCard = async () => {
 		if (canDoAction && !hasDrawnCard) {
 			setHasDrawnCard(true);
 			socket.emit('UNO_DRAW_CARDS', cardDrawCounter || 1);
+
+			// if cardDrawCounter > 0 and currentCard is wild-draw-four, user is allowed to choose
+			// color because they had to draw and last card was wild-draw-four
+			// check for > 0 because user can draw card when they were not forced because of draw 4
+			if (cardDrawCounter > 0 && currentCard.value === 'wild-draw-four') {
+				const color = await getColorFromPicker();
+				socket.emit('UNO_CHOOSE_COLOR', color);
+			}
 		} else if (hasDrawnCard) {
 			alert('You already drew a card, you can skip your turn or play a card');
 		} else {

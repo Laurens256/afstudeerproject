@@ -37,19 +37,21 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		}
 	});
 
-	socket.on('UNO_PLAY_CARD', (cardId, chosenColor, skipNextPlayer) => {
+	socket.on('UNO_PLAY_CARD', (cardId) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
-			const newState = util.playCard({
-				roomCode,
-				socketId: socket.id,
-				cardId,
-				chosenColor,
-				skipNextPlayer,
-			});
+			const newState = util.playCard({ roomCode, socketId: socket.id, cardId });
 			if (newState) {
 				io.to(roomCode).emit('UNO_PLAY_CARD', socket.id, cardId, newState);
 			}
+		}
+	});
+
+	socket.on('UNO_CHOOSE_COLOR', (color) => {
+		const { roomCode } = socket.data;
+		if (roomCode) {
+			util.chooseColor(roomCode, color);
+			io.to(roomCode).emit('UNO_CHOOSE_COLOR', color);
 		}
 	});
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
-import type { Player, UnoGameState, UnoCard } from '@shared/types';
+import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
 import UnoGame from './UnoGame';
 
 type UnoProps = {
@@ -55,6 +55,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 				if (cardReceiver) {
 					cardReceiver.cards.push(...cards);
 				}
+				newGameState.cardDrawCounter = 0;
 				return newGameState;
 			});
 		};
@@ -93,14 +94,24 @@ const Uno = ({ playersInGame }: UnoProps) => {
 			});
 		};
 
+		const handleChooseColor = (color: UnoColor) => {
+			setGameState((prevGameState) => {
+				if (!prevGameState) return prevGameState;
+
+				return { ...prevGameState, wildcardColor: color };
+			});
+		};
+
 		socket.on('UNO_DRAW_CARDS', handleDrawCards);
 		socket.on('UNO_SET_PLAYER_TURN', handleSetPlayerTurn);
 		socket.on('UNO_PLAY_CARD', handlePlayCard);
+		socket.on('UNO_CHOOSE_COLOR', handleChooseColor);
 
 		return () => {
 			socket.off('UNO_DRAW_CARDS', handleDrawCards);
 			socket.off('UNO_SET_PLAYER_TURN', handleSetPlayerTurn);
 			socket.off('UNO_PLAY_CARD', handlePlayCard);
+			socket.off('UNO_CHOOSE_COLOR', handleChooseColor);
 		};
 	}, []);
 
@@ -109,7 +120,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		(player) => player.socketId === ourPlayer?.socketId,
 	)?.cards;
 
-	if (!gameState || !ourPlayer || !ourCards) {
+	if (!gameState || !ourPlayer || ourCards === undefined) {
 		// TODO loader or error
 		return <p>Loading...</p>;
 	}

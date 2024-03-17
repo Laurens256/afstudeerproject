@@ -77,16 +77,15 @@ const UnoGame = ({
 	};
 
 	const isColorSelectCard = (card: UnoCard) => card.type === 'wild-card' && card.value === 'wild';
-	const isSkipNextPlayerCard = (card: UnoCard) => card.type === 'special-card' && card.value === 'skip';
 	const onPlayCard = async (card: UnoCard) => {
 		const canPlay = canPlayCard(card);
 
 		if (canPlay === true) {
-			let chosenColor: UnoColor | null = null;
+			socket.emit('UNO_PLAY_CARD', card.cardId);
 			if (isColorSelectCard(card)) {
-				chosenColor = await getColorFromPicker();
+				const chosenColor = await getColorFromPicker();
+				socket.emit('UNO_CHOOSE_COLOR', chosenColor);
 			}
-			socket.emit('UNO_PLAY_CARD', card.cardId, chosenColor, isSkipNextPlayerCard(card));
 		} else {
 			alert(canPlay); // TODO
 		}
@@ -103,6 +102,7 @@ const UnoGame = ({
 					setHasDrawnCard={setHasDrawnCard}
 					hasDrawnCard={hasDrawnCard}
 					cardDrawCounter={gameState.cardDrawCounter}
+					getColorFromPicker={getColorFromPicker}
 				/>
 			</section>
 

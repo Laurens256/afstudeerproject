@@ -50,8 +50,6 @@ const UnoCardComponent = ({ card, className }: UnoCardProps) => {
 			</p>
 			<Image
 				// src={`https://placehold.co/150x225/png?text=${imgFilename}`}
-				// src="/img/uno/cards/red-0.png"
-				// src="/img/uno/cards/red-0.png"
 				src={`/img/uno/cards/${imgFilename}.png`}
 				loading="eager"
 				alt=""
