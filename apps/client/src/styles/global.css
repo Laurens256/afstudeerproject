@@ -3,6 +3,11 @@
 	src: url('/assets/open-sans.woff2') format('woff2');
 	font-weight: 300 800;
 }
+@font-face {
+	font-family: 'Work Sans';
+	src: url('/assets/work-sans-bold.woff2') format('woff2');
+	/* font-weight: 700; */
+}
 
 body {
 	font-family: 'Open Sans', 'inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif';

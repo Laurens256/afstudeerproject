@@ -43,7 +43,6 @@ const UnoGame = ({
 		const { currentCard, wildcardColor, cardDrawCounter } = gameState;
 		const cards = gameState.players.find((p) => p.socketId === ourPlayer.socketId)?.cards || [];
 
-		// TODO add check if drawCardCounter is active
 		if (!canDoAction) {
 			canPlay = 'It\'s not your turn';
 		} else if (
@@ -51,12 +50,11 @@ const UnoGame = ({
 			&& cards.length === 1
 		) {
 			canPlay = 'You can\'t play a wild card when you have only one card left';
-		} else if (
-			cardDrawCounter > 0
-			&& card.value !== 'draw-two'
-			&& card.value !== 'wild-draw-four'
-		) {
-			canPlay = 'You can only play a draw two or draw four card';
+		} else if (cardDrawCounter > 0) {
+			if (card.value !== 'draw-two'
+			&& card.value !== 'wild-draw-four') {
+				canPlay = 'You can only play a draw two or draw four card';
+			}
 		} else if (
 			card.type === 'number-card'
 		|| card.type === 'special-card'

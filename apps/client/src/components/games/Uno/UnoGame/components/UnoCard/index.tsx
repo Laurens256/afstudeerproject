@@ -1,6 +1,7 @@
 import type { UnoCard } from '@shared/types';
 import Image from 'next/image';
 import { memo } from 'react';
+import dynamic from 'next/dynamic';
 
 type UnoCardProps = {
 	card: UnoCard | null;
@@ -48,13 +49,21 @@ const UnoCardComponent = ({ card, className }: UnoCardProps) => {
 				{cardToLabel(card)}
 			</p>
 			<Image
-				src={`https://placehold.co/150x225/png?text=${imgFilename}`}
-				// src={`/img/uno/cards/${imgFilename}.png`}
+				// src={`https://placehold.co/150x225/png?text=${imgFilename}`}
+				// src="/img/uno/cards/red-0.png"
+				// src="/img/uno/cards/red-0.png"
+				src={`/img/uno/cards/${imgFilename}.png`}
+				loading="eager"
 				alt=""
-				width={100}
-				height={150}
+				width={125}
+				height={187.5}
 				className={className}
 				draggable={false}
+				style={{
+					backgroundColor: card?.type === 'special-card' || card?.type === 'number-card'
+						? `var(--uno-color-${card.color})` : 'var(--uno-color-black)',
+					borderRadius: '0.5rem',
+				}}
 			/>
 		</div>
 	);
