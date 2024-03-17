@@ -1,7 +1,6 @@
 /* eslint no-param-reassign: 0 */
 
 import type { ExtendedServer, ExtendedSocket } from '@/types';
-import type { UnoGameState } from '@shared/types';
 import util from './util';
 
 const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
@@ -34,30 +33,31 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
 			const cards = util.drawCards(roomCode, socket.id, amount);
-			// TODO: wait for user to skip instead of auto skip after drawing
-			const nextPlayerSocketId = util.setNextPlayer(roomCode);
-			io.to(roomCode).emit('UNO_DRAW_CARDS', socket.id, cards, nextPlayerSocketId);
+			io.to(roomCode).emit('UNO_DRAW_CARDS', socket.id, cards);
 		}
 	});
-	socket.on('UNO_PLAY_CARD', (cardId) => {
+
+	socket.on('UNO_PLAY_CARD', (cardId, chosenColor, skipNextPlayer) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
-			const response = util.playCard(roomCode, socket.id, cardId);
-			if (response) {
-				const { newState, isChooseColorCard } = response;
-				if (isChooseColorCard) {
-					// TODO
-					// socket.emit('UNO_CHOOSE_COLOR', socket.id);
-				} else {
-					const nextSocketId = util.setNextPlayer(roomCode);
-					const newStateWithNextPlayer: Partial<UnoGameState> = {
-						...newState, currentPlayerId: nextSocketId,
-					};
-					io.to(roomCode).emit('UNO_PLAY_CARD', socket.id, cardId, newStateWithNextPlayer);
-					// io.to(roomCode).emit('UNO_UPDATE_GAME_STATE', newState);
-					// handleEmitNextPlayer(roomCode);
-				}
+			const newState = util.playCard({
+				roomCode,
+				socketId: socket.id,
+				cardId,
+				chosenColor,
+				skipNextPlayer,
+			});
+			if (newState) {
+				io.to(roomCode).emit('UNO_PLAY_CARD', socket.id, cardId, newState);
 			}
+		}
+	});
+
+	socket.on('UNO_SKIP_TURN', () => {
+		const { roomCode } = socket.data;
+		if (roomCode) {
+			const nextPlayerSocketId = util.setNextPlayer(roomCode);
+			io.to(roomCode).emit('UNO_SET_PLAYER_TURN', nextPlayerSocketId);
 		}
 	});
 };

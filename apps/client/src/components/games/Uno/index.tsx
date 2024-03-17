@@ -9,12 +9,16 @@ type UnoProps = {
 const Uno = ({ playersInGame }: UnoProps) => {
 	const [gameState, setGameState] = useState<UnoGameState | null>(null);
 	const [movePlayed, setMovePlayed] = useState(false);
+	const [hasDrawnCard, setHasDrawnCard] = useState(false);
+
 	const isOurTurn = gameState?.currentPlayerId === socket.id;
 	const canDoAction = gameState?.currentPlayerId === socket.id && !movePlayed;
+	const canSkipTurn = isOurTurn && hasDrawnCard;
 
 	useEffect(() => {
 		if (isOurTurn) {
 			setMovePlayed(false);
+			setHasDrawnCard(false);
 		}
 	}, [isOurTurn]);
 
@@ -40,12 +44,11 @@ const Uno = ({ playersInGame }: UnoProps) => {
 	}, [gameState, playersInGame]);
 
 	useEffect(() => {
-		const handleDrawCards = (socketId: string, cards: UnoCard[], nextPlayer: string) => {
+		const handleDrawCards = (socketId: string, cards: UnoCard[]) => {
 			setGameState((prevGameState) => {
 				if (!prevGameState) return prevGameState;
 
 				const newGameState = { ...prevGameState };
-				newGameState.currentPlayerId = nextPlayer;
 				const cardReceiver = newGameState.players.find(
 					(player) => player.socketId === socketId,
 				);
@@ -118,6 +121,9 @@ const Uno = ({ playersInGame }: UnoProps) => {
 			canDoAction={canDoAction}
 			disableCanDoAction={() => setMovePlayed(true)}
 			ourPlayer={ourPlayer}
+			canSkipTurn={canSkipTurn}
+			setHasDrawnCard={setHasDrawnCard}
+			hasDrawnCard={hasDrawnCard}
 		/>
 	);
 };

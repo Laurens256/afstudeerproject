@@ -1,4 +1,4 @@
-import type { UnoCard, UnoColor, UnoNumber, UnoSpecialColorCards, UnoWildCards, UnoGameState, Player } from '@shared/types';
+import type { UnoCard, UnoColor, UnoNumber, UnoSpecialColorCard, UnoWildCard, UnoGameState } from '@shared/types';
 import { arrayUtil } from '@/util';
 
 const games: { [roomCode: string]: UnoGameState } = {};
@@ -6,8 +6,8 @@ const games: { [roomCode: string]: UnoGameState } = {};
 const generateDeck = (): UnoCard[] => {
 	const colorVals: UnoColor[] = ['red', 'blue', 'green', 'yellow'];
 	const numberVals: UnoNumber[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-	const specialCardVals: UnoSpecialColorCards['value'][] = ['skip', 'reverse', 'draw-two'];
-	const wildCardVals: UnoWildCards['value'][] = ['wild', 'wild-draw-four'];
+	const specialCardVals: UnoSpecialColorCard['value'][] = ['skip', 'reverse', 'draw-two'];
+	const wildCardVals: UnoWildCard['value'][] = ['wild', 'wild-draw-four'];
 
 	let cardIndex = 0;
 	const numberCards: UnoCard[] = colorVals.flatMap((color) => numberVals.flatMap((value) => {
@@ -36,6 +36,7 @@ const generateDeck = (): UnoCard[] => {
 		return cards;
 	});
 
+	// return [...wildCards, ...wildCards, ...wildCards, ...wildCards];
 	return arrayUtil.shuffleArray([...wildCards, ...specialCards, ...numberCards]);
 };
 
@@ -52,47 +53,12 @@ const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 	return cards;
 };
 
-// MAYBE TODO: check if card is playable, already done in client
-const playCard = (roomCode: string, socketId: string, cardId: number) => {
+const setNextPlayer = (roomCode: string, skipPlayer?: boolean) => {
 	const game = games[roomCode];
-	const player = game.players.find((p) => p.socketId === socketId);
-	if (!player) return;
-
-	const cardIndex = player.cards.findIndex((c) => c.cardId === cardId);
-	if (cardIndex === -1) return;
-
-	const card = player.cards[cardIndex];
-
-	player.cards.splice(cardIndex, 1);
-	game.droppedPile.push(card);
-	game.currentCard = card;
-
-	let newCardDrawCounter = game.cardDrawCounter;
-	if (card.type === 'special-card' && card.value === 'draw-two') {
-		newCardDrawCounter += 2;
-	} else if (card.type === 'wild-card' && card.value === 'wild-draw-four') {
-		newCardDrawCounter += 4;
-	}
-
-	const newState: Partial<UnoGameState> = {
-		currentCard: card,
-		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
-		cardDrawCounter: newCardDrawCounter,
-	};
-
-	return {
-		isChooseColorCard: card.type === 'wild-card' && card.value === 'wild',
-		newState,
-	};
-};
-
-const setNextPlayer = (roomCode: string) => {
-	const game = games[roomCode];
-	const { players, currentPlayerId, isClockwise, currentCard } = game;
-	const isSkipTurn = currentCard.type === 'special-card' && currentCard.value === 'skip';
+	const { players, currentPlayerId, isClockwise } = game;
 
 	const currentPlayerIndex = players.findIndex((p) => p.socketId === currentPlayerId);
-	const moveAmount = isSkipTurn ? 2 : 1;
+	const moveAmount = skipPlayer ? 2 : 1;
 
 	const nextPlayerIndex = isClockwise
 		? (currentPlayerIndex + moveAmount) % players.length
@@ -101,6 +67,46 @@ const setNextPlayer = (roomCode: string) => {
 	const { socketId: nextPlayerSocketId } = players[nextPlayerIndex];
 	game.currentPlayerId = nextPlayerSocketId;
 	return nextPlayerSocketId;
+};
+
+type PlayCardProps = {
+	roomCode: string;
+	socketId: string;
+	cardId: number;
+	chosenColor: UnoColor | null;
+	skipNextPlayer: boolean | undefined;
+};
+const playCard = ({ roomCode, socketId, cardId, chosenColor, skipNextPlayer }: PlayCardProps) => {
+	const game = games[roomCode];
+	const player = game.players.find((p) => p.socketId === socketId);
+	if (!player) return;
+
+	const cardIndex = player.cards.findIndex((c) => c.cardId === cardId);
+	if (cardIndex === -1) return;
+
+	const card = player.cards[cardIndex];
+	player.cards.splice(cardIndex, 1);
+
+	let newCardDrawCounter = game.cardDrawCounter;
+	if (card.type === 'special-card' && card.value === 'draw-two') {
+		newCardDrawCounter += 2;
+	} else if (card.type === 'wild-card' && card.value === 'wild-draw-four') {
+		newCardDrawCounter += 4;
+	}
+	const newState: Partial<UnoGameState> = {
+		droppedPile: [...game.droppedPile, card],
+		currentCard: card,
+		wildcardColor: chosenColor,
+		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
+		cardDrawCounter: newCardDrawCounter,
+	};
+
+	// set newState before setting next player because direction or skip might change
+	games[roomCode] = { ...game, ...newState };
+	const nextPlayerId = setNextPlayer(roomCode, skipNextPlayer);
+	newState.currentPlayerId = nextPlayerId;
+
+	return newState;
 };
 
 const initializeGame = (roomCode: string, sockets: string[]) => {

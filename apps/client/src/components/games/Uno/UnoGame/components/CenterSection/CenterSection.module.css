@@ -1,3 +1,9 @@
+.container {
+	display: flex;
+	justify-content: space-between;
+	width: min(100%, 55rem);
+}
+
 .cardsContainer {
 	display: flex;
 	gap: 0.5rem;
