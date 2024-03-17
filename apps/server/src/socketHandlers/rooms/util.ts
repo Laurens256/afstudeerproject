@@ -34,7 +34,7 @@ const createRoom = (code?: string): string => {
 		roomName: null,
 		isPrivate: false,
 		isStarted: false,
-		selectedGame: 'uno', // TODO
+		selectedGame: 'UNO', // TODO
 	};
 	return roomCode;
 };

@@ -1,5 +1,5 @@
 export const Games = {
-	UNO: 'uno'
+	UNO: 'UNO'
 } as const;
 export type GamesType = typeof Games[keyof typeof Games];
 

@@ -1,7 +1,6 @@
 import type { UnoCard } from '@shared/types';
 import Image from 'next/image';
 import { memo } from 'react';
-import dynamic from 'next/dynamic';
 
 type UnoCardProps = {
 	card: UnoCard | null;

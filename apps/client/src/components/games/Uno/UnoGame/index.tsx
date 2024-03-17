@@ -1,4 +1,4 @@
-import type { Player, UnoCard, UnoColor, UnoGameState, UnoPlayer } from '@shared/types';
+import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
 import { CardsList, CenterSection } from './components';

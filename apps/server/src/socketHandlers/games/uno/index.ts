@@ -62,6 +62,18 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 			io.to(roomCode).emit('UNO_SET_PLAYER_TURN', nextPlayerSocketId);
 		}
 	});
+
+	// socket.on('UNO_PLAYER_LEAVE', () => {
+	// 	const { roomCode } = socket.data;
+	// 	console.log('UNO_PLAYER_LEAVE', roomCode)
+	// 	if (roomCode) {
+	// 		const gameState = util.handlePlayerLeave(roomCode, socket.id);
+	// 		console.log(gameState)
+	// 		if (gameState) {
+	// 			io.to(roomCode).emit('UNO_GET_GAME_STATE', gameState);
+	// 		}
+	// 	}
+	// });
 };
 
 export default unoHandlers;

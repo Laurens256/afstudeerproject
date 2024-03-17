@@ -145,6 +145,7 @@ const handlePlayerLeave = (roomCode: string, socketId: string) => {
 	if (playerIndex === -1) return;
 
 	game.players.splice(playerIndex, 1);
+	game.connectedPlayerSockets = game.connectedPlayerSockets.filter((id) => id !== socketId);
 
 	if (game.players.length === 0) {
 		delete games[roomCode];
@@ -154,6 +155,7 @@ const handlePlayerLeave = (roomCode: string, socketId: string) => {
 	if (game.currentPlayerId === socketId) {
 		setNextPlayer(roomCode);
 	}
+	return games[roomCode];
 };
 
 const setSocketConnected = (roomCode: string, socketId: string) => {

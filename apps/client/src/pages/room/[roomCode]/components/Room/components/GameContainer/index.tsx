@@ -8,7 +8,7 @@ type GameContainerProps = {
 };
 const GameContainer = ({ game, playersInGame }: GameContainerProps) => (
 	<main className={classes.container}>
-		{game === 'uno' && <Uno playersInGame={playersInGame} />}
+		{game === 'UNO' && <Uno playersInGame={playersInGame} />}
 	</main>
 );
 

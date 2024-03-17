@@ -1,8 +1,9 @@
 /* eslint no-param-reassign: 0 */
 
-import type { Message, Player, RoomState } from '@shared/types';
+import type { GamesType, Message, Player, RoomState } from '@shared/types';
 import type { ExtendedServer, ExtendedSocket } from '@/types';
 import util from './util';
+import unoUtil from '../games/uno/util';
 
 const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 	const getRoomSockets = (roomCode: string) => Array.from(
@@ -127,25 +128,6 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		io.to(roomCode).emit('ROOM_CHAT_MESSAGE', message);
 	});
 
-	// TODO: handle room leave for active game if needed
-	const handleRoomLeave = (roomCode: string | undefined, role: string | undefined) => {
-		if (!roomCode) return;
-		io.to(roomCode).except(socket.id).emit('ROOM_PLAYER_LEFT', socket.id);
-		socket.leave(roomCode);
-		socket.data = {};
-
-		if (!getRoomSockets(roomCode).length) {
-			util.deleteRoom(roomCode);
-		}
-
-		if (role === 'admin') {
-			const newAdminId = setRoomAdmin(roomCode, null);
-			if (newAdminId) {
-				io.to(roomCode).emit('ROOM_ADMIN_CHANGE', newAdminId);
-			}
-		}
-	};
-
 	socket.on('ROOM_START_GAME', () => {
 		const { roomCode } = socket.data;
 		if (!roomCode) return;
@@ -173,14 +155,52 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		});
 	});
 
+	const leaveGameAfterRoomLeave = (
+		roomCode: string,
+		socketId: string,
+		game: GamesType | undefined,
+	) => {
+		switch (game) {
+			case 'UNO': {
+				const newState = unoUtil.handlePlayerLeave(roomCode, socketId);
+				if (newState) {
+					io.to(roomCode).emit('UNO_GET_GAME_STATE', newState);
+				}
+				break;
+			}
+		}
+	};
+	const handleRoomLeave = (
+		roomCode: string | undefined,
+		role: string | undefined,
+		inGame: GamesType | undefined,
+	) => {
+		if (!roomCode) return;
+		io.to(roomCode).except(socket.id).emit('ROOM_PLAYER_LEFT', socket.id);
+		socket.leave(roomCode);
+		socket.data = {};
+
+		if (!getRoomSockets(roomCode).length) {
+			util.deleteRoom(roomCode);
+		}
+
+		if (role === 'admin') {
+			const newAdminId = setRoomAdmin(roomCode, null);
+			if (newAdminId) {
+				io.to(roomCode).emit('ROOM_ADMIN_CHANGE', newAdminId);
+			}
+		}
+		leaveGameAfterRoomLeave(roomCode, socket.id, inGame);
+	};
+
 	socket.on('ROOM_LEAVE', () => {
-		const { roomCode, role } = socket.data;
-		handleRoomLeave(roomCode, role);
+		const { roomCode, role, inGame } = socket.data;
+		handleRoomLeave(roomCode, role, inGame);
 	});
 
 	socket.on('disconnect', () => {
-		const { roomCode, role } = socket.data;
-		handleRoomLeave(roomCode, role);
+		const { roomCode, role, inGame } = socket.data;
+		handleRoomLeave(roomCode, role, inGame);
 	});
 };
 

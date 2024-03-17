@@ -23,20 +23,19 @@ const Uno = ({ playersInGame }: UnoProps) => {
 	}, [isOurTurn]);
 
 	useEffect(() => {
-		if (gameState) {
-			return;
-		}
 		const handleGetGameState = (serverGameState: UnoGameState) => {
 			setGameState(serverGameState);
 		};
 
 		socket.on('UNO_GET_GAME_STATE', handleGetGameState);
 
-		if (playersInGame.map((player) => player.socketId).includes(socket.id)) {
-			const expectedSocketIds = playersInGame.map((player) => player.socketId);
-			socket.emit('UNO_PLAYER_GET_INITIAL_STATE', expectedSocketIds);
-		} else {
-			socket.emit('UNO_GET_GAME_STATE');
+		if (!gameState) {
+			if (playersInGame.map((player) => player.socketId).includes(socket.id)) {
+				const expectedSocketIds = playersInGame.map((player) => player.socketId);
+				socket.emit('UNO_PLAYER_GET_INITIAL_STATE', expectedSocketIds);
+			} else {
+				socket.emit('UNO_GET_GAME_STATE');
+			}
 		}
 		return () => {
 			socket.off('UNO_GET_GAME_STATE', handleGetGameState);

@@ -15,6 +15,7 @@ module.exports = {
 			ignoreStrings: true,
 			ignoreTemplateLiterals: true
 		}],
+		'default-case': 'off',
 
 		'import/no-extraneous-dependencies': 'off',
 		'import/prefer-default-export': 'off',
