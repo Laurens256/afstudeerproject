@@ -8,56 +8,41 @@ type CardsListProps = {
 	cards: UnoCard[];
 	username: string;
 	className?: string;
-	position: 'top' | 'right' | 'bottom' | 'left';
 	isCurrentPlayer: boolean;
-	onCardClick?: (card: UnoCard) => void;
+	onCardClick: (card: UnoCard) => void;
 };
 const CardsList = ({
 	cards,
 	username,
 	className,
-	position,
 	isCurrentPlayer,
 	onCardClick,
 }: CardsListProps) => (
-	<div>
-		<ul
-			className={clsx(
-				classes.container,
-				className,
-				classes[`${position}Position`],
-				isCurrentPlayer && classes.currentPlayer,
-			)}
-			aria-label={`${username} cards`}
-		>
-			{onCardClick ? cards.map((card) => (
-				<li key={card.cardId} className={classes.cardContainer}>
-					<Button
-						aria-roledescription="card"
-						variant="unstyled"
-						onClick={() => onCardClick(card)}
-						className={classes.cardButtonWrapper}
-					>
-						<UnoCardComponent
-							key={card.cardId}
-							card={card}
-							className={classes.cardImg}
-						/>
-					</Button>
-				</li>
-			)) : (
-				cards.map((card) => (
-					<li key={card.cardId} className={classes.cardContainer}>
-						<UnoCardComponent
-							key={card.cardId}
-							card={null}
-							className={classes.cardImg}
-						/>
-					</li>
-				))
-			)}
-		</ul>
-	</div>
+	<ul
+		className={clsx(
+			classes.container,
+			className,
+			isCurrentPlayer && classes.currentPlayer,
+		)}
+		aria-label={`${username} cards`}
+	>
+		{cards.map((card) => (
+			<li key={card.cardId} className={classes.cardContainer}>
+				<Button
+					aria-roledescription="card"
+					variant="unstyled"
+					onClick={() => onCardClick(card)}
+					className={classes.cardButtonWrapper}
+				>
+					<UnoCardComponent
+						key={card.cardId}
+						card={card}
+						className={classes.cardImg}
+					/>
+				</Button>
+			</li>
+		))}
+	</ul>
 );
 
 export default CardsList;

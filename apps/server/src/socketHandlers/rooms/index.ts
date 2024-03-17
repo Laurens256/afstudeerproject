@@ -131,7 +131,8 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 	socket.on('ROOM_START_GAME', () => {
 		const { roomCode } = socket.data;
 		if (!roomCode) return;
-		const sockets = getRoomSockets(roomCode).slice(0, 4);
+		const sockets = getRoomSockets(roomCode);
+		// const sockets = getRoomSockets(roomCode).slice(0, 4);
 		const game = util.getRoom(roomCode)?.selectedGame;
 
 		sockets.forEach((id) => {

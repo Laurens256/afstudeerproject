@@ -6,5 +6,6 @@
 
 .cardsContainer {
 	display: flex;
+	flex-shrink: 0;
 	gap: 0.5rem;
 }

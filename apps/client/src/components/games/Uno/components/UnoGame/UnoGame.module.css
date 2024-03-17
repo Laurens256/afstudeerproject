@@ -1,10 +1,7 @@
-.cardListContainer {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+
 
 .container {
+	--uno-card-height: 11.71875rem;
 	display: grid;
 	grid-template-columns: repeat(6, 1fr);
 	grid-template-rows: repeat(6, 1fr);
@@ -19,55 +16,35 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		/* background-color: pink; */
 	}
+}
 
-	/* & .topPosition {
-		background-color: red;
-	}
-	& .bottomPosition {
-		background-color: blue;
-	}
-	& .rightPosition {
-		background-color: green;
-	}
-	& .leftPosition {
-		background-color: yellow;
-	} */
+.cardListContainer {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-direction: column;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 100%;
 
-	& .topPosition {
-		align-items: end;
+	&.topPosition {
+		grid-column: 2 / 6;
+		grid-row: 1 / 3;
+		flex-direction: row;
 	}
-	& .bottomPosition {
-		align-items: start;
+	&.bottomPosition {
+		grid-column: 2 / 6;
+		grid-row: 5 / 7;
+		justify-content: start;
 	}
-
-	&.players4, &.players3 {
-		& .topPosition {
-			grid-column: 2 / 6;
-			grid-row: 1 / 3;
-		}
-		& .bottomPosition {
-			grid-column: 2 / 6;
-			grid-row: 5 / 7;
-		}
-		& .leftPosition {
-			grid-column: 1 / 2;
-			grid-row: 1 / 7;
-		}
-		& .rightPosition {
-			grid-column: 6 / 7;
-			grid-row: 1 / 7;
-		}
+	&.rightPosition {
+		grid-column: 6 / 7;
+		grid-row: 1 / 7;
 	}
-	&.players2, &.players1 {
-		& .topPosition {
-			grid-column: 1 / 7;
-			grid-row: 1 / 3;
-		}
-		& .bottomPosition {
-			grid-column: 1 / 7;
-			grid-row: 5 / 7;
-		}
+	&.leftPosition {
+		grid-column: 1 / 2;
+		grid-row: 1 / 7;
+		flex-direction: column-reverse;
 	}
 }

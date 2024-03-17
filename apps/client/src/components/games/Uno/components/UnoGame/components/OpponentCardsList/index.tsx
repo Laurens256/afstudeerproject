@@ -1,25 +1,35 @@
+import clsx from 'clsx';
+import { memo } from 'react';
+import type { UnoCard } from '@shared/types';
 import classes from './OpponentCardsList.module.css';
-import UnoCard from '../UnoCard';
+import UnoCardComponent from '../UnoCard';
 
 type OpponentCardsListProps = {
-	cardIds: number[];
+	cards: UnoCard[];
+	isCurrentPlayer: boolean;
+	username: string;
 };
 
-const OpponentCardsList = ({ cardIds }: OpponentCardsListProps) => {
-	console;
+const OpponentCardsList = ({ cards, isCurrentPlayer, username }: OpponentCardsListProps) => {
+	const rotateStep = 360 / cards.length;
 	return (
-		<ul className={classes.container}>
-			{cardIds.map((cardId, i) => (
+		<ul
+			className={clsx(classes.cardsContainer, isCurrentPlayer && classes.currentPlayer)}
+			aria-label={`${username} cards`}
+		>
+			{cards.map((card, i) => (
 				<li
-					key={cardId}
+					key={card.cardId}
 					className={classes.card}
-					style={{}}
+					style={{
+						rotate: `${rotateStep * i}deg`,
+					}}
 				>
-					<UnoCard card={null} />
+					<UnoCardComponent card={null} />
 				</li>
 			))}
 		</ul>
 	);
 };
 
-export default OpponentCardsList;
+export default memo(OpponentCardsList);

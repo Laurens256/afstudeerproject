@@ -1,8 +1,19 @@
-.container {
+.cardsContainer {
 	position: relative;
-	width: 100%;
+	width: 11.71875rem;
+	height: 11.71875rem;
+	/* background-color: red; */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-shrink: 0;
+
+	&.currentPlayer {
+		background-color: red;
+	}
 }
 
 .card {
 	position: absolute;
+	/* translate: 10rem 2.5rem; */
 }

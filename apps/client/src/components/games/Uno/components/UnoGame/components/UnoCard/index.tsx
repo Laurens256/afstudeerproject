@@ -1,6 +1,8 @@
 import type { UnoCard } from '@shared/types';
 import Image from 'next/image';
 import { memo } from 'react';
+import clsx from 'clsx';
+import classes from './UnoCard.module.css';
 
 type UnoCardProps = {
 	card: UnoCard | null;
@@ -52,14 +54,13 @@ const UnoCardComponent = ({ card, className }: UnoCardProps) => {
 				src={`/img/uno/cards/${imgFilename}.png`}
 				loading="eager"
 				alt=""
-				width={125}
-				height={187.5}
-				className={className}
+				width={300}
+				height={450}
+				className={clsx(classes.image, className)}
 				draggable={false}
 				style={{
 					backgroundColor: card?.type === 'special-card' || card?.type === 'number-card'
 						? `var(--uno-color-${card.color})` : 'var(--uno-color-black)',
-					borderRadius: '0.5rem',
 				}}
 			/>
 		</div>

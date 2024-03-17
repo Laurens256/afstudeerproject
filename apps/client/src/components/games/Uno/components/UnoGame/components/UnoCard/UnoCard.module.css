@@ -1,0 +1,5 @@
+.image {
+	border-radius: 0.5rem;
+	height: var(--uno-card-height);
+	width: calc(var(--uno-card-height) * 2 / 3);
+}

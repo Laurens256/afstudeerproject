@@ -91,6 +91,22 @@ const UnoGame = ({
 		}
 	};
 
+	// divides the players into 4 sections: bottom, left, top, right.
+	// bottom section is reserved for ourPlayer, rest is divided clockwise
+	const playersDividedBySection: UnoPlayer[][] = [[sortedPlayers[0]]];
+	if (sortedPlayers.length === 2) {
+		playersDividedBySection.push([], [sortedPlayers[1]]);
+	} else if (sortedPlayers.length === 3) {
+		playersDividedBySection.push([sortedPlayers[1]], [], [sortedPlayers[2]]);
+	} else {
+		const playersPerSection = Math.ceil((sortedPlayers.length - 1) / 3);
+		playersDividedBySection.push(...Array.from({ length: 3 }, (_, sectionIndex) => {
+			const startIndex = 1 + sectionIndex * playersPerSection;
+			const endIndex = Math.min(startIndex + playersPerSection, sortedPlayers.length);
+			return sortedPlayers.slice(startIndex, endIndex);
+		}));
+	}
+
 	return (
 		<div className={clsx(classes.container, classes[`players${players.length}`])}>
 			<section className={classes.middleSection} aria-label="card pile">
@@ -106,45 +122,41 @@ const UnoGame = ({
 				/>
 			</section>
 
-			{sortedPlayers.map((player, i) => {
-				let position: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
-				if (i === 1) position = players.length === 2 ? 'top' : 'left';
-				if (i === 2) position = players.length === 3 ? 'right' : 'top';
-				if (i === 3) position = 'right';
-
-				const isOurPlayer = player.socketId === ourPlayer.socketId;
-				const username = players.find(
-					(p) => p.socketId === player.socketId,
-				)?.username || 'someone';
-				const isCurrentPlayer = gameState.currentPlayerId === player.socketId;
-
+			{playersDividedBySection.map((playersPerPosition, i) => {
+				const position = ['bottom', 'left', 'top', 'right'][i];
 				return (
 					<div
-						key={player.socketId}
+						key={players[0].socketId}
 						className={clsx(classes[`${position}Position`], classes.cardListContainer)}
 					>
-						{/* TODO remove excess variables */}
-						{isOurPlayer ? (
-							<CardsList
-								cards={player.cards}
-								username={username}
-								position={position}
-								isCurrentPlayer={isCurrentPlayer}
-								onCardClick={onPlayCard}
-							/>
-						) : (
-							<OpponentCardsList cardIds={player.cards.map((card) => card.cardId)} />
-						)}
-						{/* <CardsList
-							cards={player.cards}
-							username={username}
-							position={position}
-							isCurrentPlayer={isCurrentPlayer}
-							onCardClick={isOurPlayer ? onPlayCard : undefined}
-						/> */}
+						{playersPerPosition.map((player) => {
+							const isCurrentPlayer = gameState.currentPlayerId === player.socketId;
+							const username = players.find(
+								(p) => p.socketId === player.socketId,
+							)?.username || 'someone';
+							return (
+								i === 0 ? (
+									<CardsList
+										key={player.socketId}
+										cards={player.cards}
+										username={username}
+										isCurrentPlayer={isCurrentPlayer}
+										onCardClick={onPlayCard}
+									/>
+								) : (
+									<OpponentCardsList
+										key={player.socketId}
+										isCurrentPlayer={isCurrentPlayer}
+										cards={player.cards}
+										username={username}
+									/>
+								)
+							);
+						})}
 					</div>
 				);
 			})}
+
 			<ColorPicker />
 		</div>
 	);
