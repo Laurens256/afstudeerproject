@@ -96,6 +96,7 @@ const playCard = ({ roomCode, socketId, cardId }: PlayCardProps) => {
 		currentCard: card,
 		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
 		cardDrawCounter: newCardDrawCounter,
+		winnerId: player.cards.length === 0 ? socketId : null,
 	};
 
 	const shouldSkipNextPlayer = (card.type === 'special-card' && card.value === 'skip')
@@ -131,6 +132,7 @@ const initializeGame = (roomCode: string, sockets: string[]) => {
 		wildcardColor: null,
 		cardDrawCounter: 0,
 		connectedPlayerSockets: [],
+		winnerId: null,
 	};
 
 	games[roomCode] = game;

@@ -1,7 +1,7 @@
 import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
-import { CardsList, CenterSection } from './components';
+import { CardsList, CenterSection, OpponentCardsList } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
 
@@ -123,13 +123,25 @@ const UnoGame = ({
 						key={player.socketId}
 						className={clsx(classes[`${position}Position`], classes.cardListContainer)}
 					>
-						<CardsList
+						{/* TODO remove excess variables */}
+						{isOurPlayer ? (
+							<CardsList
+								cards={player.cards}
+								username={username}
+								position={position}
+								isCurrentPlayer={isCurrentPlayer}
+								onCardClick={onPlayCard}
+							/>
+						) : (
+							<OpponentCardsList cardIds={player.cards.map((card) => card.cardId)} />
+						)}
+						{/* <CardsList
 							cards={player.cards}
 							username={username}
 							position={position}
 							isCurrentPlayer={isCurrentPlayer}
 							onCardClick={isOurPlayer ? onPlayCard : undefined}
-						/>
+						/> */}
 					</div>
 				);
 			})}

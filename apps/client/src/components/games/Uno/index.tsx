@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
 import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
-import UnoGame from './UnoGame';
+import { UnoGame, WinnerModal } from './components';
 
 type UnoProps = {
 	playersInGame: Player[]
@@ -123,18 +123,23 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		// TODO loader or error
 		return <p>Loading...</p>;
 	}
+	const winner = playersInGame.find((player) => player.socketId === gameState.winnerId);
 
 	return (
-		<UnoGame
-			gameState={gameState}
-			players={playersInGame}
-			canDoAction={canDoAction}
-			disableCanDoAction={() => setMovePlayed(true)}
-			ourPlayer={ourPlayer}
-			canSkipTurn={canSkipTurn}
-			setHasDrawnCard={setHasDrawnCard}
-			hasDrawnCard={hasDrawnCard}
-		/>
+		<>
+			<UnoGame
+				gameState={gameState}
+				players={playersInGame}
+				canDoAction={canDoAction}
+				disableCanDoAction={() => setMovePlayed(true)}
+				ourPlayer={ourPlayer}
+				canSkipTurn={canSkipTurn}
+				setHasDrawnCard={setHasDrawnCard}
+				hasDrawnCard={hasDrawnCard}
+			/>
+			{/* TODO: generic WinnerModal for all games */}
+			{winner && <WinnerModal winner={winner} />}
+		</>
 	);
 };
 

@@ -31,4 +31,5 @@ export type UnoGameState = {
 	wildcardColor: UnoColor | null;
 	cardDrawCounter: number;
 	connectedPlayerSockets: string[];
+	winnerId: string | null;
 };
