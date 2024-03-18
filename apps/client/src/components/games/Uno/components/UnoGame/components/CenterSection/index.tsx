@@ -37,7 +37,7 @@ const CenterSection = ({
 				socket.emit('UNO_CHOOSE_COLOR', color);
 			}
 		} else if (hasDrawnCard) {
-			alert('You already drew a card, you can skip your turn or play a card');
+			alert('You already drew a card, you can end your turn or play a card');
 		} else {
 			alert('It\'s not your turn');
 		}
@@ -48,14 +48,14 @@ const CenterSection = ({
 			disableCanDoAction();
 			socket.emit('UNO_SKIP_TURN');
 		} else {
-			alert('You can\'t skip your turn');
+			alert('You can\'t end your turn until you draw a card or play a card');
 		}
 	};
 
 	return (
 		<div className={classes.container}>
 			<Button onClick={onSkipTurn}>
-				SKIP TURN
+				END TURN
 			</Button>
 			<div className={classes.cardsContainer}>
 				<Button variant="unstyled" aria-label="draw a card" onClick={onDrawCard}>

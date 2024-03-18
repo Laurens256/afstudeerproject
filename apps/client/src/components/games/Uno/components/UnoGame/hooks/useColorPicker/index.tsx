@@ -40,7 +40,7 @@ const useColorPicker = () => {
 							onClick={() => onClick(color)}
 							aria-label={color}
 							variant="unstyled"
-							style={{ backgroundColor: color }}
+							style={{ backgroundColor: `var(--uno-color-${color})` }}
 							className={clsx(classes.colorButton, classes[color])}
 						/>
 					))}
