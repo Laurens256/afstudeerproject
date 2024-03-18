@@ -87,7 +87,7 @@ const UnoGame = ({
 				socket.emit('UNO_CHOOSE_COLOR', chosenColor);
 			}
 		} else {
-			alert(canPlay); // TODO
+			alert(canPlay);
 		}
 	};
 
@@ -126,7 +126,7 @@ const UnoGame = ({
 				const position = ['bottom', 'left', 'top', 'right'][i];
 				return (
 					<div
-						key={players[0].socketId}
+						key={position[i]}
 						className={clsx(classes[`${position}Position`], classes.cardListContainer)}
 					>
 						{playersPerPosition.map((player) => {

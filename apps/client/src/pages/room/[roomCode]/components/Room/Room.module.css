@@ -10,7 +10,7 @@
 
 	&:where(.sidebarOpen) {
 		& .gameWrapper {
-			width: calc(100% - var(--sidebar-width) - var(--sidebar-inset) * 2);
+			width: calc(100% - var(--sidebar-width) - var(--sidebar-inset));
 			transition: width var(--sidebar-open-transition);
 		}
 		& .sidebarWrapper {
@@ -38,6 +38,8 @@
 .gameWrapper {
 	width: 100%;
 	transition: width var(--sidebar-close-transition);
+	transition-timing-function: ease-in;
+	padding-inline: var(--sidebar-inset);
 }
 
 .sidebarWrapper {

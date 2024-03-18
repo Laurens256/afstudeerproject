@@ -59,7 +59,9 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
 			const nextPlayerSocketId = util.setNextPlayer(roomCode);
-			io.to(roomCode).emit('UNO_SET_PLAYER_TURN', nextPlayerSocketId);
+			if (nextPlayerSocketId) {
+				io.to(roomCode).emit('UNO_SET_PLAYER_TURN', nextPlayerSocketId);
+			}
 		}
 	});
 

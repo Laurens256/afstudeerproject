@@ -55,6 +55,7 @@ const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 
 const setNextPlayer = (roomCode: string, skipPlayer?: boolean) => {
 	const game = games[roomCode];
+	if (!game) return;
 	const { players, currentPlayerId, isClockwise } = game;
 
 	const currentPlayerIndex = players.findIndex((p) => p.socketId === currentPlayerId);
@@ -146,6 +147,10 @@ const handlePlayerLeave = (roomCode: string, socketId: string) => {
 	const playerIndex = game.players.findIndex((p) => p.socketId === socketId);
 	if (playerIndex === -1) return;
 
+	if (game.currentPlayerId === socketId && game.players.length > 1) {
+		setNextPlayer(roomCode);
+	}
+
 	game.players.splice(playerIndex, 1);
 	game.connectedPlayerSockets = game.connectedPlayerSockets.filter((id) => id !== socketId);
 
@@ -154,9 +159,6 @@ const handlePlayerLeave = (roomCode: string, socketId: string) => {
 		return;
 	}
 
-	if (game.currentPlayerId === socketId) {
-		setNextPlayer(roomCode);
-	}
 	return games[roomCode];
 };
 
