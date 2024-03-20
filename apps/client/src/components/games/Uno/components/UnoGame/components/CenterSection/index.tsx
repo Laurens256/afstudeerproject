@@ -1,6 +1,7 @@
 import { Button } from '@/components';
 import type { UnoCard, UnoColor } from '@shared/types';
 import socket from '@/socket';
+import clsx from 'clsx';
 import classes from './CenterSection.module.css';
 import UnoCardComponent from '../UnoCard';
 
@@ -54,18 +55,31 @@ const CenterSection = ({
 
 	return (
 		<div className={classes.container}>
-			<Button onClick={onSkipTurn}>
+			<Button
+				variant="light"
+				onClick={onSkipTurn}
+				className={classes.skipTurnButton}
+			>
 				END TURN
 			</Button>
 			<div className={classes.cardsContainer}>
-				<Button variant="unstyled" aria-label="draw a card" onClick={onDrawCard}>
+				<Button
+					variant="unstyled"
+					aria-label="draw a card"
+					onClick={onDrawCard}
+					className={clsx(
+						canDoAction && !hasDrawnCard && classes.canDraw,
+						classes.drawCardButton,
+					)}
+				>
 					<UnoCardComponent card={null} />
 				</Button>
 				<UnoCardComponent card={currentCard} />
 			</div>
-			<Button>
+			<span />
+			{/* <Button>
 				UNO
-			</Button>
+			</Button> */}
 		</div>
 	);
 };

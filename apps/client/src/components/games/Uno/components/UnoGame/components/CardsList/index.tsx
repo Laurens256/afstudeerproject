@@ -26,7 +26,7 @@ const CardsList = ({
 		)}
 		aria-label={`${username} cards`}
 	>
-		{cards.map((card) => (
+		{cards.map((card, i) => (
 			<li key={card.cardId} className={classes.cardContainer}>
 				<Button
 					aria-roledescription="card"
@@ -34,11 +34,7 @@ const CardsList = ({
 					onClick={() => onCardClick(card)}
 					className={classes.cardButtonWrapper}
 				>
-					<UnoCardComponent
-						key={card.cardId}
-						card={card}
-						className={classes.cardImg}
-					/>
+					<UnoCardComponent key={card.cardId} card={card} />
 				</Button>
 			</li>
 		))}

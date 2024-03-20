@@ -1,5 +1,6 @@
 import { Uno } from '@/components/games';
 import type { GamesType, Player } from '@shared/types';
+import clsx from 'clsx';
 import classes from './GameContainer.module.css';
 
 type GameContainerProps = {
@@ -7,7 +8,7 @@ type GameContainerProps = {
 	playersInGame: Player[];
 };
 const GameContainer = ({ game, playersInGame }: GameContainerProps) => (
-	<main className={classes.container}>
+	<main className={clsx(classes.container, classes[game])}>
 		{game === 'UNO' && <Uno playersInGame={playersInGame} />}
 	</main>
 );
