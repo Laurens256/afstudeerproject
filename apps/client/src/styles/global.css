@@ -4,9 +4,8 @@
 	font-weight: 300 800;
 }
 @font-face {
-	font-family: 'Work Sans';
-	src: url('/assets/work-sans-bold.woff2') format('woff2');
-	/* font-weight: 700; */
+	font-family: 'Carter One';
+	src: url('/assets/carter-one.woff2') format('woff2');
 }
 
 body {

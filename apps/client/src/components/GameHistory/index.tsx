@@ -6,7 +6,7 @@ import classes from './GameHistory.module.css';
 import Button from '../Button';
 
 type GameHistoryProps = {
-	entries: string[];
+	entries: React.ReactNode[];
 	className?: string;
 	urgency?: 'assertive' | 'polite';
 };

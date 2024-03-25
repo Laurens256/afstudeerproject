@@ -19,8 +19,8 @@ const Uno = ({ playersInGame }: UnoProps) => {
 	const [movePlayed, setMovePlayed] = useState(false);
 	const [hasDrawnCard, setHasDrawnCard] = useState(false);
 
-	const [gameHistory, setGameHistory] = useState<string[]>([]);
-	const addGameHistoryEntry = (entry: string) => {
+	const [gameHistory, setGameHistory] = useState<React.ReactNode[]>([]);
+	const addGameHistoryEntry = (entry: React.ReactNode) => {
 		setGameHistory((prevGameHistory) => [...prevGameHistory, entry]);
 	};
 
@@ -75,7 +75,11 @@ const Uno = ({ playersInGame }: UnoProps) => {
 				);
 				if (cardReceiver) {
 					cardReceiver.cards.push(...cards);
-					addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}`);
+					if (cardReceiver.socketId === socket.id) {
+						addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}. You can now play a card or end your turn`);
+					} else {
+						addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}`);
+					}
 				}
 				newGameState.cardDrawCounter = 0;
 				return newGameState;
@@ -134,7 +138,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		const handleChooseColor = (color: UnoColor) => {
 			setGameState((prevGameState) => {
 				if (!prevGameState) return prevGameState;
-				addGameHistoryEntry(`${endName(findUsernameBySocketId(prevGameState.currentPlayerId))} chose ${color} as the new color`);
+				addGameHistoryEntry(`${findUsernameBySocketId(prevGameState.currentPlayerId, true)} chose ${color} as the new color`);
 				return { ...prevGameState, wildcardColor: color };
 			});
 		};
