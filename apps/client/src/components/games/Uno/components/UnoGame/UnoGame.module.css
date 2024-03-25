@@ -45,8 +45,13 @@
 			flex-direction: column-reverse;
 		}
 	}
-	&:is(.players1, .players2) :is(.topPosition, .bottomPosition) {
-		grid-column: 1 / 7;
+	&:is(.players1, .players2) {
+		& :is(.topPosition, .bottomPosition) {
+			grid-column: 1 / 7;
+		}
+		& :is(.leftPosition, .rightPosition) {
+			display: none;
+		}
 	}
 }
 

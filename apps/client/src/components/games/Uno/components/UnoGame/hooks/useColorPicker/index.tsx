@@ -1,11 +1,12 @@
 import { Button } from '@/components';
-import type { UnoColor } from '@shared/types';
+import type { UnoCard, UnoColor } from '@shared/types';
 import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 import classes from './ColorPicker.module.css';
+import { cardToLabel } from '../../../../util';
 
-const useColorPicker = () => {
+const useColorPicker = (cards: UnoCard[]) => {
 	const [open, setOpen] = useState(false);
 	const [resolver, setResolver] = useState<((value: UnoColor) => void) | null>(null);
 	const colors: UnoColor[] = ['red', 'yellow', 'green', 'blue'];
@@ -44,6 +45,14 @@ const useColorPicker = () => {
 							className={clsx(classes.colorButton, classes[color])}
 						/>
 					))}
+				</div>
+				<div className="visually-hidden">
+					<h3>Your cards are:</h3>
+					<ul>
+						{cards.map((card) => (
+							<li key={card.cardId}>{cardToLabel(card)}</li>
+						))}
+					</ul>
 				</div>
 			</Dialog.Content>
 		</Dialog.Root>

@@ -14,6 +14,7 @@ type CenterSectionProps = {
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	cardDrawCounter: number;
 	getColorFromPicker: () => Promise<UnoColor>;
+	addGameHistoryEntry: (entry: string) => void;
 };
 const CenterSection = ({
 	currentCard,
@@ -24,6 +25,7 @@ const CenterSection = ({
 	setHasDrawnCard,
 	cardDrawCounter,
 	getColorFromPicker,
+	addGameHistoryEntry,
 }: CenterSectionProps) => {
 	const onDrawCard = async () => {
 		if (canDoAction && !hasDrawnCard) {
@@ -35,21 +37,24 @@ const CenterSection = ({
 			// check for > 0 because user can draw card when they were not forced because of draw 4
 			if (cardDrawCounter > 0 && currentCard.value === 'wild-draw-four') {
 				const color = await getColorFromPicker();
+				addGameHistoryEntry(`You chose ${color}`);
 				socket.emit('UNO_CHOOSE_COLOR', color);
 			}
 		} else if (hasDrawnCard) {
-			alert('You already drew a card, you can end your turn or play a card');
+			// TODO: add auto dismissed toasts next to these that can't be turned off
+			// TODO also for canPlay in UnoGame.tsx
+			addGameHistoryEntry('You already drew a card, you can end your turn or play a card');
 		} else {
-			alert('It\'s not your turn');
+			addGameHistoryEntry('It\'s not your turn');
 		}
 	};
 
 	const onSkipTurn = () => {
 		if (canSkipTurn) {
 			disableCanDoAction();
-			socket.emit('UNO_SKIP_TURN');
+			socket.emit('UNO_END_TURN');
 		} else {
-			alert('You can\'t end your turn until you draw a card or play a card');
+			addGameHistoryEntry('You can\'t end your turn until you draw a card or play a card');
 		}
 	};
 

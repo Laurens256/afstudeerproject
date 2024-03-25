@@ -11,8 +11,8 @@ export type ServerToClientUnoEvents = {
 export type ClientToServerUnoEvents = {
 	UNO_PLAYER_GET_INITIAL_STATE: (expectedSockets: string[]) => void;
 	UNO_GET_GAME_STATE: () => void;
-	UNO_PLAY_CARD: (cardId: number) => void;
+	UNO_PLAY_CARD: (cardId: number, chosenColor?: UnoColor | null) => void;
 	UNO_DRAW_CARDS: (amount: number) => void;
-	UNO_SKIP_TURN: () => void;
+	UNO_END_TURN: () => void;
 	UNO_CHOOSE_COLOR: (color: UnoColor) => void;
 };

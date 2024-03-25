@@ -1,6 +1,7 @@
 import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
+import { memo } from 'react';
 import { CardsList, CenterSection, OpponentCardsList } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
@@ -14,6 +15,7 @@ type UnoGameProps = {
 	canSkipTurn: boolean;
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	hasDrawnCard: boolean;
+	addGameHistoryEntry: (entry: string) => void;
 };
 
 const UnoGame = ({
@@ -25,9 +27,8 @@ const UnoGame = ({
 	canSkipTurn,
 	setHasDrawnCard,
 	hasDrawnCard,
+	addGameHistoryEntry,
 }: UnoGameProps) => {
-	const [getColorFromPicker, ColorPicker] = useColorPicker();
-
 	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string) => {
 		const ourPlayerIndex = playersArr.findIndex((player) => player.socketId === ourPlayerId);
 		const playersCopy = [...playersArr];
@@ -36,24 +37,25 @@ const UnoGame = ({
 	};
 
 	const sortedPlayers = setCorrectPlayerOrder(gameState.players, ourPlayer.socketId);
+	const [getColorFromPicker, ColorPicker] = useColorPicker(sortedPlayers[0].cards);
 
 	const canPlayCard = (card: UnoCard) => {
-		let canPlay: boolean | string = true;
+		let error: string | null = null;
 
 		const { currentCard, wildcardColor, cardDrawCounter } = gameState;
 		const cards = gameState.players.find((p) => p.socketId === ourPlayer.socketId)?.cards || [];
 
 		if (!canDoAction) {
-			canPlay = 'It\'s not your turn';
+			error = 'It\'s not your turn';
 		} else if (
 			card.type === 'wild-card'
 			&& cards.length === 1
 		) {
-			canPlay = 'You can\'t play a wild card when you have only one card left';
+			error = 'You can\'t play a wild card when you have only one card left';
 		} else if (cardDrawCounter > 0) {
 			if (card.value !== 'draw-two'
 			&& card.value !== 'wild-draw-four') {
-				canPlay = 'You can only play a draw two or draw four card';
+				error = 'You can only play a draw two or draw four card';
 			}
 		} else if (
 			card.type === 'number-card'
@@ -63,31 +65,31 @@ const UnoGame = ({
 			const { color: cardColor, value: cardValue } = card;
 			if (currentCardType === 'wild-card') {
 				if (wildcardColor !== cardColor) {
-					canPlay = `Can't play a ${cardColor} card. Chosen color is: ${wildcardColor}`;
+					error = `Can't play a ${cardColor} card. Chosen color is: ${wildcardColor}`;
 				}
 			} else if (
 				cardColor !== currentCard.color
 				&& cardValue !== currentCardValue
 			) {
-				canPlay = `You can't play a card that doesn't match the current card's color or value. Current card: ${currentCard.color} ${currentCard.value}`;
+				error = `You can't play a card that doesn't match the current card's color or value. Current card: ${currentCard.color} ${currentCard.value}`;
 			}
 		}
 
-		return canPlay;
+		return { error, canPlay: error === null };
 	};
 
 	const isColorSelectCard = (card: UnoCard) => card.type === 'wild-card' && card.value === 'wild';
 	const onPlayCard = async (card: UnoCard) => {
-		const canPlay = canPlayCard(card);
+		const { error, canPlay } = canPlayCard(card);
 
-		if (canPlay === true) {
-			socket.emit('UNO_PLAY_CARD', card.cardId);
+		if (canPlay) {
 			if (isColorSelectCard(card)) {
 				const chosenColor = await getColorFromPicker();
-				socket.emit('UNO_CHOOSE_COLOR', chosenColor);
+				socket.emit('UNO_PLAY_CARD', card.cardId, chosenColor);
 			}
-		} else {
-			alert(canPlay);
+			socket.emit('UNO_PLAY_CARD', card.cardId);
+		} else if (error) {
+			addGameHistoryEntry(error);
 		}
 	};
 
@@ -119,6 +121,7 @@ const UnoGame = ({
 					hasDrawnCard={hasDrawnCard}
 					cardDrawCounter={gameState.cardDrawCounter}
 					getColorFromPicker={getColorFromPicker}
+					addGameHistoryEntry={addGameHistoryEntry}
 				/>
 			</section>
 
@@ -162,4 +165,4 @@ const UnoGame = ({
 	);
 };
 
-export default UnoGame;
+export default memo(UnoGame);

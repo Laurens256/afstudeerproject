@@ -39,10 +39,18 @@ const generateDeck = (): UnoCard[] => {
 	return arrayUtil.shuffleArray([...wildCards, ...specialCards, ...numberCards]);
 };
 
-// TODO check if enough cards are in deck
+// TODO test drawPile refill logic
 const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 	const game = games[roomCode];
 	const { drawPile } = game;
+
+	if (drawPile.length < numCards) {
+		const newDrawPile = [...game.droppedPile];
+		newDrawPile.pop();
+		const shuffled = arrayUtil.shuffleArray(newDrawPile);
+		game.drawPile = shuffled;
+	}
+
 	const cards = drawPile.splice(0, numCards);
 
 	const player = game.players.find((p) => p.socketId === socketId);
@@ -74,8 +82,9 @@ type PlayCardProps = {
 	roomCode: string;
 	socketId: string;
 	cardId: number;
+	chosenColor: UnoColor | null;
 };
-const playCard = ({ roomCode, socketId, cardId }: PlayCardProps) => {
+const playCard = ({ roomCode, socketId, cardId, chosenColor }: PlayCardProps) => {
 	const game = games[roomCode];
 	const player = game.players.find((p) => p.socketId === socketId);
 	if (!player) return;
@@ -98,6 +107,7 @@ const playCard = ({ roomCode, socketId, cardId }: PlayCardProps) => {
 		isClockwise: card.type === 'special-card' && card.value === 'reverse' ? !game.isClockwise : game.isClockwise,
 		cardDrawCounter: newCardDrawCounter,
 		winnerId: player.cards.length === 0 ? socketId : null,
+		wildcardColor: chosenColor,
 	};
 
 	const shouldSkipNextPlayer = (card.type === 'special-card' && card.value === 'skip')

@@ -1,7 +1,10 @@
 import { type RoutePath, RoutesConfig } from '@/routes';
 import { useRouter } from 'next/router';
 import socket from '@/socket';
+// import { ToastProvider, ToastViewport } from '@radix-ui/react-toast';
+import classes from './Layout.module.css';
 import { AudioProvider } from '../AudioProvider';
+import { ToastProvider } from '../ToastProvider';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { pathname } = useRouter();
@@ -16,7 +19,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 		socket.disconnect();
 	}
 
-	return <AudioProvider>{children}</AudioProvider>;
+	return (
+		<AudioProvider>
+			<ToastProvider />
+			{children}
+		</AudioProvider>
+	);
 };
 
 export default Layout;

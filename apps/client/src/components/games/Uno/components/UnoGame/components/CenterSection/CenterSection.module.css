@@ -14,7 +14,7 @@
 	transition: scale 0.2s ease-in-out, rotate 0.2s ease-in-out;
 	&.canDraw {
 		cursor: pointer;
-		&:where(:hover, :focus-visible) {
+		&:hover, &:focus-visible {
 			scale: 1.05;
 			rotate: -1deg;
 		}

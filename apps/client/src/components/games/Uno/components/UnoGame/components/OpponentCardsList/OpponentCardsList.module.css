@@ -6,16 +6,14 @@
 
 	&.currentPlayer {
 		&::before {
+			--uno-glow-color: #ffff00;
 			content: '';
 			position: absolute;
 			inset: -1.5rem;
 			border-radius: 50%;
-			box-shadow: inset 0 0 50px var(--primary-text-white),
-				inset 20px 0 80px var(--uno-glow-color-1),
-				inset -20px 0 80px var(--uno-glow-color-2),
-				inset 20px 0 300px var(--uno-glow-color-1),
-				inset -20px 0 300px var(--uno-glow-color-2), 0 0 50px var(--primary-text-white),
-				-10px 0 80px var(--uno-glow-color-1), 10px 0 80px var(--uno-glow-color-2);
+			box-shadow: inset 0 0 50px var(--uno-glow-color),
+				inset 0 0 50px var(--uno-glow-color),
+				0 0 50px var(--uno-glow-color);
 		}
 	}
 }

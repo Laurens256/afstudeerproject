@@ -37,10 +37,16 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		}
 	});
 
-	socket.on('UNO_PLAY_CARD', (cardId) => {
+	socket.on('UNO_PLAY_CARD', (cardId, chosenColor) => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
-			const newState = util.playCard({ roomCode, socketId: socket.id, cardId });
+			const newState = util.playCard({
+				roomCode,
+				socketId:
+				socket.id,
+				cardId,
+				chosenColor: chosenColor || null,
+			});
 			if (newState) {
 				io.to(roomCode).emit('UNO_PLAY_CARD', socket.id, cardId, newState);
 			}
@@ -55,7 +61,7 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		}
 	});
 
-	socket.on('UNO_SKIP_TURN', () => {
+	socket.on('UNO_END_TURN', () => {
 		const { roomCode } = socket.data;
 		if (roomCode) {
 			const nextPlayerSocketId = util.setNextPlayer(roomCode);
@@ -64,18 +70,6 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 			}
 		}
 	});
-
-	// socket.on('UNO_PLAYER_LEAVE', () => {
-	// 	const { roomCode } = socket.data;
-	// 	console.log('UNO_PLAYER_LEAVE', roomCode)
-	// 	if (roomCode) {
-	// 		const gameState = util.handlePlayerLeave(roomCode, socket.id);
-	// 		console.log(gameState)
-	// 		if (gameState) {
-	// 			io.to(roomCode).emit('UNO_GET_GAME_STATE', gameState);
-	// 		}
-	// 	}
-	// });
 };
 
 export default unoHandlers;
