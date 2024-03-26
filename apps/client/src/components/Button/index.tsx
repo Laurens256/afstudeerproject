@@ -22,16 +22,18 @@ const generateColorVariables = (inputColor: string) => {
 		'--box-shadow-1': { hue: 1.010, saturation: 0.630, lightness: 0.426 },
 		'--box-shadow-2': { hue: 0, saturation: 0, lightness: 0, alpha: 0.3 },
 		'--box-shadow-3': { hue: 1.030, saturation: 0.815, lightness: 0.459 },
-
 		'--box-shadow-4': { hue: 1.015, saturation: 0.772, lightness: 0.537 },
 		'--box-shadow-5': { hue: 1.015, saturation: 0.837, lightness: 0.385 },
 	};
 
 	return Object.entries(ratios).reduce((acc, [key, ratio]) => {
+		const hue = Math.floor(inputHue * ratio.hue);
+		const saturation = Math.floor(inputSaturation * ratio.saturation);
+		const lightness = Math.floor(inputLightness * ratio.lightness);
 		if (ratio.alpha) {
-			return { ...acc, [key]: `hsla(${Math.floor(inputHue * ratio.hue)}, ${Math.floor(inputSaturation * ratio.saturation)}%, ${Math.floor(inputLightness * ratio.lightness)}%, ${ratio.alpha})` };
+			return { ...acc, [key]: `hsla(${hue}, ${saturation}%, ${lightness}%, ${ratio.alpha})` };
 		}
-		return { ...acc, [key]: `hsla(${Math.floor(inputHue * ratio.hue)}, ${Math.floor(inputSaturation * ratio.saturation)}%, ${Math.floor(inputLightness * ratio.lightness)}%)` };
+		return { ...acc, [key]: `hsl(${hue}, ${saturation}%, ${lightness}%)` };
 	}, {});
 };
 
@@ -39,13 +41,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children?: React.ReactNode;
 	variant?: 'filled' | 'outline' | 'light' | 'icon' | 'unstyled' | 'cartoon';
 	cartoonColor?: string;
+	withCartoonRay?: boolean;
 	loading?: boolean;
 	innerRef?: React.Ref<HTMLButtonElement>;
 	inert?: string;
 }
 
 const Button = ({
-	children, variant = 'filled', cartoonColor = 'hsl(199, 92%, 61%)', loading, innerRef, ...props
+	children,
+	variant = 'filled',
+	cartoonColor = 'hsl(199, 92%, 61%)',
+	withCartoonRay = true,
+	loading,
+	innerRef,
+	...props
 }: ButtonProps) => {
 	const generatedColors = variant === 'cartoon' ? generateColorVariables(cartoonColor) : {};
 
@@ -56,8 +65,13 @@ const Button = ({
 			disabled={loading || props.disabled}
 			// eslint-disable-next-line react/button-has-type
 			type={props.type || 'button'}
-			className={clsx(classes.button, classes[variant], props.className)}
-			style={{ ...generatedColors } as React.CSSProperties}
+			className={clsx(
+				classes.button,
+				classes[variant],
+				withCartoonRay && classes.withCartoonRay,
+				props.className,
+			)}
+			style={{ ...generatedColors, ...props.style } as React.CSSProperties}
 		>
 			{loading && <span className={classes.loader} />}
 			{children}

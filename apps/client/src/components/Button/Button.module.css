@@ -65,30 +65,20 @@
 		border-radius: 0;
 	}
 
-	/* '--text-shadow-1': { hue: 1.015, saturation: 1.086, lightness: 0.524 },
-		'--text-shadow-2': { hue: 1.040, saturation: 1.086, lightness: 0.426 },
-		'--background-lines-1': { hue: 1.020, saturation: 1.086, lightness: 0.426 },
-		'--border-bottom': { hue: 1.028, saturation: 1.083, lightness: 0.512, alpha: 0.5 },
-		'--border-top': { hue: 0, saturation: 0, lightness: 100, alpha: 0.3 },
-		'--box-shadow-1': { hue: 1.011, saturation: 0.630, lightness: 0.512 },
-		'--box-Shadow-2': { hue: 0, saturation: 0, lightness: 0, alpha: 0.3 },
-		'--box-shadow-3': { hue: 1.028, saturation: 0.815, lightness: 0.448 },
-		'--box-shadow-4': { hue: 1.015, saturation: 0.772, lightness: 0.537 },
-		'--box-shadow-5': { hue: 1.015, saturation: 0.838, lightness: 0.385 },
-		'--box-shadow-6': */
-
 	/* SOURCE: https://codepen.io/Rybak/pen/xdzXNj */
 	&:where(.cartoon) {
+		margin-bottom: 1.25rem;
 		font-family: 'Carter One', sans-serif;
 		position: relative;
 		font-size: 1.25rem;
 		line-height: 1.5em;
 		letter-spacing: 0.1rem;
-		text-shadow: 2px 2px 1px var(--text-shadow-1), -2px 2px 1px var(--text-shadow-1), 2px -2px 1px var(--text-shadow-1),
-			-2px -2px 1px var(--text-shadow-1), 0px 2px 1px var(--text-shadow-1), 0px -2px 1px var(--text-shadow-1),
-			0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2), -2px 4px 1px var(--text-shadow-2);
+		text-shadow: 2px 2px 1px var(--text-shadow-1), -2px 2px 1px var(--text-shadow-1),
+			2px -2px 1px var(--text-shadow-1), -2px -2px 1px var(--text-shadow-1),
+			0px 2px 1px var(--text-shadow-1), 0px -2px 1px var(--text-shadow-1),
+			0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
+			-2px 4px 1px var(--text-shadow-2);
 		border: none;
-		margin: 15px 15px 30px;
 		background: repeating-linear-gradient(
 			45deg,
 			var(--background-lines-1),
@@ -100,35 +90,55 @@
 		border-top: 3px solid var(--border-top);
 		color: var(--primary-text-white);
 		border-radius: 8px;
-		padding: 8px 15px 10px;
-		box-shadow: 0 6px 0 var(--box-shadow-1), 0 8px 1px 1px var(--box-shadow-2), 0 10px 0 5px var(--box-shadow-3),
-			0 12px 0 5px var(--box-shadow-4), 0 15px 0 5px var(--box-shadow-5), 0 15px 1px 6px var(--box-shadow-2);
+		box-shadow: 0 6px 0 var(--box-shadow-1), 0 8px 1px 1px var(--box-shadow-2),
+			0 10px 0 5px var(--box-shadow-3), 0 12px 0 5px var(--box-shadow-4),
+			0 15px 0 5px var(--box-shadow-5), 0 15px 1px 6px var(--box-shadow-2);
+			transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
 
-		&::before,
-		&::after {
-			content: '';
-			position: absolute;
-			background-color: #fff;
-			border-radius: 99px;
-			height: 10%;
-			top: -3%;
-			transition: color 0.2s ease-in-out;
-		}
-		&::before {
-			width: 40%;
-			right: 13%;
-		}
-		&::after {
-			width: 5%;
-			right: 5%;
+		&.withCartoonRay {
+			&::before,
+			&::after {
+				content: '';
+				position: absolute;
+				background-color: currentColor;
+				border-radius: 99px;
+				height: 10%;
+				top: -3%;
+				transition: background-color 0.2s ease-in-out;
+			}
+			&::before {
+				width: 40%;
+				right: 13%;
+			}
+			&::after {
+				width: 5%;
+				right: 5%;
+			}
 		}
 		&:where(:active) {
 			top: 2px;
-			box-shadow: 0 4px 0 var(--box-shadow-1), 0 6px 1px 1px var(--box-shadow-2), 0 8px 0 5px var(--box-shadow-3),
-				0 10px 0 5px var(--box-shadow-4), 0 13px 0 5px var(--box-shadow-5), 0 13px 1px 6px var(--box-shadow-2)
+			box-shadow: 0 4px 0 var(--box-shadow-1), 0 6px 1px 1px var(--box-shadow-2),
+				0 8px 0 5px var(--box-shadow-3), 0 10px 0 5px var(--box-shadow-4),
+				0 13px 0 5px var(--box-shadow-5), 0 13px 1px 6px var(--box-shadow-2);
 		}
-		&:where(:hover) {
-			color: #ededed;
+		& :where(svg) {
+			filter: drop-shadow(0.5px 0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(-0.5px 0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(0.5px -0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(-0.5px -0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(0px 0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(0px -0.5px 0.5px var(--text-shadow-1))
+			drop-shadow(0px 1px 0.5px var(--text-shadow-2))
+			drop-shadow(0.5px 1px 0.5px var(--text-shadow-2))
+			drop-shadow(-0.5px 1px 0.5px var(--text-shadow-2));
+		}
+		&:where(:hover, :focus-visible) {
+			color: #e6e6e6;
+			text-shadow: 2px 2px 1px var(--text-shadow-2), -2px 2px 1px var(--text-shadow-2),
+			2px -2px 1px var(--text-shadow-2), -2px -2px 1px var(--text-shadow-2),
+			0px 2px 1px var(--text-shadow-2), 0px -2px 1px var(--text-shadow-2),
+			0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
+			-2px 4px 1px var(--text-shadow-2);
 		}
 	}
 }

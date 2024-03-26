@@ -36,7 +36,9 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 		<>
 			<div className={clsx(classes.container, isCollapsed && classes.collapsed, className)}>
 				<Button
-					variant="unstyled"
+					variant="cartoon"
+					cartoonColor="hsl(241, 62%, 55%)"
+					withCartoonRay={false}
 					className={clsx(classes.toggleButton, isCollapsed && classes.collapsed)}
 					onClick={() => setIsCollapsed(!isCollapsed)}
 					aria-label={isCollapsed ? 'enable game state reader' : 'disable game state reader'}
