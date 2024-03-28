@@ -59,35 +59,29 @@ const CenterSection = ({
 		}
 	};
 
+	const disabledHsl = 'hsl(211, 12%, 48%)';
+	const drawButtonDisabled = !canDoAction || (canDoAction && hasDrawnCard);
+	const endTurnButtonDisabled = !canSkipTurn;
 	return (
 		<div className={classes.container}>
 			<Button
 				variant="cartoon"
 				onClick={onDrawCard}
-				className={classes.skipTurnButton}
+				className={clsx(classes.skipTurnButton, classes.button)}
+				data-disabled={drawButtonDisabled}
+				cartoonColor={drawButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
 			>
 				DRAW CARD
 			</Button>
 			<div className={classes.cardsContainer}>
-				{/* <Button
-					variant="unstyled"
-					aria-label="draw a card"
-					onClick={onDrawCard}
-					className={clsx(
-						canDoAction && !hasDrawnCard && classes.canDraw,
-						classes.drawCardButton,
-					)}
-				>
-					<UnoCardComponent card={null} />
-				</Button> */}
 				<UnoCardComponent card={currentCard} />
 			</div>
-			{/* <span /> */}
 			<Button
 				variant="cartoon"
-				cartoonColor="hsl(241, 62%, 55%)"
 				onClick={onSkipTurn}
-				className={classes.skipTurnButton}
+				className={clsx(classes.skipTurnButton, classes.button)}
+				cartoonColor={endTurnButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
+				data-disabled={endTurnButtonDisabled}
 			>
 				END TURN
 			</Button>

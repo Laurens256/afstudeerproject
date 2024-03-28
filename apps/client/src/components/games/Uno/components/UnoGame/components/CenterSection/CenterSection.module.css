@@ -5,19 +5,13 @@
 	width: min(100%, 55rem);
 }
 
-.skipTurnButton {
-	height: fit-content;
-}
+.button {
+	width: 10.5rem;
+	min-width: fit-content;
 
-.drawCardButton {
-	cursor: default;
-	transition: scale 0.2s ease-in-out, rotate 0.2s ease-in-out;
-	&.canDraw {
-		cursor: pointer;
-		&:hover, &:focus-visible {
-			scale: 1.05;
-			rotate: -1deg;
-		}
+	&[data-disabled="true"] {
+		cursor: default;
+		opacity: 0.9;
 	}
 }
 

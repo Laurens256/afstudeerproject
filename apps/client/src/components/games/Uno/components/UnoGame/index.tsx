@@ -2,7 +2,7 @@ import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
 import { memo } from 'react';
-import { CardsList, CenterSection, OpponentCardsList } from './components';
+import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
 
@@ -160,6 +160,10 @@ const UnoGame = ({
 				);
 			})}
 
+			<SpecialCardsLayer
+				currentCard={gameState.currentCard}
+				isClockwise={gameState.isClockwise}
+			/>
 			<ColorPicker />
 		</div>
 	);
