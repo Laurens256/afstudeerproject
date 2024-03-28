@@ -3,14 +3,13 @@ import socket from '@/socket';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { RoutePath, generateRoute } from '@/routes';
-import { SocketRoomEvents } from '@shared/types';
 import classes from './Home.module.css';
 
 const Home = () => {
 	const router = useRouter();
 
 	const createRoom = () => {
-		socket.emit(SocketRoomEvents.CREATE);
+		socket.emit('ROOM_CREATE');
 	};
 
 	useEffect(() => {
@@ -18,10 +17,10 @@ const Home = () => {
 			router.push(generateRoute(RoutePath.Room, { roomCode }));
 		};
 
-		socket.on(SocketRoomEvents.CREATE, onRoomCreate);
+		socket.on('ROOM_CREATE', onRoomCreate);
 
 		return () => {
-			socket.off(SocketRoomEvents.CREATE, onRoomCreate);
+			socket.off('ROOM_CREATE', onRoomCreate);
 		};
 	}, [router]);
 

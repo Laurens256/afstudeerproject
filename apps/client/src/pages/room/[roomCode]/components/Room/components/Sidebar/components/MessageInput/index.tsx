@@ -32,7 +32,7 @@ const MessageInput = ({ onMessageSend }: MessageInputProps) => {
 				labelVisuallyHidden
 				autoComplete="off"
 				autoCapitalize="on"
-				placeholder="Send a message"
+				placeholder="Start typing..."
 				enterKeyHint="send"
 			>
 				<Button

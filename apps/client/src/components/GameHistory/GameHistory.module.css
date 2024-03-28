@@ -1,0 +1,46 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	height: min(13.5rem, 100%);
+	width: min(25rem, 100%);
+	justify-content: flex-end;
+	font-size: 0.9rem;
+	position: fixed;
+	left: var(--sidebar-inset);
+	bottom: var(--sidebar-inset);
+
+	&.collapsed {
+		width: auto;
+		height: auto;
+	}
+}
+
+.toggleButton {
+	z-index: 2;
+	padding: 0.5rem;
+	width: fit-content;
+
+	& .historyIcon {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+}
+
+.listWrapper {
+	height: 100%;
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+	border-top-left-radius: 0;
+	padding: 0.5rem 1rem 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+.list {
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	color: var(--primary-text-black);
+	height: 100%;
+}

@@ -1,13 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	reactStrictMode: true,
+	reactStrictMode: false,
 	eslint: {
 		ignoreDuringBuilds: true
 	},
 	typescript: {
 		ignoreBuildErrors: true
 	},
-	pageExtensions: ['page.tsx']
+	pageExtensions: ['page.tsx'],
+	images: {
+		remotePatterns: [{
+			protocol: 'https',
+			hostname: 'placehold.co'
+		}],
+	},
 };
 
 module.exports = nextConfig;

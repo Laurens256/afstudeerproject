@@ -1,26 +1,30 @@
 import type { ReactNode } from 'react';
+import type { GamesType } from '../gameTypes';
 
 export type Player = {
 	username: string;
 	socketId: string;
 	role: 'admin' | 'player';
+	inGame: GamesType | null;
 };
 
 type GenericMessage = {
 	messageId: string;
 	date: Date;
-	text: ReactNode;
 };
+
 export type Message = UserMessage | JoinedLeftMessage;
+
 export type UserMessage = GenericMessage & {
 	type: 'user';
 	socketId: string;
 	username: string;
-	tempId?: string;
+	text: string;
 };
 export type JoinedLeftMessage = GenericMessage & {
 	type: 'joined-left';
 	action: 'joined' | 'left';
+	text: ReactNode;
 };
 
 export type RoomState = {
@@ -28,4 +32,5 @@ export type RoomState = {
 	isPrivate: boolean;
 	isStarted: boolean;
 	players: Player[];
+	selectedGame: GamesType | null;
 };

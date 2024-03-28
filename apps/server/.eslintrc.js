@@ -9,7 +9,13 @@ module.exports = {
 		'consistent-return': 'off',
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
-		'max-len': ['error', { code: 100 }],
+		'max-len': ['error', { 
+			code: 100,
+			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$',
+			ignoreStrings: true,
+			ignoreTemplateLiterals: true
+		}],
+		'default-case': 'off',
 
 		'import/no-extraneous-dependencies': 'off',
 		'import/prefer-default-export': 'off',

@@ -1,0 +1,64 @@
+.container {
+	height: 100%;
+	position: relative;
+
+	/* background color panel */
+	&::before {
+		content: '';
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+	}
+}
+
+.container.UNO::before {
+	/* space thingy also cool */
+	/* background-color: #000000;
+	background-image: radial-gradient(
+			white,
+			rgba(255, 255, 255, 0.2) 2px,
+			transparent 40px
+		),
+		radial-gradient(#FFFFFF, rgba(255, 255, 255, 0.15) 1px, transparent 30px),
+		radial-gradient(#FFFFFF, rgba(255, 255, 255, 0.1) 2px, transparent 40px),
+		radial-gradient(
+			rgba(255, 255, 255, 0.4),
+			rgba(255, 255, 255, 0.1) 2px,
+			transparent 30px
+		);
+	background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
+	background-position: 0 0, 40px 60px, 130px 270px, 70px 100px; */
+	/* background-color: var(--uno-color-red); */
+	background-color: #9f0000;
+	background-image: repeating-linear-gradient(
+			120deg,
+			rgba(255, 255, 255, 0.1),
+			rgba(255, 255, 255, 0.1) 1px,
+			transparent 1px,
+			transparent 60px
+		),
+		repeating-linear-gradient(
+			60deg,
+			rgba(255, 255, 255, 0.1),
+			rgba(255, 255, 255, 0.1) 1px,
+			transparent 1px,
+			transparent 60px
+		),
+		linear-gradient(
+			60deg,
+			rgba(0, 0, 0, 0.1) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(0, 0, 0, 0.1) 75%,
+			rgba(0, 0, 0, 0.1)
+		),
+		linear-gradient(
+			120deg,
+			rgba(0, 0, 0, 0.1) 25%,
+			transparent 25%,
+			transparent 75%,
+			rgba(0, 0, 0, 0.1) 75%,
+			rgba(0, 0, 0, 0.1)
+		);
+	background-size: 70px 120px;
+}

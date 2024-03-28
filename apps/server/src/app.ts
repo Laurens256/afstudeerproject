@@ -2,9 +2,10 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
-import { roomHandlers } from './socketHandlers';
+import { gameHandlers, roomHandlers } from './socketHandlers';
 import 'dotenv/config';
 import { SERVER_PORT, CLIENT_URL } from './app.constants';
+import type { ExtendedServer } from './types';
 
 const allowedOrigins = [CLIENT_URL].filter(Boolean) as string[];
 
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
+const io: ExtendedServer = new Server(httpServer, {
 	cors: {
 		origin: allowedOrigins,
 	},
@@ -33,6 +34,7 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
 	roomHandlers(io, socket);
+	gameHandlers(io, socket);
 });
 
 process.on('warning', (e) => console.warn(e.stack));

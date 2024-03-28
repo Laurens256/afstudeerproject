@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
 import type { Player, Message } from '@shared/types';
-import { SocketRoomEvents } from '@shared/types';
 import classes from './Sidebar.module.css';
 import { MessagesList, ChatHeader, MessageInput } from './components';
 
@@ -15,12 +14,12 @@ const createJoinedLeftMessage = (username: string, type: 'joined' | 'left'): Mes
 });
 
 type ChatSectionProps = {
-	roomCode: string;
 	players: Player[];
 	ourPlayer: Player;
+	closeSidebar: () => void;
 };
 
-const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
+const ChatSection = ({ players, ourPlayer, closeSidebar }: ChatSectionProps) => {
 	const [messages, setMessages] = useState<Message[]>([
 		createJoinedLeftMessage(ourPlayer.username, 'joined'),
 	]);
@@ -30,7 +29,7 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 	};
 
 	const handleSendMessage = (message: string) => {
-		socket.emit(SocketRoomEvents.CHAT_MESSAGE, roomCode, message);
+		socket.emit('ROOM_CHAT_MESSAGE', message);
 	};
 
 	useEffect(() => {
@@ -44,26 +43,26 @@ const ChatSection = ({ roomCode, players, ourPlayer }: ChatSectionProps) => {
 			}
 		};
 
-		socket.on(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
-		socket.on(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
+		socket.on('ROOM_PLAYER_JOINED', handlePlayerJoined);
+		socket.on('ROOM_PLAYER_LEFT', handlePlayerLeft);
 
 		return () => {
-			socket.off(SocketRoomEvents.PLAYER_JOINED, handlePlayerJoined);
-			socket.off(SocketRoomEvents.PLAYER_LEFT, handlePlayerLeft);
+			socket.off('ROOM_PLAYER_JOINED', handlePlayerJoined);
+			socket.off('ROOM_PLAYER_LEFT', handlePlayerLeft);
 		};
 	}, [players]);
 
 	useEffect(() => {
-		socket.on(SocketRoomEvents.CHAT_MESSAGE, handleReceiveMessage);
+		socket.on('ROOM_CHAT_MESSAGE', handleReceiveMessage);
 
 		return () => {
-			socket.off(SocketRoomEvents.CHAT_MESSAGE, handleReceiveMessage);
+			socket.off('ROOM_CHAT_MESSAGE', handleReceiveMessage);
 		};
 	}, []);
 
 	return (
 		<aside className={classes.container} aria-labelledby="game-chat-heading">
-			<ChatHeader />
+			<ChatHeader closeSidebar={closeSidebar} />
 			<MessagesList messages={messages} ourPlayer={ourPlayer} />
 			<MessageInput onMessageSend={handleSendMessage} />
 		</aside>

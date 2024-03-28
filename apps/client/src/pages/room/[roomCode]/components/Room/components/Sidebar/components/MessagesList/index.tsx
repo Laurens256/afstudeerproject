@@ -34,7 +34,7 @@ const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 		if (message.type === 'user' && message.socketId !== ourPlayer.socketId) {
 			audioContext.gameChat('messageReceived');
 		} else if (message.type === 'joined-left') {
-			// TODO audio
+			audioContext.gameChat(`player${message.action === 'joined' ? 'Joined' : 'Left'}`);
 		}
 	}, [audioContext, ourPlayer.socketId]);
 
@@ -48,7 +48,8 @@ const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 		if (lastMessage) {
 			checkShouldPlayAudioNotification(lastMessage);
 		}
-	}, [checkShouldPlayAudioNotification, messages]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [messages]);
 
 	return (
 		<ol

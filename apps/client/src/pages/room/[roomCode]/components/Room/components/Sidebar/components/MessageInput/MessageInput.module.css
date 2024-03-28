@@ -11,7 +11,6 @@
 }
 .sendMessageButton {
 	--inset: 0.2rem;
-	width: var(--button-width);
 	position: absolute;
 	inset: var(--inset);
 	left: auto;

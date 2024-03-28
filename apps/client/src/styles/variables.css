@@ -17,5 +17,16 @@
 	--input-text: #333333;
 	--input-error: #dc3545;
 
+	--sm-border-radius: 0.5rem;
 	--md-border-radius: 1rem;
+
+	--uno-color-red: #C40C00;
+	--uno-color-yellow: #E7D004;
+	--uno-color-green: #328A10;
+	--uno-color-blue: #1254AB;
+	--uno-color-black: #050804;
+	/* --uno-glow-color-1: #ff69b4;
+	--uno-glow-color-2: #00ffff; */
+	--uno-glow-color-1: var(--uno-color-red);
+	--uno-glow-color-2: #ffffff;
 }

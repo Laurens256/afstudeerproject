@@ -1,0 +1,33 @@
+.container {
+	display: flex;
+	justify-content: center;
+	padding: 0.5rem;
+	flex-wrap: wrap;
+	justify-content: center;
+	/* width: 100%; */
+
+	&.currentPlayer {
+		/* --uno-glow-color: #ffff00;
+		box-shadow: inset 0 0 50px var(--uno-glow-color),
+		inset 0 0 50px var(--uno-glow-color),
+		0 0 100px var(--uno-glow-color); */
+		/* TODO active state */
+
+		& .cardButtonWrapper:hover,
+		& .cardButtonWrapper:focus-visible {
+			transform: scale(1.05) translateY(-1rem);
+		}
+	}
+	&:not(.currentPlayer) .cardButtonWrapper {
+		cursor: default;
+	}
+}
+
+.cardContainer {
+	flex-shrink: 0;
+}
+.cardButtonWrapper {
+	display: block;
+	/* margin-left: calc(((var(--uno-card-height) * 2 / 3) / 4) * -1); */
+	transition: transform 0.2s ease;
+}

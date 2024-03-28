@@ -1,0 +1,22 @@
+.container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: min(100%, 55rem);
+}
+
+.button {
+	width: 10.5rem;
+	min-width: fit-content;
+
+	&[data-disabled="true"] {
+		cursor: default;
+		opacity: 0.9;
+	}
+}
+
+.cardsContainer {
+	display: flex;
+	flex-shrink: 0;
+	gap: 0.5rem;
+}

@@ -5,7 +5,6 @@ import socket from '@/socket';
 import { useRouter } from 'next/router';
 import { IconSearch } from '@tabler/icons-react';
 import { RoutePath, generateRoute } from '@/routes';
-import { SocketRoomEvents } from '@shared/types';
 import classes from './JoinRoomForm.module.css';
 
 const JoinRoomForm = () => {
@@ -23,7 +22,7 @@ const JoinRoomForm = () => {
 			return;
 		}
 
-		socket.emit(SocketRoomEvents.ROOM_EXISTS, roomCode);
+		socket.emit('ROOM_EXISTS', roomCode);
 	};
 
 	const handleRoomConnect = (code: string | null) => {
@@ -37,10 +36,10 @@ const JoinRoomForm = () => {
 	};
 
 	useEffect(() => {
-		socket.on(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
+		socket.on('ROOM_EXISTS', handleRoomConnect);
 
 		return () => {
-			socket.off(SocketRoomEvents.ROOM_EXISTS, handleRoomConnect);
+			socket.off('ROOM_EXISTS', handleRoomConnect);
 		};
 	});
 
