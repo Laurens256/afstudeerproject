@@ -6,9 +6,11 @@ interface AvatarProps {
 	name: string;
 	rounded?: boolean;
 	sizeRem?: number;
+	className?: string;
+	withBorder?: boolean;
 }
 
-const Avatar = ({ name, rounded = true, sizeRem = 3 }: AvatarProps) => {
+const Avatar = ({ name, rounded = true, sizeRem = 3, className, withBorder }: AvatarProps) => {
 	const avatarDataUri = createAvatar(botttsNeutral, {
 		seed: name,
 		// eslint-disable-next-line max-len
@@ -18,7 +20,17 @@ const Avatar = ({ name, rounded = true, sizeRem = 3 }: AvatarProps) => {
 		size: sizeRem * 16,
 	}).toDataUriSync();
 
-	return <img src={avatarDataUri} alt="" />;
+	return (
+		<img
+			className={className}
+			src={avatarDataUri}
+			alt=""
+			style={{
+				border: withBorder ? '2px solid currentColor' : 'none',
+				borderRadius: rounded ? '50%' : '0',
+			}}
+		/>
+	);
 };
 
 export default memo(Avatar);

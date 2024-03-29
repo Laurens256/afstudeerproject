@@ -15,6 +15,14 @@ module.exports = {
 			ignoreTemplateLiterals: true
 		 }],
 
+		 "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "controlComponents": ["Field"],
+        "assert": "htmlFor"
+      }
+  ],
+
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',
 		'@typescript-eslint/consistent-type-exports': 'error',

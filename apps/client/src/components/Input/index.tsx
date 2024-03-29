@@ -31,12 +31,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
 		<label
 			htmlFor={id}
 			className={clsx(
-				labelVisuallyHidden && 'visually-hidden',
 				classes.label,
 				labelClassName,
 			)}
 		>
-			{label}
+			<span className={clsx(labelVisuallyHidden && 'visually-hidden')}>
+				{label}
+			</span>
 			{error
 					&& castArray(error).map((err) => (
 						<p key={err} className={classes.errorMsg}>
