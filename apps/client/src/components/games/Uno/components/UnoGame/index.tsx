@@ -2,7 +2,8 @@ import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
 import { memo } from 'react';
-import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer } from './components';
+import type { GameErrorToastProps } from '@/types';
+import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer, TurnIndicator } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
 
@@ -15,7 +16,8 @@ type UnoGameProps = {
 	canSkipTurn: boolean;
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	hasDrawnCard: boolean;
-	addGameHistoryEntry: (entry: string) => void;
+	currentPlayerUsername: string;
+	showErrorToast: (props: GameErrorToastProps) => void;
 };
 
 const UnoGame = ({
@@ -27,7 +29,8 @@ const UnoGame = ({
 	canSkipTurn,
 	setHasDrawnCard,
 	hasDrawnCard,
-	addGameHistoryEntry,
+	currentPlayerUsername,
+	showErrorToast,
 }: UnoGameProps) => {
 	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string | null) => {
 		if (!ourPlayerId) return playersArr;
@@ -79,7 +82,7 @@ const UnoGame = ({
 				cardColor !== currentCard.color
 				&& cardValue !== currentCardValue
 			) {
-				error = `You can't play a card that doesn't match the current card's color or value. Current card: ${currentCard.color} ${currentCard.value}`;
+				error = `Can't play a ${cardColor} ${cardValue} card on a ${currentCard.color} ${currentCard.value} card`;
 			}
 		}
 
@@ -91,13 +94,14 @@ const UnoGame = ({
 		const { error, canPlay } = canPlayCard(card);
 
 		if (canPlay) {
+			showErrorToast(null);
 			if (isColorSelectCard(card)) {
 				const chosenColor = await getColorFromPicker();
 				socket.emit('UNO_PLAY_CARD', card.cardId, chosenColor);
 			}
 			socket.emit('UNO_PLAY_CARD', card.cardId);
 		} else if (error) {
-			addGameHistoryEntry(error);
+			showErrorToast({ message: error });
 		}
 	};
 
@@ -119,6 +123,10 @@ const UnoGame = ({
 
 	return (
 		<div className={clsx(classes.container, classes[`players${players.length}`])}>
+			<TurnIndicator
+				isOurTurn={gameState.currentPlayerId === socket.id}
+				username={currentPlayerUsername}
+			/>
 			<section className={classes.middleSection} aria-label="card pile">
 				<CenterSection
 					currentCard={gameState.currentCard}
@@ -129,7 +137,7 @@ const UnoGame = ({
 					hasDrawnCard={hasDrawnCard}
 					cardDrawCounter={gameState.cardDrawCounter}
 					getColorFromPicker={getColorFromPicker}
-					addGameHistoryEntry={addGameHistoryEntry}
+					showErrorToast={showErrorToast}
 				/>
 			</section>
 
@@ -172,6 +180,7 @@ const UnoGame = ({
 			<SpecialCardsLayer
 				currentCard={gameState.currentCard}
 				isClockwise={gameState.isClockwise}
+				chosenColor={gameState.wildcardColor}
 			/>
 			<ColorPicker />
 		</div>

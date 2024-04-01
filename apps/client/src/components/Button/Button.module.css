@@ -11,7 +11,8 @@
 	gap: 0.5rem;
 	outline-offset: 2px;
 
-	&:disabled, &[data-disabled="true"] {
+	&:disabled,
+	&[data-disabled='true'] {
 		cursor: default;
 	}
 
@@ -20,7 +21,7 @@
 		border: 1px solid var(--primary-color);
 		color: var(--primary-color);
 
-		&:not(:disabled, [data-disabled="true"]):where(:hover, :focus-visible) {
+		&:not(:disabled, [data-disabled='true']):where(:hover, :focus-visible) {
 			background-color: var(--primary-color);
 			color: var(--primary-text-white);
 		}
@@ -31,7 +32,7 @@
 		border: 1px solid var(--primary-color);
 		color: var(--primary-text-white);
 
-		&:not(:disabled, [data-disabled="true"]):where(:hover, :focus-visible) {
+		&:not(:disabled, [data-disabled='true']):where(:hover, :focus-visible) {
 			background-color: var(--primary-panel-bg);
 			color: var(--primary-color);
 		}
@@ -68,16 +69,8 @@
 	/* SOURCE: https://codepen.io/Rybak/pen/xdzXNj */
 	&:where(.cartoon) {
 		margin-bottom: 1.25rem;
-		font-family: 'Carter One', sans-serif;
 		position: relative;
 		font-size: 1.25rem;
-		line-height: 1.5em;
-		letter-spacing: 0.1rem;
-		text-shadow: 2px 2px 1px var(--text-shadow-1), -2px 2px 1px var(--text-shadow-1),
-			2px -2px 1px var(--text-shadow-1), -2px -2px 1px var(--text-shadow-1),
-			0px 2px 1px var(--text-shadow-1), 0px -2px 1px var(--text-shadow-1),
-			0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
-			-2px 4px 1px var(--text-shadow-2);
 		border: none;
 		background: repeating-linear-gradient(
 			45deg,
@@ -93,9 +86,9 @@
 		box-shadow: 0 6px 0 var(--box-shadow-1), 0 8px 1px 1px var(--box-shadow-2),
 			0 10px 0 5px var(--box-shadow-3), 0 12px 0 5px var(--box-shadow-4),
 			0 15px 0 5px var(--box-shadow-5), 0 15px 1px 6px var(--box-shadow-2);
-			transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+		transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
 
-		&.withCartoonRay:not([data-disabled="true"], :disabled) {
+		&.withCartoonRay:not([data-disabled='true'], :disabled) {
 			&::before,
 			&::after {
 				content: '';
@@ -123,22 +116,22 @@
 		}
 		& :where(svg) {
 			filter: drop-shadow(0.5px 0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(-0.5px 0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(0.5px -0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(-0.5px -0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(0px 0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(0px -0.5px 0.5px var(--text-shadow-1))
-			drop-shadow(0px 1px 0.5px var(--text-shadow-2))
-			drop-shadow(0.5px 1px 0.5px var(--text-shadow-2))
-			drop-shadow(-0.5px 1px 0.5px var(--text-shadow-2));
+				drop-shadow(-0.5px 0.5px 0.5px var(--text-shadow-1))
+				drop-shadow(0.5px -0.5px 0.5px var(--text-shadow-1))
+				drop-shadow(-0.5px -0.5px 0.5px var(--text-shadow-1))
+				drop-shadow(0px 0.5px 0.5px var(--text-shadow-1))
+				drop-shadow(0px -0.5px 0.5px var(--text-shadow-1))
+				drop-shadow(0px 1px 0.5px var(--text-shadow-2))
+				drop-shadow(0.5px 1px 0.5px var(--text-shadow-2))
+				drop-shadow(-0.5px 1px 0.5px var(--text-shadow-2));
 		}
-		&:where(:hover, :focus-visible):not([data-disabled="true"], :disabled) {
+		&:where(:hover, :focus-visible):not([data-disabled='true'], :disabled) {
 			color: #e6e6e6;
 			text-shadow: 2px 2px 1px var(--text-shadow-2), -2px 2px 1px var(--text-shadow-2),
-			2px -2px 1px var(--text-shadow-2), -2px -2px 1px var(--text-shadow-2),
-			0px 2px 1px var(--text-shadow-2), 0px -2px 1px var(--text-shadow-2),
-			0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
-			-2px 4px 1px var(--text-shadow-2);
+				2px -2px 1px var(--text-shadow-2), -2px -2px 1px var(--text-shadow-2),
+				0px 2px 1px var(--text-shadow-2), 0px -2px 1px var(--text-shadow-2),
+				0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
+				-2px 4px 1px var(--text-shadow-2);
 		}
 	}
 }

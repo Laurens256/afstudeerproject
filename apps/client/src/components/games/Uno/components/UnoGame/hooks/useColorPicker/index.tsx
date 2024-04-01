@@ -46,7 +46,7 @@ const useColorPicker = (cards: UnoCard[]) => {
 						/>
 					))}
 				</div>
-				<div className="visually-hidden">
+				<div className="visuallyHidden">
 					<h3>Your cards are:</h3>
 					<ul>
 						{cards.map((card) => (

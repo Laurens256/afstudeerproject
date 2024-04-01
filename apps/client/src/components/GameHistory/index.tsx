@@ -6,7 +6,7 @@ import classes from './GameHistory.module.css';
 import Button from '../Button';
 
 type GameHistoryProps = {
-	entries: React.ReactNode[];
+	entries: { key: string, entry: React.ReactNode }[];
 	className?: string;
 	urgency?: 'assertive' | 'polite';
 };
@@ -53,9 +53,8 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 							</Button>
 						</div>
 						<ol className={classes.list} ref={ref} aria-labelledby="game_history">
-							{entriesReversed.map((entry, index) => (
-								// eslint-disable-next-line react/no-array-index-key
-								<li key={index} className={classes.entry}>
+							{entriesReversed.map(({ key, entry }) => (
+								<li key={key} className={classes.entry}>
 									{entry}
 								</li>
 							))}
@@ -63,8 +62,8 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 					</div>
 				)}
 			</div>
-			<p className="visually-hidden" aria-live={urgency}>
-				{entriesReversed[0]}
+			<p className="visuallyHidden" aria-live={urgency}>
+				{entriesReversed[0]?.entry}
 			</p>
 		</>
 	);

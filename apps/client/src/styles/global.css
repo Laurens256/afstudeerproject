@@ -25,7 +25,7 @@ body {
 	font-weight: 500;
 }
 
-.visually-hidden {
+.visuallyHidden {
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -36,6 +36,15 @@ body {
 	clip: rect(0 0 0 0);
 	overflow: hidden;
 	word-wrap: normal;
+}
+.cartoonText {
+	font-family: 'Carter One', 'Open Sans', sans-serif;
+	text-shadow: 2px 2px 1px var(--text-shadow-1), -2px 2px 1px var(--text-shadow-1),
+	2px -2px 1px var(--text-shadow-1), -2px -2px 1px var(--text-shadow-1),
+	0px 2px 1px var(--text-shadow-1), 0px -2px 1px var(--text-shadow-1),
+	0px 4px 1px var(--text-shadow-2), 2px 4px 1px var(--text-shadow-2),
+	-2px 4px 1px var(--text-shadow-2);
+	letter-spacing: 0.1rem;
 }
 
 a {

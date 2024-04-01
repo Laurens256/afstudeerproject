@@ -1,27 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import socket from '@/socket';
 import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
 import { GameHistory } from '@/components';
+import type { GameErrorToastProps } from '@/types';
 import { UnoGame, WinnerModal } from './components';
 import { cardToLabel } from './util';
 
 const endName = (name: string) => {
 	if (name === 'you') return 'your';
+	if (name === 'You') return 'Your';
 	return (name.endsWith('s') ? `${name}'` : `${name}'s`);
 };
 const pluralize = (count: number) => (count === 1 ? '' : 's');
 
 type UnoProps = {
-	playersInGame: Player[]
+	playersInGame: Player[];
+	showErrorToast: (props: GameErrorToastProps) => void;
 };
-const Uno = ({ playersInGame }: UnoProps) => {
+const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 	const [gameState, setGameState] = useState<UnoGameState | null>(null);
 	const [movePlayed, setMovePlayed] = useState(false);
 	const [hasDrawnCard, setHasDrawnCard] = useState(false);
 
-	const [gameHistory, setGameHistory] = useState<React.ReactNode[]>([]);
+	const [gameHistory, setGameHistory] = useState<{ key: string, entry: React.ReactNode }[]>([]);
 	const addGameHistoryEntry = (entry: React.ReactNode) => {
-		setGameHistory((prevGameHistory) => [...prevGameHistory, entry]);
+		// setGameHistory((prevGameHistory) => [..., entry]);
+		setGameHistory((prevGameHistory) => [...prevGameHistory, {
+			key: Date.now().toString(), entry,
+		}]);
 	};
 
 	const isOurTurn = gameState?.currentPlayerId === socket.id;
@@ -55,16 +61,19 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		};
 	}, [gameState, playersInGame]);
 
+	const findUsernameBySocketId = useCallback((
+		socketId: string | undefined,
+		capitalizeYou?: boolean,
+	) => {
+		if (socketId === socket.id) {
+			return capitalizeYou ? 'You' : 'you';
+		}
+
+		const player = playersInGame.find((p) => p.socketId === socketId);
+		return player?.username || 'Someone';
+	}, [playersInGame]);
+
 	useEffect(() => {
-		const findUsernameBySocketId = (socketId: string | undefined, capitalizeYou?: boolean) => {
-			if (socketId === socket.id) {
-				return capitalizeYou ? 'You' : 'you';
-			}
-
-			const player = playersInGame.find((p) => p.socketId === socketId);
-			return player?.username || 'Someone';
-		};
-
 		const handleDrawCards = (socketId: string, cards: UnoCard[]) => {
 			setGameState((prevGameState) => {
 				if (!prevGameState) return prevGameState;
@@ -75,11 +84,8 @@ const Uno = ({ playersInGame }: UnoProps) => {
 				);
 				if (cardReceiver) {
 					cardReceiver.cards.push(...cards);
-					if (cardReceiver.socketId === socket.id) {
-						addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}. You can now play a card or end your turn`);
-					} else {
-						addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}`);
-					}
+					const canPlayOrEndTurn = cardReceiver.socketId === newGameState.currentPlayerId ? ' You can now play a card or end your turn' : '';
+					addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}.${canPlayOrEndTurn}`);
 				}
 				newGameState.cardDrawCounter = 0;
 				return newGameState;
@@ -126,7 +132,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 						);
 						const choseNewColorStr = newState.wildcardColor ? ` and chose ${newState.wildcardColor} as the new color` : '';
 
-						addGameHistoryEntry(`${cardPlayerUsername} played ${cardToLabel(card)}${choseNewColorStr}. It's ${currentPlayerConnectorWord} ${newPlayerUsername} turn`);
+						addGameHistoryEntry(`${cardPlayerUsername} played ${cardToLabel(card)}${choseNewColorStr} card. It's ${currentPlayerConnectorWord} ${newPlayerUsername} turn`);
 
 						unoPlayer.cards.splice(cardIndex, 1);
 					}
@@ -154,7 +160,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 			socket.off('UNO_PLAY_CARD', handlePlayCard);
 			socket.off('UNO_CHOOSE_COLOR', handleChooseColor);
 		};
-	}, [playersInGame]);
+	}, [findUsernameBySocketId, playersInGame]);
 
 	const ourPlayer = playersInGame.find((player) => player.socketId === socket.id) || null;
 	if (!gameState) {
@@ -176,7 +182,8 @@ const Uno = ({ playersInGame }: UnoProps) => {
 				canSkipTurn={canSkipTurn}
 				setHasDrawnCard={setHasDrawnCard}
 				hasDrawnCard={hasDrawnCard}
-				addGameHistoryEntry={addGameHistoryEntry}
+				currentPlayerUsername={endName(findUsernameBySocketId(gameState.currentPlayerId))}
+				showErrorToast={showErrorToast}
 			/>
 			{/* TODO: generic WinnerModal for all games */}
 			{winner && <WinnerModal winner={winner} ourPlayer={ourPlayer} />}

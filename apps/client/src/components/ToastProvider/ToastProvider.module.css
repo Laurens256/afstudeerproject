@@ -1,7 +1,0 @@
-.container {
-	--inset: 1.5rem;
-	position: fixed;
-	background-color: red;
-	bottom: var(--inset);
-	right: var(--inset);
-}

@@ -35,7 +35,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
 				labelClassName,
 			)}
 		>
-			<span className={clsx(labelVisuallyHidden && 'visually-hidden')}>
+			<span className={clsx(labelVisuallyHidden && 'visuallyHidden')}>
 				{label}
 			</span>
 			{error

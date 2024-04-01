@@ -4,7 +4,6 @@ import socket from '@/socket';
 import { useEffect } from 'react';
 import classes from './Layout.module.css';
 import { AudioProvider } from '../AudioProvider';
-import { ToastProvider, toastQueue } from '../ToastProvider';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { pathname } = useRouter();
@@ -30,7 +29,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<AudioProvider>
-			<ToastProvider />
 			{children}
 		</AudioProvider>
 	);

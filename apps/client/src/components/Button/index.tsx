@@ -70,6 +70,7 @@ const Button = ({
 			className={clsx(
 				classes.button,
 				classes[variant],
+				variant === 'cartoon' && ['cartoonText'],
 				withCartoonRay && classes.withCartoonRay,
 				props.className,
 			)}

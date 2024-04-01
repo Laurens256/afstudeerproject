@@ -1,6 +1,7 @@
 import { Uno } from '@/components/games';
 import type { GamesType, Player } from '@shared/types';
 import clsx from 'clsx';
+import { GameErrorToastProvider } from '@/components';
 import classes from './GameContainer.module.css';
 
 type GameContainerProps = {
@@ -9,7 +10,13 @@ type GameContainerProps = {
 };
 const GameContainer = ({ game, playersInGame }: GameContainerProps) => (
 	<main className={clsx(classes.container, classes[game])}>
-		{game === 'UNO' && <Uno playersInGame={playersInGame} />}
+		<GameErrorToastProvider>
+			{(createToast) => (
+				<>
+					{game === 'UNO' && <Uno playersInGame={playersInGame} showErrorToast={createToast} />}
+				</>
+			)}
+		</GameErrorToastProvider>
 	</main>
 );
 
