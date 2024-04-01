@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
-import { gameHandlers, roomHandlers } from './socketHandlers';
+import socketHandlers from './socketHandlers';
 import 'dotenv/config';
 import { SERVER_PORT, CLIENT_URL } from './app.constants';
 import type { ExtendedServer } from './types';
@@ -33,8 +33,7 @@ const io: ExtendedServer = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-	roomHandlers(io, socket);
-	gameHandlers(io, socket);
+	socketHandlers(io, socket);
 });
 
 process.on('warning', (e) => console.warn(e.stack));

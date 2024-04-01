@@ -1,6 +1,6 @@
 import { type Player, type RoomState } from '@shared/types';
 import socket from '@/socket';
-import { Button, Avatar } from '@/components';
+import { Button, Avatar, Input } from '@/components';
 import { IconCrown, IconCheck, IconPencil } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import classes from './RoomSettings.module.css';
@@ -21,7 +21,11 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 		e.preventDefault();
 		const roomName: string = (e.currentTarget.room_name.value).trim();
 		if (roomName && roomName !== roomState.roomName && roomName.length <= 30) {
+			setLocalRoomName(roomName);
+
 			socket.emit('ROOM_SET_STATE', { roomName });
+			const form = e.currentTarget;
+			form.room_name.blur();
 		}
 	};
 
@@ -31,23 +35,12 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 		}
 	};
 
-	const onRoomNameInput = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			if (!e.repeat) {
-				const { form } = (e.target as EventTarget & { form: HTMLFormElement });
-				form.requestSubmit();
-				form.room_name.blur();
-			}
-		}
-	};
-
 	const enoughPlayersToStart = roomState.players.length > 1;
 
 	return (
 		<div className={classes.container}>
 			<header>
-				<h1 className={classes.roomPin}>{`Room PIN: ${roomCode}`}</h1>
+				<h1 className={classes.roomPin}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
 			</header>
 
 			<main className={classes.main}>
@@ -61,17 +54,18 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 							}
 						}}
 					>
-						<label htmlFor="room_name" className="visually-hidden">Change room name</label>
-						<textarea
-							name="room_name"
+						<Input
+							label="Change room name"
+							labelVisuallyHidden
 							id="room_name"
-							rows={1}
+							name="room_name"
 							maxLength={30}
 							className={classes.roomNameInput}
-							onKeyDown={onRoomNameInput}
 							value={localRoomName || ''}
 							onInput={(e) => setLocalRoomName(e.currentTarget.value)}
 							onFocus={(e) => e.currentTarget.select()}
+							enterKeyHint="done"
+							autoComplete="off"
 						/>
 						<IconPencil className={classes.editIcon} />
 						<Button

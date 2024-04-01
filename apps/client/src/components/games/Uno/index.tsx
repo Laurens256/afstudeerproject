@@ -156,12 +156,9 @@ const Uno = ({ playersInGame }: UnoProps) => {
 		};
 	}, [playersInGame]);
 
-	const ourPlayer = playersInGame.find((player) => player.socketId === socket.id);
-	const ourCards = gameState?.players.find(
-		(player) => player.socketId === ourPlayer?.socketId,
-	)?.cards;
-
-	if (!gameState || !ourPlayer || ourCards === undefined) {
+	const ourPlayer = playersInGame.find((player) => player.socketId === socket.id) || null;
+	if (!gameState) {
+		// if (!gameState || !ourPlayer || ourCards === undefined) {
 		// TODO loader or error
 		return <p>Loading...</p>;
 	}
@@ -182,7 +179,7 @@ const Uno = ({ playersInGame }: UnoProps) => {
 				addGameHistoryEntry={addGameHistoryEntry}
 			/>
 			{/* TODO: generic WinnerModal for all games */}
-			{winner && <WinnerModal winner={winner} />}
+			{winner && <WinnerModal winner={winner} ourPlayer={ourPlayer} />}
 			<GameHistory entries={gameHistory} />
 		</>
 	);

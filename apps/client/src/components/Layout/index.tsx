@@ -1,10 +1,10 @@
 import { type RoutePath, RoutesConfig } from '@/routes';
 import { useRouter } from 'next/router';
 import socket from '@/socket';
-// import { ToastProvider, ToastViewport } from '@radix-ui/react-toast';
+import { useEffect } from 'react';
 import classes from './Layout.module.css';
 import { AudioProvider } from '../AudioProvider';
-import { ToastProvider } from '../ToastProvider';
+import { ToastProvider, toastQueue } from '../ToastProvider';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { pathname } = useRouter();
@@ -18,6 +18,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	} else {
 		socket.disconnect();
 	}
+
+	useEffect(() => {
+		if (isSocketRoute) {
+			const onDisconnect = () => {
+				alert('Disconnected from server');
+			};
+			socket.on('disconnect', onDisconnect)
+		}
+	}, [isSocketRoute]);
 
 	return (
 		<AudioProvider>

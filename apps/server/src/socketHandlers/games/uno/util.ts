@@ -137,7 +137,7 @@ const initializeGame = (roomCode: string, sockets: string[]) => {
 			socketId,
 			cards: deck.splice(0, 7),
 		})),
-		currentPlayerId: sockets[0],
+		currentPlayerId: sockets[Math.floor(Math.random() * sockets.length)],
 		currentCard: startingCard,
 		isClockwise: true,
 		wildcardColor: null,
@@ -180,6 +180,7 @@ const setSocketConnected = (roomCode: string, socketId: string) => {
 };
 
 const getGame = (roomCode: string) => games[roomCode];
+const endGame = (roomCode: string) => delete games[roomCode];
 
 export default {
 	drawCards,
@@ -190,4 +191,5 @@ export default {
 	handlePlayerLeave,
 	setSocketConnected,
 	chooseColor,
+	endGame,
 };

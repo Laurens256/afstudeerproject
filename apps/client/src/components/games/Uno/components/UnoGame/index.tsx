@@ -9,7 +9,7 @@ import { useColorPicker } from './hooks';
 type UnoGameProps = {
 	gameState: UnoGameState;
 	players: Player[];
-	ourPlayer: Player;
+	ourPlayer: Player | null;
 	canDoAction: boolean;
 	disableCanDoAction: () => void;
 	canSkipTurn: boolean;
@@ -29,17 +29,25 @@ const UnoGame = ({
 	hasDrawnCard,
 	addGameHistoryEntry,
 }: UnoGameProps) => {
-	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string) => {
+	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string | null) => {
+		if (!ourPlayerId) return playersArr;
+
 		const ourPlayerIndex = playersArr.findIndex((player) => player.socketId === ourPlayerId);
 		const playersCopy = [...playersArr];
 		const playersBefore = playersCopy.splice(0, ourPlayerIndex);
 		return [...playersCopy, ...playersBefore];
 	};
 
-	const sortedPlayers = setCorrectPlayerOrder(gameState.players, ourPlayer.socketId);
+	const sortedPlayers = setCorrectPlayerOrder(
+		gameState.players,
+		ourPlayer ? ourPlayer.socketId : null,
+	);
 	const [getColorFromPicker, ColorPicker] = useColorPicker(sortedPlayers[0].cards);
 
 	const canPlayCard = (card: UnoCard) => {
+		if (!ourPlayer) {
+			return { error: 'You are not in this game', canPlay: false };
+		}
 		let error: string | null = null;
 
 		const { currentCard, wildcardColor, cardDrawCounter } = gameState;
@@ -48,10 +56,10 @@ const UnoGame = ({
 		if (!canDoAction) {
 			error = 'It\'s not your turn';
 		} else if (
-			card.type === 'wild-card'
+			(card.type === 'wild-card' || card.type === 'special-card')
 			&& cards.length === 1
 		) {
-			error = 'You can\'t play a wild card when you have only one card left';
+			error = 'Your final card can\'t be a special card';
 		} else if (cardDrawCounter > 0) {
 			if (card.value !== 'draw-two'
 			&& card.value !== 'wild-draw-four') {
@@ -134,11 +142,12 @@ const UnoGame = ({
 					>
 						{playersPerPosition.map((player) => {
 							const isCurrentPlayer = gameState.currentPlayerId === player.socketId;
+							const isOurPlayer = socket.id === player.socketId;
 							const username = players.find(
 								(p) => p.socketId === player.socketId,
 							)?.username || 'someone';
 							return (
-								i === 0 ? (
+								isOurPlayer ? (
 									<CardsList
 										key={player.socketId}
 										cards={player.cards}

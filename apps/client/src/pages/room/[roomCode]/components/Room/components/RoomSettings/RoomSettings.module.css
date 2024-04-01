@@ -26,6 +26,8 @@
 }
 .roomName {
 	text-align: center;
+	border-bottom: solid 1px var(--primary-text-black);
+	font-size: 1.3rem;
 }
 
 .editRoomNameForm {
@@ -45,9 +47,9 @@
 	--size: 1.2rem;
 	color: var(--secondary-text-black);
 	position: absolute;
-	/* top: calc(50% - var(--size) / 2); */
 	top: 0;
-	right: 0;
+	top: calc(50% - var(--size) / 2 + 2.5px);
+	right: 0.5rem;
 	pointer-events: none;
 	width: var(--size);
 	height: var(--size);
@@ -62,17 +64,22 @@
 	font-weight: 700;
 	text-align: center;
 	height: fit-content;
-	transition: border-color 0.2s ease-in-out;
 	padding-inline: var(--save-button-size);
-
-	outline: solid 2px transparent;
+	background-color: transparent;
+	&:focus {
+		border-bottom-color: transparent;
+		background-color: var(--input-bg);
+	}
+	&:not(:focus) {
+		border-radius: 0;
+	}
 }
 .saveRoomNameButton {
 	width: var(--save-button-size);
 	height: var(--save-button-size);
 	position: absolute;
 	right: 0;
-	top: calc(50% - var(--save-button-size) / 2);
+	top: calc(50% - var(--save-button-size) / 2 + 2.5px);
 	display: none;
 	padding: 0;
 }

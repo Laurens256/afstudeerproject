@@ -1,5 +1,5 @@
 import { ToastQueue, useToastQueue } from '@react-stately/toast';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import classes from './ToastProvider.module.css';
 import Toast, { type ToastProps } from './Toast';
@@ -10,7 +10,6 @@ const toastQueue = new ToastQueue<ToastProps>({
 
 const ToastProvider = () => {
 	const [isMounted, setIsMounted] = useState(false);
-	const ref = useRef(null);
 	const state = useToastQueue(toastQueue);
 
 	useEffect(() => {
@@ -26,7 +25,6 @@ const ToastProvider = () => {
 			role="region"
 			aria-label="Notifications"
 			tabIndex={-1}
-			ref={ref}
 			className={classes.container}
 		>
 			{state.visibleToasts.map(({ key, content: { title, message, variant } }) => (

@@ -5,7 +5,7 @@ import Head from 'next/head';
 import type { Player, RoomState } from '@shared/types';
 import { Button } from '@/components';
 import clsx from 'clsx';
-import { IconChevronLeft } from '@tabler/icons-react';
+import { IconMessage } from '@tabler/icons-react';
 import { Sidebar, RoomSettings, GameContainer } from './components';
 import classes from './Room.module.css';
 
@@ -114,23 +114,6 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		button.inert = !isOpen;
 	};
 
-	useEffect(() => {
-		const closeSidebarOnEscape = (e: KeyboardEvent) => {
-			if (
-				e.key === 'Escape'
-			&& containerRef.current?.classList.contains(classes.sidebarOpen)
-			) {
-				handleSidebarToggle();
-			}
-		};
-
-		document.addEventListener('keydown', closeSidebarOnEscape);
-
-		return () => {
-			document.removeEventListener('keydown', closeSidebarOnEscape);
-		};
-	}, []);
-
 	if (!ourPlayer) { // should not happen
 		// TODO: 404 / loader (?)
 		return null;
@@ -144,7 +127,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			<div className={clsx(classes.container, classes.sidebarOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
 					{roomState.isStarted && roomState.selectedGame
-					&& playersInGame.find((player) => player.socketId === ourPlayer.socketId)
+					// && playersInGame.find((player) => player.socketId === ourPlayer.socketId)
 						? (
 							<GameContainer
 								game={roomState.selectedGame}
@@ -158,17 +141,17 @@ const Room = ({ roomCode, username }: RoomProps) => {
 							/>
 						)}
 				</div>
-
 				<Button
 					className={classes.openSidebarButton}
 					onClick={handleSidebarToggle}
-					variant="icon"
+					variant="cartoon"
+					withCartoonRay={false}
 					aria-label="open chat"
 					innerRef={openSidebarButtonRef}
 					inert=""
 					aria-controls="chat-wrapper"
 				>
-					<IconChevronLeft size={40} />
+					<IconMessage size={40} />
 				</Button>
 				<div ref={sidebarWrapperRef} id="chat-wrapper" className={classes.sidebarWrapper}>
 					<Sidebar

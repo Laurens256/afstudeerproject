@@ -73,7 +73,7 @@ const joinRoom = (inputCode: string, inputname: string) => {
 		rooms[roomCode].roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
 	}
 
-	return { error, username };
+	return { error, username, roomCode };
 };
 
 const deleteRoom = (roomCode: string) => {
