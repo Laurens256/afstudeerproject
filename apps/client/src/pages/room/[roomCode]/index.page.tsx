@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { JoinRoomForm } from '@/components';
 import { NameInput, Room } from './components';
 
 const RoomContainer = () => {
@@ -9,7 +10,7 @@ const RoomContainer = () => {
 
 	// TODO 404 page
 	if (typeof roomCode !== 'string' || roomCode.length !== 6) {
-		return null;
+		return <JoinRoomForm />;
 	}
 
 	return (

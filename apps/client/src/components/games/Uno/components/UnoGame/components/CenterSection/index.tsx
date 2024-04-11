@@ -2,6 +2,7 @@ import { Button } from '@/components';
 import type { UnoCard, UnoColor } from '@shared/types';
 import socket from '@/socket';
 import clsx from 'clsx';
+import type { GameErrorToastProps } from '@/types';
 import classes from './CenterSection.module.css';
 import UnoCardComponent from '../UnoCard';
 
@@ -14,7 +15,7 @@ type CenterSectionProps = {
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	cardDrawCounter: number;
 	getColorFromPicker: () => Promise<UnoColor>;
-	addGameHistoryEntry: (entry: string) => void;
+	showErrorToast: (props: GameErrorToastProps) => void;
 };
 const CenterSection = ({
 	currentCard,
@@ -25,7 +26,7 @@ const CenterSection = ({
 	setHasDrawnCard,
 	cardDrawCounter,
 	getColorFromPicker,
-	addGameHistoryEntry,
+	showErrorToast,
 }: CenterSectionProps) => {
 	const onDrawCard = async () => {
 		if (canDoAction && !hasDrawnCard) {
@@ -42,9 +43,9 @@ const CenterSection = ({
 		} else if (canDoAction && hasDrawnCard) {
 			// TODO: add auto dismissed toasts next to these that can't be turned off
 			// TODO also for canPlay in UnoGame.tsx
-			addGameHistoryEntry('You already drew a card, you can end your turn or play a card');
+			showErrorToast({ message: 'You already drew a card, you can end your turn or play a card' });
 		} else {
-			addGameHistoryEntry('It\'s not your turn');
+			showErrorToast({ message: 'It\'s not your turn' });
 		}
 	};
 
@@ -53,12 +54,13 @@ const CenterSection = ({
 			disableCanDoAction();
 			socket.emit('UNO_END_TURN');
 		} else if (!canDoAction) {
-			addGameHistoryEntry('It\'s not your turn');
+			showErrorToast({ message: 'It\'s not your turn' });
 		} else {
-			addGameHistoryEntry('You can\'t end your turn until you draw or play a card');
+			showErrorToast({ message: 'You can\'t end your turn until you draw or play a card' });
 		}
 	};
 
+	const enabledHsl = 'hsl(241, 62%, 55%)';
 	const disabledHsl = 'hsl(211, 12%, 48%)';
 	const drawButtonDisabled = !canDoAction || (canDoAction && hasDrawnCard);
 	const endTurnButtonDisabled = !canSkipTurn;
@@ -69,9 +71,9 @@ const CenterSection = ({
 				onClick={onDrawCard}
 				className={clsx(classes.skipTurnButton, classes.button)}
 				data-disabled={drawButtonDisabled}
-				cartoonColor={drawButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
+				cartoonColor={drawButtonDisabled ? disabledHsl : enabledHsl}
 			>
-				DRAW CARD
+				{`DRAW CARD${cardDrawCounter > 1 ? `S (${cardDrawCounter})` : ''}`}
 			</Button>
 			<div className={classes.cardsContainer}>
 				<UnoCardComponent card={currentCard} />
@@ -80,7 +82,7 @@ const CenterSection = ({
 				variant="cartoon"
 				onClick={onSkipTurn}
 				className={clsx(classes.skipTurnButton, classes.button)}
-				cartoonColor={endTurnButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
+				cartoonColor={endTurnButtonDisabled ? disabledHsl : enabledHsl}
 				data-disabled={endTurnButtonDisabled}
 			>
 				END TURN

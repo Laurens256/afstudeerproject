@@ -27,9 +27,9 @@ const UserMessageComponent = ({ message, prevMsgSameUser }: UserMessageComponent
 			</div>
 			<div>
 				{!prevMsgSameUser && (
-					<b>{username}</b>
+					<b className={classes.username}>{username}</b>
 				)}
-				<p>{text}</p>
+				<p className={classes.msgText}>{text}</p>
 			</div>
 		</li>
 	);

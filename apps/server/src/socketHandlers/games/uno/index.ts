@@ -42,8 +42,7 @@ const unoHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		if (roomCode) {
 			const newState = util.playCard({
 				roomCode,
-				socketId:
-				socket.id,
+				socketId: socket.id,
 				cardId,
 				chosenColor: chosenColor || null,
 			});

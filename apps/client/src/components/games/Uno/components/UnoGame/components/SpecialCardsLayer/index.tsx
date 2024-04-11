@@ -1,16 +1,16 @@
-import type { UnoCard } from '@shared/types';
+import type { UnoCard, UnoColor } from '@shared/types';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { IconRefresh } from '@tabler/icons-react';
 import classes from './SpecialCardsLayer.module.css';
 import { Skip, Reverse } from './components';
 
 type SpecialCardsLayerProps = {
 	currentCard: UnoCard;
 	isClockwise: boolean;
+	chosenColor: UnoColor | null;
 };
 
-const SpecialCardsLayer = ({ currentCard, isClockwise }: SpecialCardsLayerProps) => {
+const SpecialCardsLayer = ({ currentCard, isClockwise, chosenColor }: SpecialCardsLayerProps) => {
 	const [key, setKey] = useState(currentCard.cardId);
 	useEffect(() => {
 		if (currentCard.type === 'special-card' || currentCard.type === 'wild-card') {
@@ -18,14 +18,19 @@ const SpecialCardsLayer = ({ currentCard, isClockwise }: SpecialCardsLayerProps)
 		}
 	}, [currentCard]);
 
+	let glowColor = 'var(--uno-color-black)';
+	if (currentCard.type === 'wild-card') {
+		glowColor = `var(--uno-color-${chosenColor || 'black'})`;
+	} else {
+		glowColor = `var(--uno-color-${currentCard.color})`;
+	}
+
 	return (
 		<div className={classes.container} aria-hidden="true">
 			<div
 				className={classes.fadeContainer}
-				key={key}
-				style={{
-					'--glow-color': currentCard.type === 'wild-card' ? 'var(--uno-color-black)' : `var(--uno-color-${currentCard.color})`,
-				} as React.CSSProperties}
+				key={`${key}${chosenColor}`}
+				style={{ '--glow-color': glowColor } as React.CSSProperties}
 			>
 				{currentCard.type === 'special-card' && currentCard.value === 'draw-two' && (
 					<p className={classes.text}>+2</p>
@@ -41,11 +46,13 @@ const SpecialCardsLayer = ({ currentCard, isClockwise }: SpecialCardsLayerProps)
 					)}
 					/>
 				)}
-				{currentCard.type === 'wild-card' && currentCard.value === 'wild-draw-four' && (
+				{currentCard.type === 'wild-card' && currentCard.value === 'wild-draw-four' && !chosenColor && (
 					<p className={classes.text}>+4</p>
 				)}
-				{currentCard.type === 'wild-card' && currentCard.value === 'wild' && (
-					<p className={classes.text}>Choose color</p>
+				{currentCard.type === 'wild-card' && chosenColor && (
+					<p className={classes.text}>
+						{chosenColor.toUpperCase()}
+					</p>
 				)}
 			</div>
 

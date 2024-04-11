@@ -1,5 +1,5 @@
 import { Button } from '@/components';
-import { IconBell, IconBellOff, IconUsers, IconX } from '@tabler/icons-react';
+import { IconBell, IconBellOff, IconX } from '@tabler/icons-react';
 import { useLocalStorage } from '@/hooks';
 import classes from './ChatHeader.module.css';
 
@@ -8,6 +8,7 @@ type ChatHeaderProps = {
 };
 const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
 	const [audioEnabled, setAudioEnabled] = useLocalStorage('audioEnabled', false);
+
 	return (
 		<header className={classes.header}>
 			<div className={classes.headingCloseButtonWrapper}>
@@ -22,16 +23,11 @@ const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
 					variant="icon"
 					className={classes.button}
 					onClick={() => setAudioEnabled(!audioEnabled)}
-					aria-label={`toggle notification sound`}
-					// aria-label={`${audioEnabled ? 'disable' : 'enable'} notification sound`}
+					aria-label="toggle notification sound"
 					role="switch"
 					aria-checked={audioEnabled}
 				>
 					{audioEnabled ? <IconBell /> : <IconBellOff />}
-				</Button>
-
-				<Button variant="icon" className={classes.button} aria-label="show room users">
-					<IconUsers />
 				</Button>
 			</div>
 		</header>

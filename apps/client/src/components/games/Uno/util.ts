@@ -1,8 +1,8 @@
 import type { UnoCard } from '@shared/types';
 
 const specialCardLabelMap = {
-	wild: 'Wildcard choose color',
-	'wild-draw-four': 'Wildcard draw four',
+	wild: 'Choose color',
+	'wild-draw-four': 'Draw four',
 	reverse: 'Reverse order',
 	skip: 'Next user skips turn',
 	'draw-two': 'Draw two',

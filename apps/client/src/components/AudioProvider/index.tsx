@@ -3,9 +3,9 @@ import { useLocalStorage } from '@/hooks';
 
 const audioFiles = {
 	gameChat: {
-		messageReceived: 'sample.mp3',
-		playerJoined: 'sample.mp3',
-		playerLeft: 'sample.mp3',
+		messageReceived: 'chat_message.mp3',
+		// playerJoined: 'sample.mp3',
+		// playerLeft: 'sample.mp3',
 	},
 } as const;
 
@@ -28,8 +28,11 @@ const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 	const value: AudioContextType = useMemo(() => ({
 		gameChat: (type, forcePlay) => {
 			if (audioEnabled && gameChatAudio && (gameChatAudio.paused || forcePlay)) {
-				gameChatAudio.src = `/audio/${audioFiles.gameChat[type]}`;
-				gameChatAudio.play();
+				const file = audioFiles.gameChat[type];
+				if (file) {
+					gameChatAudio.src = `/audio/${file}`;
+					gameChatAudio.play();
+				}
 			}
 		},
 	}), [gameChatAudio, audioEnabled]);

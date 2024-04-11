@@ -26,7 +26,7 @@ const CardsList = ({
 		)}
 		aria-label={`${username} cards`}
 	>
-		{cards.map((card, i) => (
+		{cards.map((card) => (
 			<li key={card.cardId} className={classes.cardContainer}>
 				<Button
 					aria-roledescription="card"

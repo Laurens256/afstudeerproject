@@ -3,11 +3,15 @@ import Input from '@/components/Input';
 import { useEffect, useRef, useState } from 'react';
 import socket from '@/socket';
 import { useRouter } from 'next/router';
-import { IconSearch } from '@tabler/icons-react';
 import { RoutePath, generateRoute } from '@/routes';
+import clsx from 'clsx';
 import classes from './JoinRoomForm.module.css';
 
-const JoinRoomForm = () => {
+type JoinRoomFormProps = {
+	className?: string;
+};
+
+const JoinRoomForm = ({ className }: JoinRoomFormProps) => {
 	const router = useRouter();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [roomCode, setRoomCode] = useState('');
@@ -17,7 +21,7 @@ const JoinRoomForm = () => {
 		e.preventDefault();
 
 		if (roomCode.length !== 6) {
-			setError('Room code must be 6 characters');
+			setError('Room PIN must be 6 characters');
 			inputRef.current?.focus();
 			return;
 		}
@@ -44,25 +48,23 @@ const JoinRoomForm = () => {
 	});
 
 	return (
-		<form onSubmit={handleSubmit} noValidate>
+		<form onSubmit={handleSubmit} noValidate className={clsx(classes.form, className)}>
 			<Input
 				className={classes.input}
-				label="Join a room by code"
+				label="Enter a room PIN"
 				ref={inputRef}
 				value={roomCode}
 				error={error}
 				onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-				labelClassName={classes.label}
 				id="joinRoomCode"
 				required
 				autoComplete="off"
 				enterKeyHint="go"
-				placeholder="Room code"
-			>
-				<Button className={classes.joinButton} aria-label="Join room" type="submit">
-					<IconSearch />
-				</Button>
-			</Input>
+				placeholder="Room PIN"
+			/>
+			<Button className={classes.joinButton} aria-label="Join room" type="submit">
+				Enter
+			</Button>
 		</form>
 	);
 };

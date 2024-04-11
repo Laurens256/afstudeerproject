@@ -19,7 +19,7 @@
 		}
 		& .openSidebarButton {
 			transition: right 0.1s linear 0.1s;
-			right: calc(-1 * (3rem + var(--right-offset)));
+			right: calc(-1 * (var(--size) + var(--right-offset)));
 		}
 	}
 
@@ -56,22 +56,14 @@
 }
 
 .openSidebarButton {
-	--height: 20rem;
-	--right-offset: 5rem;
+	--size: 3rem;
+	--right-offset: 1rem;
 	position: fixed;
-	right: calc(-1 * var(--right-offset));
-	top: calc(50% - var(--height) / 2);
+	right: var(--right-offset);
+	top: calc(50% - var(--size) / 2);
 	background-color: var(--primary-text-white);
-	height: var(--height);
-	width: calc(3rem + var(--right-offset));
-	border-radius: var(--height) 0 0 var(--height);
-	padding-right: var(--right-offset);
-	transition: right 0.3s cubic-bezier(.42,.45,.3,1.68) 0.5s, transform 0.3s ease-out, color 0.3s ease-in-out;
-	transform: scaleX(1);
-
-	&:hover, &:focus-visible {
-		background-color: var(--primary-panel-bg);
-		color: var(--primary-color);
-		transform: scaleY(1.1);
-	}
+	padding: 0.75rem;
+	height: var(--size);
+	width: var(--size);
+	transition: right 0.25s cubic-bezier(.42,.45,.3,1.68) 0.5s, color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
 }

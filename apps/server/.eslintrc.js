@@ -13,7 +13,9 @@ module.exports = {
 			code: 100,
 			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$',
 			ignoreStrings: true,
-			ignoreTemplateLiterals: true
+			ignoreTemplateLiterals: true,
+			ignoreComments: true,
+			ignoreUrls: true,
 		}],
 		'default-case': 'off',
 

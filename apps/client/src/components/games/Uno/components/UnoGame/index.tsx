@@ -2,20 +2,22 @@ import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
 import { memo } from 'react';
-import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer } from './components';
+import type { GameErrorToastProps } from '@/types';
+import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer, TurnIndicator } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
 
 type UnoGameProps = {
 	gameState: UnoGameState;
 	players: Player[];
-	ourPlayer: Player;
+	ourPlayer: Player | null;
 	canDoAction: boolean;
 	disableCanDoAction: () => void;
 	canSkipTurn: boolean;
 	setHasDrawnCard: (hasDrawn: boolean) => void;
 	hasDrawnCard: boolean;
-	addGameHistoryEntry: (entry: string) => void;
+	currentPlayerUsername: string;
+	showErrorToast: (props: GameErrorToastProps) => void;
 };
 
 const UnoGame = ({
@@ -27,19 +29,28 @@ const UnoGame = ({
 	canSkipTurn,
 	setHasDrawnCard,
 	hasDrawnCard,
-	addGameHistoryEntry,
+	currentPlayerUsername,
+	showErrorToast,
 }: UnoGameProps) => {
-	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string) => {
+	const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string | null) => {
+		if (!ourPlayerId) return playersArr;
+
 		const ourPlayerIndex = playersArr.findIndex((player) => player.socketId === ourPlayerId);
 		const playersCopy = [...playersArr];
 		const playersBefore = playersCopy.splice(0, ourPlayerIndex);
 		return [...playersCopy, ...playersBefore];
 	};
 
-	const sortedPlayers = setCorrectPlayerOrder(gameState.players, ourPlayer.socketId);
+	const sortedPlayers = setCorrectPlayerOrder(
+		gameState.players,
+		ourPlayer ? ourPlayer.socketId : null,
+	);
 	const [getColorFromPicker, ColorPicker] = useColorPicker(sortedPlayers[0].cards);
 
 	const canPlayCard = (card: UnoCard) => {
+		if (!ourPlayer) {
+			return { error: 'You are not in this game', canPlay: false };
+		}
 		let error: string | null = null;
 
 		const { currentCard, wildcardColor, cardDrawCounter } = gameState;
@@ -48,10 +59,10 @@ const UnoGame = ({
 		if (!canDoAction) {
 			error = 'It\'s not your turn';
 		} else if (
-			card.type === 'wild-card'
+			(card.type === 'wild-card' || card.type === 'special-card')
 			&& cards.length === 1
 		) {
-			error = 'You can\'t play a wild card when you have only one card left';
+			error = 'Your final card can\'t be a special card';
 		} else if (cardDrawCounter > 0) {
 			if (card.value !== 'draw-two'
 			&& card.value !== 'wild-draw-four') {
@@ -71,7 +82,7 @@ const UnoGame = ({
 				cardColor !== currentCard.color
 				&& cardValue !== currentCardValue
 			) {
-				error = `You can't play a card that doesn't match the current card's color or value. Current card: ${currentCard.color} ${currentCard.value}`;
+				error = `Can't play a ${cardColor} ${cardValue} card on a ${currentCard.color} ${currentCard.value} card`;
 			}
 		}
 
@@ -83,13 +94,14 @@ const UnoGame = ({
 		const { error, canPlay } = canPlayCard(card);
 
 		if (canPlay) {
+			showErrorToast(null);
 			if (isColorSelectCard(card)) {
 				const chosenColor = await getColorFromPicker();
 				socket.emit('UNO_PLAY_CARD', card.cardId, chosenColor);
 			}
 			socket.emit('UNO_PLAY_CARD', card.cardId);
 		} else if (error) {
-			addGameHistoryEntry(error);
+			showErrorToast({ message: error });
 		}
 	};
 
@@ -111,6 +123,10 @@ const UnoGame = ({
 
 	return (
 		<div className={clsx(classes.container, classes[`players${players.length}`])}>
+			<TurnIndicator
+				isOurTurn={gameState.currentPlayerId === socket.id}
+				username={currentPlayerUsername}
+			/>
 			<section className={classes.middleSection} aria-label="card pile">
 				<CenterSection
 					currentCard={gameState.currentCard}
@@ -121,7 +137,7 @@ const UnoGame = ({
 					hasDrawnCard={hasDrawnCard}
 					cardDrawCounter={gameState.cardDrawCounter}
 					getColorFromPicker={getColorFromPicker}
-					addGameHistoryEntry={addGameHistoryEntry}
+					showErrorToast={showErrorToast}
 				/>
 			</section>
 
@@ -134,11 +150,12 @@ const UnoGame = ({
 					>
 						{playersPerPosition.map((player) => {
 							const isCurrentPlayer = gameState.currentPlayerId === player.socketId;
+							const isOurPlayer = socket.id === player.socketId;
 							const username = players.find(
 								(p) => p.socketId === player.socketId,
 							)?.username || 'someone';
 							return (
-								i === 0 ? (
+								isOurPlayer ? (
 									<CardsList
 										key={player.socketId}
 										cards={player.cards}
@@ -163,6 +180,7 @@ const UnoGame = ({
 			<SpecialCardsLayer
 				currentCard={gameState.currentCard}
 				isClockwise={gameState.isClockwise}
+				chosenColor={gameState.wildcardColor}
 			/>
 			<ColorPicker />
 		</div>

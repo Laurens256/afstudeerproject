@@ -65,15 +65,15 @@ const joinRoom = (inputCode: string, inputname: string) => {
 	if (username.length < 2) {
 		error = 'Username must be at least 2 characters';
 	}
-	if (username.length > 30) {
-		error = 'Username can\'t be longer than 30 characters';
+	if (username.length > 20) {
+		error = 'Username can\'t be longer than 20 characters';
 	}
 
 	if (!error && rooms[roomCode].roomName === null) {
 		rooms[roomCode].roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
 	}
 
-	return { error, username };
+	return { error, username, roomCode };
 };
 
 const deleteRoom = (roomCode: string) => {

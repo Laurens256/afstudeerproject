@@ -4,7 +4,7 @@ import Layout from './Layout';
 import Input from './Input';
 import JoinRoomForm from './JoinRoomForm';
 import { AudioProvider, AudioContext } from './AudioProvider';
-import { ToastProvider, toastQueue } from './ToastProvider';
+import GameErrorToastProvider from './GameErrorToastProvider';
 import GameHistory from './GameHistory';
 
 export {
@@ -13,9 +13,7 @@ export {
 	Layout,
 	Input,
 	JoinRoomForm,
-	AudioProvider,
-	AudioContext,
-	ToastProvider,
-	toastQueue,
+	AudioProvider, AudioContext,
+	GameErrorToastProvider,
 	GameHistory,
 };

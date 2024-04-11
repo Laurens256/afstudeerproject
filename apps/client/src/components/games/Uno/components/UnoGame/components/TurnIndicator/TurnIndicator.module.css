@@ -1,0 +1,40 @@
+/* SOURCE: https://css-generators.com/ribbon-shapes/ */
+.container {
+	--r: 1.5rem;
+	--bg-color: var(--uno-color-blue);
+	--text-shadow-1: hsl(217, 86%, 19%);
+	--text-shadow-2: hsl(222, 86%, 15%);
+	--padding-right: calc(var(--r) + 1rem);
+
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+	position: fixed;
+	top: 5rem;
+	left: 0;
+
+	padding: 0.25rem var(--padding-right) 0.25rem 1rem;
+	line-height: 1.8;
+	clip-path: polygon(-100vw 0,100% 0,calc(100% - var(--r)) 50%,100% 100%,-100vw 100%);
+	border-image: conic-gradient(var(--bg-color) 0 0) fill 0;
+	transition: padding-right 0.1s ease-in-out, transform 0.1s ease-in-out;
+
+	&.isOurTurn {
+		--bg-color: var(--uno-color-green);
+		--text-shadow-1: hsl(104, 85%, 15%);
+		--text-shadow-2: hsl(107, 85%, 12%);
+	}
+	
+	&.collapsed {
+		transform: translateX(calc(-100% + var(--padding-right) - 0.2rem));
+	
+		&:hover, &:focus-visible {
+			padding-right: calc(var(--padding-right) + 1.5rem);
+			transform: translateX(calc(-100% + var(--padding-right) + 1rem));
+		}
+	}
+	
+	&:hover, &:focus-visible {
+		padding-right: calc(var(--padding-right) + 1rem);
+	}
+}

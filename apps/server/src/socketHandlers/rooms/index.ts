@@ -66,8 +66,8 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		socket.emit('ROOM_EXISTS', roomExists ? roomCode : null);
 	});
 
-	socket.on('ROOM_JOIN', (roomCode, inputName) => {
-		const { username, error } = util.joinRoom(roomCode, inputName);
+	socket.on('ROOM_JOIN', (inputCode, inputName) => {
+		const { username, error, roomCode } = util.joinRoom(inputCode, inputName);
 		socket.emit('ROOM_JOIN', username, error);
 
 		if (error === null) {
@@ -109,6 +109,15 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 
 		if (newState) {
 			io.to(roomCode).emit('ROOM_SET_STATE', newState);
+			if (newState.isStarted === false) {
+				const sockets = getRoomSockets(roomCode);
+				sockets.forEach((id) => {
+					const socketObj = io.sockets.sockets.get(id);
+					if (socketObj) {
+						socketObj.data.inGame = undefined;
+					}
+				});
+			}
 		}
 	});
 
@@ -132,7 +141,6 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const { roomCode } = socket.data;
 		if (!roomCode) return;
 		const sockets = getRoomSockets(roomCode);
-		// const sockets = getRoomSockets(roomCode).slice(0, 4);
 		const game = util.getRoom(roomCode)?.selectedGame;
 
 		sockets.forEach((id) => {
@@ -154,6 +162,40 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 			selectedGame: game,
 			players: playersObjects,
 		});
+	});
+
+	const handleGameEnd = (roomCode: string, game: GamesType | undefined) => {
+		switch (game) {
+			case 'UNO': {
+				unoUtil.endGame(roomCode);
+				break;
+			}
+		}
+	};
+
+	socket.on('ROOM_END_GAME', () => {
+		const { roomCode, inGame } = socket.data;
+		if (!roomCode) return;
+		const sockets = getRoomSockets(roomCode);
+
+		sockets.forEach((id) => {
+			const socketObj = io.sockets.sockets.get(id);
+			if (socketObj) {
+				socketObj.data.inGame = undefined;
+			}
+		});
+
+		const playersObjects = getRoomPlayers(roomCode);
+
+		util.setRoomState(roomCode, {
+			isStarted: false,
+		});
+
+		io.to(roomCode).emit('ROOM_SET_STATE', {
+			isStarted: false,
+			players: playersObjects,
+		});
+		handleGameEnd(roomCode, inGame);
 	});
 
 	const leaveGameAfterRoomLeave = (
@@ -183,6 +225,8 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 
 		if (!getRoomSockets(roomCode).length) {
 			util.deleteRoom(roomCode);
+			handleGameEnd(roomCode, inGame);
+			return;
 		}
 
 		if (role === 'admin') {
@@ -198,7 +242,6 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		const { roomCode, role, inGame } = socket.data;
 		handleRoomLeave(roomCode, role, inGame);
 	});
-
 	socket.on('disconnect', () => {
 		const { roomCode, role, inGame } = socket.data;
 		handleRoomLeave(roomCode, role, inGame);

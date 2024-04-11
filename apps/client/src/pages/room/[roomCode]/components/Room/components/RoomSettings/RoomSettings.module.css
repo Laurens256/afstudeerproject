@@ -1,11 +1,12 @@
-.header {
+.container {
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	flex-direction: column;
-	gap: 1rem;
+	align-items: center;
+	gap: min(10rem, 20vh);
+	margin-bottom: 3rem;
 }
-.roomName {
+
+.roomPin {
 	background-color: var(--primary-panel-bg);
 	border-radius: 0 0 var(--md-border-radius) var(--md-border-radius);
 	padding: 0.5rem 2rem 0.75rem;
@@ -13,11 +14,110 @@
 	align-items: center;
 	gap: 0.2rem;
 }
-.editRoomNameButton {
-	width: 1rem;
-	height: fit-content;
-}
-.roomCodeContainer {
+
+.main {
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+	padding: 1rem;
 	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	width: min(100%, 30rem);
+}
+.roomName {
+	text-align: center;
+	border-bottom: solid 1px var(--primary-text-black);
+	font-size: 1.3rem;
+}
+
+.editRoomNameForm {
+	--save-button-size: 2.2rem;
+	position: relative;
+
+	&:focus-within {
+		& .saveRoomNameButton {
+			display: flex;
+		}
+		& .editIcon {
+			display: none;
+		}
+	}
+}
+.editIcon {
+	--size: 1.2rem;
+	color: var(--secondary-text-black);
+	position: absolute;
+	top: 0;
+	top: calc(50% - var(--size) / 2 + 2.5px);
+	right: 0.5rem;
+	pointer-events: none;
+	width: var(--size);
+	height: var(--size);
+}
+.roomNameInput {
+	resize: none;
+	width: 100%;
+	border: 0;
+	border-bottom: solid 1px var(--primary-text-black);
+	padding-bottom: 0.1rem;
+	font-size: 1.3rem;
+	font-weight: 700;
+	text-align: center;
+	height: fit-content;
+	padding-inline: var(--save-button-size);
+	background-color: transparent;
+	&:focus {
+		border-bottom-color: transparent;
+		background-color: var(--input-bg);
+	}
+	&:not(:focus) {
+		border-radius: 0;
+	}
+}
+.saveRoomNameButton {
+	width: var(--save-button-size);
+	height: var(--save-button-size);
+	position: absolute;
+	right: 0;
+	top: calc(50% - var(--save-button-size) / 2 + 2.5px);
+	display: none;
+	padding: 0;
+}
+
+.playersContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+.playersList {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
 	gap: 0.5rem;
+}
+.playerListItem {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.avatarContainer {
+	position: relative;
+}
+.crown {
+	--crown-size: 1.5rem;
+	width: var(--crown-size);
+	height: var(--crown-size);
+	position: absolute;
+	top: calc((var(--crown-size) - 0.55rem) * -1);
+	left: calc(50% - var(--crown-size) / 2);
+	color: var(--primary-text-black);
+	fill: gold;
+}
+
+.startGameButton {
+	width: fit-content;
+	align-self: center;
+}
+.waitingText {
+	text-align: center;
+	font-size: 0.9rem;
 }

@@ -45,6 +45,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	loading?: boolean;
 	innerRef?: React.Ref<HTMLButtonElement>;
 	inert?: string;
+	disabled?: boolean;
 }
 
 const Button = ({
@@ -54,6 +55,7 @@ const Button = ({
 	withCartoonRay = true,
 	loading,
 	innerRef,
+	disabled,
 	...props
 }: ButtonProps) => {
 	const generatedColors = variant === 'cartoon' ? generateColorVariables(cartoonColor) : {};
@@ -62,12 +64,13 @@ const Button = ({
 		<button
 			{...props}
 			ref={innerRef}
-			disabled={loading || props.disabled}
+			disabled={loading || disabled}
 			// eslint-disable-next-line react/button-has-type
 			type={props.type || 'button'}
 			className={clsx(
 				classes.button,
 				classes[variant],
+				variant === 'cartoon' && ['cartoonText'],
 				withCartoonRay && classes.withCartoonRay,
 				props.className,
 			)}

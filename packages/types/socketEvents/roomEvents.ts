@@ -20,4 +20,5 @@ export type ClientToServerRoomEvents = {
 	ROOM_CHAT_MESSAGE: (message: string) => void;
 	ROOM_LEAVE: () => void;
 	ROOM_START_GAME: () => void;
+	ROOM_END_GAME: () => void;
 };

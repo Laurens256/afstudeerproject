@@ -29,8 +29,8 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 			case username.length < 2:
 				setInputError('Username must be at least 2 characters');
 				break;
-			case username.length > 30:
-				setInputError('Username can\'t be longer than 30 characters');
+			case username.length > 20:
+				setInputError('Username can\'t be longer than 20 characters');
 				break;
 			default:
 				setInputError(null);
@@ -83,7 +83,7 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 						type="text"
 						autoComplete="off"
 						error={inputError}
-						maxLength={30}
+						maxLength={20}
 						value={unverifiedUsername}
 						onChange={(e) => setUnverifiedUsername(e.target.value)}
 						ref={inputRef}
