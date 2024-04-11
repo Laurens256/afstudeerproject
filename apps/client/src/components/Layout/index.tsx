@@ -21,9 +21,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		if (isSocketRoute) {
 			const onDisconnect = () => {
-				alert('Disconnected from server');
+				alert('Disconnected from server, this is a temporary alert message :)');
 			};
-			socket.on('disconnect', onDisconnect)
+			socket.on('disconnect', onDisconnect);
 		}
 	}, [isSocketRoute]);
 

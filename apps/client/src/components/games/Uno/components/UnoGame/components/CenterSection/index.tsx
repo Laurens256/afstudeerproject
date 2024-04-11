@@ -60,6 +60,7 @@ const CenterSection = ({
 		}
 	};
 
+	const enabledHsl = 'hsl(241, 62%, 55%)';
 	const disabledHsl = 'hsl(211, 12%, 48%)';
 	const drawButtonDisabled = !canDoAction || (canDoAction && hasDrawnCard);
 	const endTurnButtonDisabled = !canSkipTurn;
@@ -70,9 +71,9 @@ const CenterSection = ({
 				onClick={onDrawCard}
 				className={clsx(classes.skipTurnButton, classes.button)}
 				data-disabled={drawButtonDisabled}
-				cartoonColor={drawButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
+				cartoonColor={drawButtonDisabled ? disabledHsl : enabledHsl}
 			>
-				{`DRAW CARD${cardDrawCounter > 1 ? `s (${cardDrawCounter})` : ''}`}
+				{`DRAW CARD${cardDrawCounter > 1 ? `S (${cardDrawCounter})` : ''}`}
 			</Button>
 			<div className={classes.cardsContainer}>
 				<UnoCardComponent card={currentCard} />
@@ -81,7 +82,7 @@ const CenterSection = ({
 				variant="cartoon"
 				onClick={onSkipTurn}
 				className={clsx(classes.skipTurnButton, classes.button)}
-				cartoonColor={endTurnButtonDisabled ? disabledHsl : 'hsl(241, 62%, 55%)'}
+				cartoonColor={endTurnButtonDisabled ? disabledHsl : enabledHsl}
 				data-disabled={endTurnButtonDisabled}
 			>
 				END TURN
