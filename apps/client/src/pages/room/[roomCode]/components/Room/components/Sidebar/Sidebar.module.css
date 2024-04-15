@@ -8,5 +8,7 @@
 	background-color: var(--primary-panel-bg);
 	height: 100%;
 	border-radius: var(--md-border-radius);
+	overflow: hidden;
+	position: relative;
 }
 

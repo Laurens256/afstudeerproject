@@ -1,4 +1,4 @@
-import { type Player, type RoomState } from '@shared/types';
+import { Games, type Player, type RoomState } from '@shared/types';
 
 export type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
@@ -34,7 +34,7 @@ const createRoom = (code?: string): string => {
 		roomName: null,
 		isPrivate: false,
 		isStarted: false,
-		selectedGame: 'UNO', // TODO
+		selectedGame: Games.UNO,
 	};
 	return roomCode;
 };

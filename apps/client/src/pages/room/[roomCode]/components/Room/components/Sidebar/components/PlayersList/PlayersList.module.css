@@ -1,0 +1,45 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 0.75rem var(--base-padding);
+	max-height: 100%;
+}
+
+.playersList {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	max-height: 20rem;
+	overflow-y: auto;
+}
+.playerListItem {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+.playerTextContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+}
+
+.playerNameContainer {
+	display: flex;
+	gap: 0.25rem;
+}
+.playerName {
+	font-size: 0.9rem;
+}
+.adminBadge {
+	font-size: 0.8rem;
+	font-weight: bold;
+}
+.playerStatus {
+	color: var(--secondary-text-black);
+	font-size: 0.8rem;
+}
+
+.kickButton {
+	margin-left: auto;
+}

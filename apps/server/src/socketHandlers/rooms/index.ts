@@ -1,6 +1,6 @@
 /* eslint no-param-reassign: 0 */
 
-import type { GamesType, Message, Player, RoomState } from '@shared/types';
+import { Games, type GamesType, type Message, type Player, type RoomState } from '@shared/types';
 import type { ExtendedServer, ExtendedSocket } from '@/types';
 import util from './util';
 import unoUtil from '../games/uno/util';
@@ -166,7 +166,7 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 
 	const handleGameEnd = (roomCode: string, game: GamesType | undefined) => {
 		switch (game) {
-			case 'UNO': {
+			case Games.UNO: {
 				unoUtil.endGame(roomCode);
 				break;
 			}
@@ -204,7 +204,7 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		game: GamesType | undefined,
 	) => {
 		switch (game) {
-			case 'UNO': {
+			case Games.UNO: {
 				const newState = unoUtil.handlePlayerLeave(roomCode, socketId);
 				if (newState) {
 					io.to(roomCode).emit('UNO_GET_GAME_STATE', newState);
@@ -237,6 +237,10 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		}
 		leaveGameAfterRoomLeave(roomCode, socket.id, inGame);
 	};
+
+	socket.on('ROOM_KICK_PLAYER', (socketId) => {
+		io.to(socketId).emit('ROOM_KICKED');
+	});
 
 	socket.on('ROOM_LEAVE', () => {
 		const { roomCode, role, inGame } = socket.data;

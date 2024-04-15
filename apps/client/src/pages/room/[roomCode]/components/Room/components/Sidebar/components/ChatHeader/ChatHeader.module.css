@@ -29,3 +29,14 @@
 		height: 1.25rem;
 	}
 }
+
+.popoverContent {
+	z-index: 3;
+	box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.2);
+	border-radius: var(--sm-border-radius);
+	background-color: var(--primary-panel-bg);
+}
+.popoverArrow {
+	fill: var(--primary-panel-bg);
+	/* box-shadow: 0 0 0.5rem 0.1rem red; */
+}
