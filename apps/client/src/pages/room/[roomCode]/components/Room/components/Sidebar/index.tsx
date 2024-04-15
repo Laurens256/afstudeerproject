@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import socket from '@/socket';
-import type { Player, Message } from '@shared/types';
+import type { Player, Message, GamesType } from '@shared/types';
 import classes from './Sidebar.module.css';
 import { MessagesList, ChatHeader, MessageInput } from './components';
 
@@ -17,9 +17,10 @@ type ChatSectionProps = {
 	players: Player[];
 	ourPlayer: Player;
 	closeSidebar: () => void;
+	activeGame: GamesType | null;
 };
 
-const ChatSection = ({ players, ourPlayer, closeSidebar }: ChatSectionProps) => {
+const ChatSection = ({ players, ourPlayer, closeSidebar, activeGame }: ChatSectionProps) => {
 	const [messages, setMessages] = useState<Message[]>([
 		createJoinedLeftMessage(ourPlayer.username, 'joined'),
 	]);
@@ -62,7 +63,11 @@ const ChatSection = ({ players, ourPlayer, closeSidebar }: ChatSectionProps) => 
 
 	return (
 		<aside className={classes.container} aria-labelledby="game-chat-heading">
-			<ChatHeader closeSidebar={closeSidebar} />
+			<ChatHeader
+				players={players}
+				roomActiveGame={activeGame}
+				closeSidebar={closeSidebar}
+			/>
 			<MessagesList messages={messages} ourPlayer={ourPlayer} />
 			<MessageInput onMessageSend={handleSendMessage} />
 		</aside>

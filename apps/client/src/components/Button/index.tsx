@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { memo } from 'react';
+import { memo, forwardRef } from 'react';
 import classes from './Button.module.css';
 
 const generateColorVariables = (inputColor: string) => {
@@ -43,43 +43,40 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	cartoonColor?: string;
 	withCartoonRay?: boolean;
 	loading?: boolean;
-	innerRef?: React.Ref<HTMLButtonElement>;
 	inert?: string;
 	disabled?: boolean;
 }
 
-const Button = ({
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
 	children,
 	variant = 'filled',
 	cartoonColor = 'hsl(199, 92%, 61%)',
 	withCartoonRay = true,
 	loading,
-	innerRef,
 	disabled,
 	...props
-}: ButtonProps) => {
-	const generatedColors = variant === 'cartoon' ? generateColorVariables(cartoonColor) : {};
-
-	return (
-		<button
-			{...props}
-			ref={innerRef}
-			disabled={loading || disabled}
-			// eslint-disable-next-line react/button-has-type
-			type={props.type || 'button'}
-			className={clsx(
-				classes.button,
-				classes[variant],
-				variant === 'cartoon' && ['cartoonText'],
-				withCartoonRay && classes.withCartoonRay,
-				props.className,
-			)}
-			style={{ ...generatedColors, ...props.style } as React.CSSProperties}
-		>
-			{loading && <span className={classes.loader} />}
-			{children}
-		</button>
-	);
-};
+}, ref) => (
+	<button
+		{...props}
+		ref={ref}
+		disabled={loading || disabled}
+		// eslint-disable-next-line react/button-has-type
+		type={props.type || 'button'}
+		className={clsx(
+			classes.button,
+			classes[variant],
+			variant === 'cartoon' && ['cartoonText'],
+			withCartoonRay && classes.withCartoonRay,
+			props.className,
+		)}
+		style={{
+			...(variant === 'cartoon' ? generateColorVariables(cartoonColor) : {}),
+			...props.style,
+		}}
+	>
+		{loading && <span className="loader" />}
+		{children}
+	</button>
+));
 
 export default memo(Button);

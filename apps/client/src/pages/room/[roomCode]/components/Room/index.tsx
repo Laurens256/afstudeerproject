@@ -86,18 +86,24 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		if (!roomCode) {
 			return;
 		}
+
+		const handleRoomKicked = () => {
+			router.push('/');
+		};
 		const handleRoomLeave = () => {
 			socket.emit('ROOM_LEAVE');
 		};
 
 		router.events.on('routeChangeStart', handleRoomLeave);
 		router.events.on('beforeHistoryChange', handleRoomLeave);
+		socket.on('ROOM_KICKED', handleRoomKicked); // TODO: show message when kicked
 
 		return () => {
 			router.events.off('routeChangeStart', handleRoomLeave);
 			router.events.off('beforeHistoryChange', handleRoomLeave);
+			socket.off('ROOM_KICKED', handleRoomKicked);
 		};
-	}, [roomCode, router.events]);
+	}, [roomCode, router]);
 
 	const handleSidebarToggle = () => {
 		const container = containerRef.current;
@@ -127,11 +133,11 @@ const Room = ({ roomCode, username }: RoomProps) => {
 			<div className={clsx(classes.container, classes.sidebarOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
 					{roomState.isStarted && roomState.selectedGame
-					// && playersInGame.find((player) => player.socketId === ourPlayer.socketId)
 						? (
 							<GameContainer
 								game={roomState.selectedGame}
 								playersInGame={playersInGame}
+								isSpectator={!ourPlayer.inGame}
 							/>
 						) : (
 							<RoomSettings
@@ -147,7 +153,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 					variant="cartoon"
 					withCartoonRay={false}
 					aria-label="open chat"
-					innerRef={openSidebarButtonRef}
+					ref={openSidebarButtonRef}
 					inert=""
 					aria-controls="chat-wrapper"
 				>
@@ -158,6 +164,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 						players={roomState.players}
 						ourPlayer={ourPlayer}
 						closeSidebar={handleSidebarToggle}
+						activeGame={roomState.isStarted ? roomState.selectedGame : null}
 					/>
 				</div>
 			</div>

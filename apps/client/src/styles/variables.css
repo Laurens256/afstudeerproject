@@ -8,7 +8,7 @@
 	--secondary-text-white: #f8f9fa;
 
 	--primary-text-black: #111111;
-	--secondary-text-black: #333333;
+	--secondary-text-black: #484848;
 
 	--link-color: #007bff;
 
@@ -25,8 +25,4 @@
 	--uno-color-green: #328A10;
 	--uno-color-blue: #1254AB;
 	--uno-color-black: #050804;
-	/* --uno-glow-color-1: #ff69b4;
-	--uno-glow-color-2: #00ffff; */
-	--uno-glow-color-1: var(--uno-color-red);
-	--uno-glow-color-2: #ffffff;
 }

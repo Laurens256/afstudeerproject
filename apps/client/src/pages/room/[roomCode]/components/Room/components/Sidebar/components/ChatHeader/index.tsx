@@ -1,12 +1,17 @@
 import { Button } from '@/components';
-import { IconBell, IconBellOff, IconX } from '@tabler/icons-react';
+import { IconBell, IconBellOff, IconX, IconUsers } from '@tabler/icons-react';
 import { useLocalStorage } from '@/hooks';
+import * as Popover from '@radix-ui/react-popover';
+import type { GamesType, Player } from '@shared/types';
 import classes from './ChatHeader.module.css';
+import PlayersList from '../PlayersList';
 
 type ChatHeaderProps = {
 	closeSidebar: () => void;
+	players: Player[];
+	roomActiveGame: GamesType | null;
 };
-const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
+const ChatHeader = ({ players, roomActiveGame, closeSidebar }: ChatHeaderProps) => {
 	const [audioEnabled, setAudioEnabled] = useLocalStorage('audioEnabled', false);
 
 	return (
@@ -29,6 +34,25 @@ const ChatHeader = ({ closeSidebar }: ChatHeaderProps) => {
 				>
 					{audioEnabled ? <IconBell /> : <IconBellOff />}
 				</Button>
+
+				<Popover.Root>
+					<Popover.Trigger asChild>
+						<Button
+							variant="icon"
+							className={classes.button}
+							aria-label="show room members"
+						>
+							<IconUsers />
+						</Button>
+					</Popover.Trigger>
+					<Popover.Content align="end" sideOffset={4} className={classes.popoverContent}>
+						<Popover.Arrow className={classes.popoverArrow} />
+						<PlayersList
+							players={players}
+							roomActiveGame={roomActiveGame}
+						/>
+					</Popover.Content>
+				</Popover.Root>
 			</div>
 		</header>
 	);

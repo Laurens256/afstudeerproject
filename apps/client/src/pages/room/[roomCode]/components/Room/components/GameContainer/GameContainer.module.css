@@ -11,24 +11,52 @@
 	}
 }
 
-.container.UNO::before {
-	/* space thingy also cool */
-	/* background-color: #000000;
-	background-image: radial-gradient(
-			white,
-			rgba(255, 255, 255, 0.2) 2px,
-			transparent 40px
-		),
-		radial-gradient(#FFFFFF, rgba(255, 255, 255, 0.15) 1px, transparent 30px),
-		radial-gradient(#FFFFFF, rgba(255, 255, 255, 0.1) 2px, transparent 40px),
-		radial-gradient(
-			rgba(255, 255, 255, 0.4),
-			rgba(255, 255, 255, 0.1) 2px,
-			transparent 30px
-		);
-	background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
-	background-position: 0 0, 40px 60px, 130px 270px, 70px 100px; */
-	/* background-color: var(--uno-color-red); */
+.dialogOverlay {
+	background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+}
+.spectatorDialog {
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+	width: min(90%, 30rem);
+	padding: 1rem;
+	text-align: center;
+}
+.dialogActionButtons {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+}
+.dialogActionButton {
+	--color: var(--primary-color);
+	padding: 0.4rem 1rem;
+	border: solid 1px var(--color);
+	border-radius: var(--sm-border-radius);
+	font-weight: 600;
+	color: var(--color);
+	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+
+	&.leave {
+		--color: var(--input-error);
+	text-decoration: none;
+}
+	&.spectate {
+		--color: var(--primary-color);
+	}
+
+	&:hover, &:focus-visible {
+		background-color: var(--color);
+		color: var(--primary-text-white);
+	}
+}
+
+.container.chaos-cards::before {
 	background-color: #9f0000;
 	background-image: repeating-linear-gradient(
 			120deg,

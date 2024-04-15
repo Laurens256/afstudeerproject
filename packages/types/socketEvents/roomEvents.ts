@@ -9,6 +9,7 @@ export type ServerToClientRoomEvents = {
 	ROOM_PLAYER_JOINED: (player: Player) => void;
 	ROOM_PLAYER_LEFT: (socketId: string) => void;
 	ROOM_ADMIN_CHANGE: (newAdminId: string) => void;
+	ROOM_KICKED: () => void;
 };
 
 export type ClientToServerRoomEvents = {
@@ -21,4 +22,5 @@ export type ClientToServerRoomEvents = {
 	ROOM_LEAVE: () => void;
 	ROOM_START_GAME: () => void;
 	ROOM_END_GAME: () => void;
+	ROOM_KICK_PLAYER: (socketId: string) => void;
 };
