@@ -12,7 +12,7 @@ type ChatHeaderProps = {
 	roomActiveGame: GamesType | null;
 };
 const ChatHeader = ({ players, roomActiveGame, closeSidebar }: ChatHeaderProps) => {
-	const [audioEnabled, setAudioEnabled] = useLocalStorage('audioEnabled', false);
+	const [audioEnabled, setAudioEnabled] = useLocalStorage('audioEnabled', true);
 
 	return (
 		<header className={classes.header}>

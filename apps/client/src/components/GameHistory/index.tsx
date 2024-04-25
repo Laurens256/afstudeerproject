@@ -24,12 +24,10 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 		}
 	}, [isCollapsed]);
 
-	const entriesReversed = entries.reverse();
-
 	return (
 		<>
 			<div className={clsx(classes.container, isCollapsed && classes.collapsed, className)}>
-				{isCollapsed && (
+				{/* {isCollapsed && (
 					<Button
 						variant="cartoon"
 						withCartoonRay={false}
@@ -39,21 +37,21 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 					>
 						<IconHistory />
 					</Button>
-				)}
+				)} */}
 				{!isCollapsed && (
 					<div className={classes.listWrapper}>
 						<div className={classes.header}>
 							<h3 id="game_history">Game history</h3>
-							<Button aria-label="disable game state reader" variant="icon">
+							{/* <Button aria-label="disable game state reader" variant="icon">
 								<IconX
 									size={20}
 									className={classes.closeIcon}
 									onClick={() => setIsCollapsed(true)}
 								/>
-							</Button>
+							</Button> */}
 						</div>
 						<ol className={classes.list} ref={ref} aria-labelledby="game_history">
-							{entriesReversed.map(({ key, entry }) => (
+							{entries.map(({ key, entry }) => (
 								<li key={key} className={classes.entry}>
 									{entry}
 								</li>
@@ -63,7 +61,7 @@ const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryP
 				)}
 			</div>
 			<p className="visuallyHidden" aria-live={urgency}>
-				{entriesReversed[0]?.entry}
+				{entries[0]?.entry}
 			</p>
 		</>
 	);

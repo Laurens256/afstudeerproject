@@ -19,6 +19,7 @@ const UserMessageComponent = ({ message, prevMsgSameUser }: UserMessageComponent
 				classes.message,
 				!prevMsgSameUser && classes.firstByUser,
 			)}
+			aria-roledescription="message"
 		>
 			<div className={classes.iconContainer}>
 				{!prevMsgSameUser && (
@@ -26,9 +27,12 @@ const UserMessageComponent = ({ message, prevMsgSameUser }: UserMessageComponent
 				)}
 			</div>
 			<div>
-				{!prevMsgSameUser && (
-					<b className={classes.username}>{username}</b>
-				)}
+				<h4
+					aria-roledescription="username"
+					className={clsx(prevMsgSameUser && 'visuallyHidden', classes.username)}
+				>
+					{username}
+				</h4>
 				<p className={classes.msgText}>{text}</p>
 			</div>
 		</li>

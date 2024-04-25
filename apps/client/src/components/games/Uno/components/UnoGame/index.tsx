@@ -98,6 +98,7 @@ const UnoGame = ({
 			if (isColorSelectCard(card)) {
 				const chosenColor = await getColorFromPicker();
 				socket.emit('UNO_PLAY_CARD', card.cardId, chosenColor);
+				return;
 			}
 			socket.emit('UNO_PLAY_CARD', card.cardId);
 		} else if (error) {

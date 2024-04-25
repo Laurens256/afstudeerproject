@@ -3,6 +3,7 @@ import socket from '@/socket';
 import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
 import { GameHistory } from '@/components';
 import type { GameErrorToastProps } from '@/types';
+import { v4 as uuidv4 } from 'uuid';
 import { UnoGame, WinnerModal } from './components';
 import { cardToLabel } from './util';
 
@@ -24,10 +25,9 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 
 	const [gameHistory, setGameHistory] = useState<{ key: string, entry: React.ReactNode }[]>([]);
 	const addGameHistoryEntry = (entry: React.ReactNode) => {
-		// setGameHistory((prevGameHistory) => [..., entry]);
-		setGameHistory((prevGameHistory) => [...prevGameHistory, {
-			key: Date.now().toString(), entry,
-		}]);
+		setGameHistory((prevGameHistory) => [{
+			key: uuidv4(), entry,
+		}, ...prevGameHistory]);
 	};
 
 	const isOurTurn = gameState?.currentPlayerId === socket.id;
@@ -84,7 +84,7 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 				);
 				if (cardReceiver) {
 					cardReceiver.cards.push(...cards);
-					const canPlayOrEndTurn = cardReceiver.socketId === newGameState.currentPlayerId ? ' You can now play a card or end your turn' : '';
+					const canPlayOrEndTurn = cardReceiver.socketId === newGameState.currentPlayerId && socket.id === cardReceiver.socketId ? ' You can now play a card or end your turn' : ' They still need to end their turn';
 					addGameHistoryEntry(`${findUsernameBySocketId(socketId, true)} drew ${cards.length} card${pluralize(cards.length)}.${canPlayOrEndTurn}`);
 				}
 				newGameState.cardDrawCounter = 0;
@@ -98,7 +98,9 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 
 				const newGameState = { ...prevGameState };
 				newGameState.currentPlayerId = socketId;
-				addGameHistoryEntry(`It's now ${endName(findUsernameBySocketId(socketId))} turn`);
+				const prevPlayerUsername = findUsernameBySocketId(prevGameState.currentPlayerId);
+				const wasOurTurn = prevGameState.currentPlayerId === socket.id;
+				addGameHistoryEntry(`${prevPlayerUsername} ended ${wasOurTurn ? 'your' : 'their'} turn. It's now ${endName(findUsernameBySocketId(socketId))} turn`);
 				return newGameState;
 			});
 		};
@@ -131,8 +133,9 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 							findUsernameBySocketId(newState.currentPlayerId),
 						);
 						const choseNewColorStr = newState.wildcardColor ? ` and chose ${newState.wildcardColor} as the new color` : '';
+						const newTurnStr = newState.winnerId ? ' and won the game!' : `. It's ${currentPlayerConnectorWord} ${newPlayerUsername} turn`;
 
-						addGameHistoryEntry(`${cardPlayerUsername} played ${cardToLabel(card)}${choseNewColorStr} card. It's ${currentPlayerConnectorWord} ${newPlayerUsername} turn`);
+						addGameHistoryEntry(`${cardPlayerUsername} played ${cardToLabel(card)}${choseNewColorStr} card${newTurnStr}`);
 
 						unoPlayer.cards.splice(cardIndex, 1);
 					}
