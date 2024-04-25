@@ -1,0 +1,46 @@
+.dialogOverlay {
+	background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+}
+.spectatorDialog {
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+	width: min(90%, 30rem);
+	padding: 1rem;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+.dialogActionButtons {
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+}
+.dialogActionButton {
+	--color: var(--primary-color);
+	padding: 0.4rem 1rem;
+	border: solid 1px var(--color);
+	border-radius: var(--sm-border-radius);
+	font-weight: 600;
+	color: var(--color);
+	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+
+	&.leave {
+		--color: var(--input-error);
+	text-decoration: none;
+}
+	&.spectate {
+		--color: var(--primary-color);
+	}
+
+	&:hover, &:focus-visible {
+		background-color: var(--color);
+		color: var(--primary-text-white);
+	}
+}

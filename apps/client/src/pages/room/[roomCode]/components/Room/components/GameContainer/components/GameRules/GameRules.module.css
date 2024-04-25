@@ -1,0 +1,47 @@
+.openButton {
+	position: absolute;
+	top: var(--sidebar-inset);
+	left: var(--sidebar-inset);
+	padding: 0.75rem;
+
+	&:active {
+		top: calc(var(--sidebar-inset) + 2px);
+	}
+}
+
+.overlay {
+	background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+}
+.dialog {
+	background-color: var(--primary-panel-bg);
+	border-radius: var(--md-border-radius);
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+	width: min(90%, 30rem);
+	padding: 1rem;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.rulesList {
+	text-align: start;
+	list-style: outside;
+	padding-left: 1rem;
+	font-size: 0.9rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	max-height: 20rem;
+	overflow-y: auto;
+}
+.ruleHeading {
+	margin-bottom: -0.2rem;
+	list-style: none;
+	font-weight: 500;
+}
