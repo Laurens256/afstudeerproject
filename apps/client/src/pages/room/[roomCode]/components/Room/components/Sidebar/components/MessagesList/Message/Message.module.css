@@ -19,6 +19,7 @@
 }
 
 .userMessage {
+	font-size: 0.875rem;
 	&.firstByUser {
 		margin-top: 0.5rem;
 	}

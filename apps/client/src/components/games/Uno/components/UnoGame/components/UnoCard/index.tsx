@@ -8,9 +8,10 @@ import classes from './UnoCard.module.css';
 type UnoCardProps = {
 	card: UnoCard | null;
 	className?: string;
+	cardLabelPrefix?: string;
 };
 
-const UnoCardComponent = ({ card, className }: UnoCardProps) => {
+const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProps) => {
 	let imgFilename = 'back';
 	if (card) {
 		const { type, value } = card;
@@ -24,7 +25,7 @@ const UnoCardComponent = ({ card, className }: UnoCardProps) => {
 	return (
 		<div>
 			<p className="visuallyHidden">
-				{cardToLabel(card)}
+				{`${cardLabelPrefix}${cardToLabel(card)}`}
 			</p>
 			<Image
 				// src={`https://placehold.co/150x225/png?text=${imgFilename}`}

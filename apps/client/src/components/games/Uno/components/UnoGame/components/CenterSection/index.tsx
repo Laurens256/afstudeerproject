@@ -76,7 +76,7 @@ const CenterSection = ({
 				{`DRAW CARD${cardDrawCounter > 1 ? `S (${cardDrawCounter})` : ''}`}
 			</Button>
 			<div className={classes.cardsContainer}>
-				<UnoCardComponent card={currentCard} />
+				<UnoCardComponent card={currentCard} cardLabelPrefix="Current card: " />
 			</div>
 			<Button
 				variant="cartoon"

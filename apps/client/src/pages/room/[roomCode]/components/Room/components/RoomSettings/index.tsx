@@ -2,7 +2,7 @@ import { type Player, type RoomState } from '@shared/types';
 import socket from '@/socket';
 import { Button, Avatar, Input } from '@/components';
 import { IconCrown, IconCheck, IconPencil } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import classes from './RoomSettings.module.css';
 
 type RoomSettingsProps = {
@@ -13,9 +13,14 @@ type RoomSettingsProps = {
 
 const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => {
 	const [localRoomName, setLocalRoomName] = useState<string | null>(null);
+	const headingRef = useRef<HTMLHeadingElement>(null);
 	useEffect(() => {
 		setLocalRoomName(roomState.roomName);
 	}, [roomState.roomName]);
+
+	useEffect(() => {
+		headingRef.current?.focus();
+	}, []);
 
 	const changeRoomName = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -39,11 +44,12 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 
 	return (
 		<div className={classes.container}>
-			<header>
-				<h1 className={classes.roomPin}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
+			<header className={classes.roomPinContainer}>
+				<h1 className={classes.roomPin} ref={headingRef} tabIndex={-1}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
+				<p>Share this PIN with your friends to let them join the room.</p>
 			</header>
 
-			<main className={classes.main}>
+			<main className={classes.main} aria-label="room settings">
 				{ourPlayer.role === 'admin' ? (
 					<form
 						className={classes.editRoomNameForm}

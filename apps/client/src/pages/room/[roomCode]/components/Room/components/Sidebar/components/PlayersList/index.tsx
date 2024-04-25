@@ -30,7 +30,7 @@ const PlayersList = ({ players, roomActiveGame }: PLayersListProps) => {
 								</span>
 							)}
 						</div>
-						{adminId === socket.id && player.role !== 'admin' && (
+						{/* {adminId === socket.id && player.role !== 'admin' && (
 							<Button
 								className={classes.kickButton}
 								variant="icon"
@@ -38,7 +38,7 @@ const PlayersList = ({ players, roomActiveGame }: PLayersListProps) => {
 							>
 								<IconX />
 							</Button>
-						)}
+						)} */}
 					</li>
 				))}
 			</ul>

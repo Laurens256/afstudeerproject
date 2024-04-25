@@ -6,6 +6,7 @@ import type { Player, RoomState } from '@shared/types';
 import { Button } from '@/components';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
+import { createPortal } from 'react-dom';
 import { Sidebar, RoomSettings, GameContainer } from './components';
 import classes from './Room.module.css';
 
@@ -128,7 +129,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	return (
 		<>
 			<Head>
-				<title>{`Room ${roomCode}`}</title>
+				<title>Room lobby</title>
 			</Head>
 			<div className={clsx(classes.container, classes.sidebarOpen)} ref={containerRef}>
 				<div className={classes.gameWrapper}>
@@ -168,6 +169,13 @@ const Room = ({ roomCode, username }: RoomProps) => {
 					/>
 				</div>
 			</div>
+
+			{createPortal(
+				<p aria-live="assertive" className="visuallyHidden">
+					{roomState.selectedGame && roomState.isStarted ? `a game of ${roomState.selectedGame} has started` : 'returned to lobby'}
+				</p>,
+				document.body,
+			)}
 		</>
 	);
 };

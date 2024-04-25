@@ -4,8 +4,8 @@ import { useLocalStorage } from '@/hooks';
 const audioFiles = {
 	gameChat: {
 		messageReceived: 'chat_message.mp3',
-		// playerJoined: 'sample.mp3',
-		// playerLeft: 'sample.mp3',
+		playerJoined: 'room_join.mp3',
+		playerLeft: 'room_leave.mp3',
 	},
 } as const;
 
