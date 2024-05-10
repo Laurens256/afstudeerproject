@@ -8,6 +8,7 @@ out/
 build
 dist
 .turbo
+.nx
 
 .DS_Store
 *.pem

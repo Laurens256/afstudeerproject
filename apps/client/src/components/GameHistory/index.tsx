@@ -1,69 +1,25 @@
-import { useEffect, useRef } from 'react';
-import clsx from 'clsx';
-import { IconHistory, IconX } from '@tabler/icons-react';
-import { useLocalStorage } from '@/hooks';
-import classes from './GameHistory.module.css';
-import Button from '../Button';
+import { useRef } from 'react';
 
 type GameHistoryProps = {
 	entries: { key: string, entry: React.ReactNode }[];
-	className?: string;
 	urgency?: 'assertive' | 'polite';
 };
-// TODO: test assertive vs polite
-const GameHistory = ({ entries, className, urgency = 'assertive' }: GameHistoryProps) => {
+const GameHistory = ({ entries, urgency = 'assertive' }: GameHistoryProps) => {
 	const ref = useRef<HTMLOListElement>(null);
-	const [isCollapsed, setIsCollapsed] = useLocalStorage('gameHistoryCollapsed', false);
-
-	useEffect(() => {
-		if (!isCollapsed) {
-			const element = ref.current;
-			if (element) {
-				element.focus();
-			}
-		}
-	}, [isCollapsed]);
 
 	return (
-		<>
-			<div className={clsx(classes.container, isCollapsed && classes.collapsed, className)}>
-				{/* {isCollapsed && (
-					<Button
-						variant="cartoon"
-						withCartoonRay={false}
-						className={classes.openButton}
-						onClick={() => setIsCollapsed(false)}
-						aria-label="enable game state reader"
-					>
-						<IconHistory />
-					</Button>
-				)} */}
-				{!isCollapsed && (
-					<div className={classes.listWrapper}>
-						<div className={classes.header}>
-							<h3 id="game_history">Game history</h3>
-							{/* <Button aria-label="disable game state reader" variant="icon">
-								<IconX
-									size={20}
-									className={classes.closeIcon}
-									onClick={() => setIsCollapsed(true)}
-								/>
-							</Button> */}
-						</div>
-						<ol className={classes.list} ref={ref} aria-labelledby="game_history">
-							{entries.map(({ key, entry }) => (
-								<li key={key} className={classes.entry}>
-									{entry}
-								</li>
-							))}
-						</ol>
-					</div>
-				)}
-			</div>
-			<p className="visuallyHidden" aria-live={urgency}>
+		<div className="visuallyHidden">
+			<ol ref={ref} aria-label="game history">
+				{entries.map(({ key, entry }) => (
+					<li key={key}>
+						{entry}
+					</li>
+				))}
+			</ol>
+			<p aria-live={urgency}>
 				{entries[0]?.entry}
 			</p>
-		</>
+		</div>
 	);
 };
 

@@ -1,8 +1,11 @@
 import { type Player, type RoomState } from '@shared/types';
 import socket from '@/socket';
 import { Button, Avatar, Input } from '@/components';
-import { IconCrown, IconCheck, IconPencil } from '@tabler/icons-react';
+import { IconCrown, IconCheck, IconPencil, IconLogout2 } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
+import { RoutePath } from '@/routes';
+import { useRouter } from 'next/router';
 import classes from './RoomSettings.module.css';
 
 type RoomSettingsProps = {
@@ -12,6 +15,7 @@ type RoomSettingsProps = {
 };
 
 const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => {
+	const { push } = useRouter();
 	const [localRoomName, setLocalRoomName] = useState<string | null>(null);
 	const headingRef = useRef<HTMLHeadingElement>(null);
 	useEffect(() => {
@@ -44,9 +48,23 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 
 	return (
 		<div className={classes.container}>
-			<header className={classes.roomPinContainer}>
-				<h1 className={classes.roomPin} ref={headingRef} tabIndex={-1}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
-				<p>Share this PIN with your friends to let them join the room.</p>
+			<header className={classes.header}>
+				<div className={classes.leaveRoomWrapper}>
+					<Button
+						variant="cartoon"
+						onClick={() => push(RoutePath.Home)}
+						aria-label="leave room"
+						cartoonColor="hsl(0, 75%, 50%)"
+						className={classes.leaveRoom}
+					>
+						<IconLogout2 />
+					</Button>
+				</div>
+				<Link aria-label="leave room" href={RoutePath.Home} className={classes.leaveRoom} />
+				<div className={classes.roomPinContainer}>
+					<h1 className={classes.roomPin} ref={headingRef} tabIndex={-1}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
+					<p>Share this PIN with your friends to let them join the room.</p>
+				</div>
 			</header>
 
 			<main className={classes.main} aria-label="room settings">

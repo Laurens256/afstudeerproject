@@ -25,21 +25,6 @@ const Home = () => {
 		};
 	}, [router]);
 
-	// TODO: make users join a room when they're on the home page
-	// useEffect(() => {
-	// 	const handleRoomLeave = () => {
-	// 		socket.emit('ROOM_LEAVE');
-	// 	};
-
-	// 	router.events.on('routeChangeStart', handleRoomLeave);
-	// 	router.events.on('beforeHistoryChange', handleRoomLeave);
-
-	// 	return () => {
-	// 		router.events.off('routeChangeStart', handleRoomLeave);
-	// 		router.events.off('beforeHistoryChange', handleRoomLeave);
-	// 	};
-	// }, [router.events]);
-
 	return (
 		<main className={classes.main}>
 			<Tabs.Root

@@ -6,6 +6,12 @@
 	margin-bottom: 3rem;
 }
 
+.leaveRoomWrapper {
+	position: absolute;
+	top: 0.5rem;
+	left: 0.75rem;
+}
+
 .roomPinContainer {
 	background-color: var(--primary-panel-bg);
 	border-radius: 0 0 var(--md-border-radius) var(--md-border-radius);

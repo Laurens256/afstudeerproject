@@ -1,40 +1,40 @@
-/* SOURCE: https://css-generators.com/ribbon-shapes/ */
 .container {
-	--r: 1.5rem;
-	--bg-color: var(--uno-color-blue);
-	--text-shadow-1: hsl(217, 86%, 19%);
-	--text-shadow-2: hsl(222, 86%, 15%);
-	--padding-right: calc(var(--r) + 1rem);
+	--initial-transform: translateX(-50%);
+	--text-shadow-1: hsl(104, 85%, 15%);
+	--text-shadow-2: hsl(107, 85%, 12%);
+	--corner-clip: 1rem;
 
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fff;
-	position: fixed;
-	top: 5rem;
-	left: 0;
+	position: absolute;
+	left: 50%;
+	transform: var(--initial-transform);
+	top: min(15rem, 15%);
+	background-color: var(--uno-color-green);
+	color: var(--primary-text-white);
+	padding: 0.5rem 2rem;
+	font-size: 2rem;
+	z-index: 3;
+	animation: fadeIn 0.4s ease-in-out;
 
-	padding: 0.25rem var(--padding-right) 0.25rem 1rem;
-	line-height: 1.8;
-	clip-path: polygon(-100vw 0,100% 0,calc(100% - var(--r)) 50%,100% 100%,-100vw 100%);
-	border-image: conic-gradient(var(--bg-color) 0 0) fill 0;
-	transition: padding-right 0.1s ease-in-out, transform 0.1s ease-in-out;
+	clip-path: polygon(
+		0 var(--corner-clip),
+		var(--corner-clip) 0,
+		calc(100% - var(--corner-clip)) 0,
+		100% var(--corner-clip),
+		100% calc(100% - var(--corner-clip)),
+		calc(100% - var(--corner-clip)) 100%,
+		var(--corner-clip) 100%,
+		0% calc(100% - var(--corner-clip)),
+		0% var(--corner-clip)
+	);
+}
 
-	&.isOurTurn {
-		--bg-color: var(--uno-color-green);
-		--text-shadow-1: hsl(104, 85%, 15%);
-		--text-shadow-2: hsl(107, 85%, 12%);
+@keyframes fadeIn {
+	from {
+		transform: var(--initial-transform) translateY(-100%) scale(0.8);
+		opacity: 0;
 	}
-	
-	&.collapsed {
-		transform: translateX(calc(-100% + var(--padding-right) - 0.2rem));
-	
-		&:hover, &:focus-visible {
-			padding-right: calc(var(--padding-right) + 1.5rem);
-			transform: translateX(calc(-100% + var(--padding-right) + 1rem));
-		}
-	}
-	
-	&:hover, &:focus-visible {
-		padding-right: calc(var(--padding-right) + 1rem);
+	to {
+		transform: var(--initial-transform) translateY(0) scale(1);
+		opacity: 1;
 	}
 }
