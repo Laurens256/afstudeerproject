@@ -6,11 +6,13 @@ import clsx from 'clsx';
 import classes from './ColorPicker.module.css';
 import { cardToLabel } from '../../../../util';
 
+// very cool hook B) allows async await color picker
 const useColorPicker = (cards: UnoCard[]) => {
 	const [open, setOpen] = useState(false);
 	const [resolver, setResolver] = useState<((value: UnoColor) => void) | null>(null);
 	const colors: UnoColor[] = ['red', 'yellow', 'green', 'blue'];
 
+	// truly a chat gippity moment, partially based on https://daveteu.medium.com/react-custom-confirmation-box-458cceba3f7b
 	const getColorFromPicker = async (): Promise<UnoColor> => {
 		setOpen(true);
 		let resolveFunc: (value: UnoColor) => void;

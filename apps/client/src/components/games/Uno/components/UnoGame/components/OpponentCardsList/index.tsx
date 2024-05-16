@@ -29,7 +29,6 @@ const OpponentCardsList = ({ cards, isCurrentPlayer, username }: OpponentCardsLi
 				))}
 			</ul>
 
-			{/* TODO test landmark navigation ease */}
 			<article
 				className={classes.userInfoContainer}
 				aria-label={`${username}${username.endsWith('s') ? '\'' : '\'s'} cards`}

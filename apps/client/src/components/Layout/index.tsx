@@ -18,14 +18,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 		socket.disconnect();
 	}
 
-	useEffect(() => {
-		if (isSocketRoute) {
-			const onDisconnect = () => {
-				alert('Disconnected from server, this is a temporary alert message :)');
-			};
-			socket.on('disconnect', onDisconnect);
-		}
-	}, [isSocketRoute]);
+	// useEffect(() => {
+	// 	if (isSocketRoute) {
+	// 		const onDisconnect = () => {
+	// 			alert('Disconnected from server, this is a temporary alert message :)');
+	// 		};
+	// 		socket.on('disconnect', onDisconnect);
+	// 	}
+	// }, [isSocketRoute]);
 
 	return (
 		<AudioProvider>

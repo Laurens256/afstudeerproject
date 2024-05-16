@@ -22,7 +22,7 @@ const AudioContext = createContext<AudioContextType>({
 const createAudio = () => (typeof Audio !== 'undefined' ? new Audio() : null);
 
 const AudioProvider = ({ children }: { children: React.ReactNode }) => {
-	const [audioEnabled] = useLocalStorage('audioEnabled', false);
+	const [audioEnabled] = useLocalStorage({ key: 'audioEnabled', defaultValue: true });
 	const [gameChatAudio] = useState(createAudio());
 
 	const value: AudioContextType = useMemo(() => ({

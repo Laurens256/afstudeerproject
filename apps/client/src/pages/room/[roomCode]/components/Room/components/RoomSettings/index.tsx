@@ -14,27 +14,29 @@ type RoomSettingsProps = {
 	ourPlayer: Player;
 };
 
+// lobby area where players can see who is in the room and start the game
 const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => {
 	const { push } = useRouter();
 	const [localRoomName, setLocalRoomName] = useState<string | null>(null);
 	const headingRef = useRef<HTMLHeadingElement>(null);
+
 	useEffect(() => {
 		setLocalRoomName(roomState.roomName);
 	}, [roomState.roomName]);
 
 	useEffect(() => {
+		// focus room pin on mount so it's the first thing read by screenreader
 		headingRef.current?.focus();
 	}, []);
 
 	const changeRoomName = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const roomName: string = (e.currentTarget.room_name.value).trim();
+		const roomNameInput: HTMLInputElement = e.currentTarget.room_name;
+		const roomName: string = roomNameInput.value.trim();
 		if (roomName && roomName !== roomState.roomName && roomName.length <= 30) {
 			setLocalRoomName(roomName);
-
 			socket.emit('ROOM_SET_STATE', { roomName });
-			const form = e.currentTarget;
-			form.room_name.blur();
+			roomNameInput.blur();
 		}
 	};
 
@@ -124,7 +126,7 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 					<Button
 						onClick={handleStartGame}
 						className={classes.startGameButton}
-						data-disabled={!enoughPlayersToStart}
+						disabled={!enoughPlayersToStart}
 					>
 						{enoughPlayersToStart ? 'Start Game' : 'You need at least 2 players to start the game'}
 					</Button>

@@ -27,16 +27,19 @@ const GameErrorToastProvider = ({ children }: GameErrorToastProviderProps) => {
 				open={isOpen}
 				onOpenChange={setIsOpen}
 				duration={5000}
+				key={new Date().toString()}
 			>
 				<div className={classes.textContainer}>
 					{toast?.title && (
 						<Toast.Title className={classes.title} asChild>
-							<h3>{toast?.title}</h3>
+							<h3>{toast.title}</h3>
 						</Toast.Title>
 					)}
-					<Toast.Description asChild>
-						<p>{toast?.message}</p>
-					</Toast.Description>
+					{toast?.message && (
+						<Toast.Description asChild>
+							<p>{toast.message}</p>
+						</Toast.Description>
+					)}
 				</div>
 				<Button
 					variant="icon"

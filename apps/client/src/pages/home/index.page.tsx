@@ -1,17 +1,14 @@
-import { Button, JoinRoomForm } from '@/components';
+import { JoinRoomForm } from '@/components';
 import socket from '@/socket';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { RoutePath, generateRoute } from '@/routes';
 import * as Tabs from '@radix-ui/react-tabs';
 import classes from './Home.module.css';
+import { CreateRoomForm } from './components';
 
 const Home = () => {
 	const router = useRouter();
-
-	const createRoom = () => {
-		socket.emit('ROOM_CREATE');
-	};
 
 	useEffect(() => {
 		const onRoomCreate = (roomCode: string) => {
@@ -44,7 +41,7 @@ const Home = () => {
 				</Tabs.Content>
 
 				<Tabs.Content value="create-tab" className={classes.tabContent}>
-					<Button onClick={createRoom}>Create room</Button>
+					<CreateRoomForm />
 				</Tabs.Content>
 			</Tabs.Root>
 		</main>

@@ -8,22 +8,26 @@ module.exports = {
 		'consistent-return': 'off',
 		'object-curly-newline': 'off',
 		'no-plusplus': 'off',
-		'max-len': ['error', { 
-			code: 100,
-			ignorePattern: '^import\\s.+\\sfrom\\s.+;?$',
-			ignoreStrings: true,
-			ignoreTemplateLiterals: true,
-			ignoreComments: true,
-			ignoreUrls: true,
-		 }],
+		'max-len': [
+			'error',
+			{
+				code: 100,
+				ignorePattern: '^import\\s.+\\sfrom\\s.+;?$',
+				ignoreStrings: true,
+				ignoreTemplateLiterals: true,
+				ignoreComments: true,
+				ignoreUrls: true
+			}
+		],
 
-		 "jsx-a11y/label-has-associated-control": [
-      "error",
-      {
-        "controlComponents": ["Field"],
-        "assert": "htmlFor"
-      }
-  ],
+		'jsx-a11y/label-has-associated-control': [
+			'error',
+			{
+				required: {
+					some: ['nesting', 'id']
+				}
+			}
+		],
 
 		'@typescript-eslint/indent': ['error', 'tab'],
 		'@typescript-eslint/consistent-type-imports': 'error',

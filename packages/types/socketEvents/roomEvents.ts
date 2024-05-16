@@ -14,7 +14,7 @@ export type ServerToClientRoomEvents = {
 
 export type ClientToServerRoomEvents = {
 	ROOM_EXISTS: (roomCode: string) => void;
-	ROOM_CREATE: () => void;
+	ROOM_CREATE: ({ maxPlayers, isPrivate}: { maxPlayers: number, isPrivate: boolean }) => void;
 	ROOM_JOIN: (roomCode: string, username: string) => void;
 	ROOM_GET_STATE: () => void;
 	ROOM_SET_STATE: (roomState: Partial<RoomState>) => void;

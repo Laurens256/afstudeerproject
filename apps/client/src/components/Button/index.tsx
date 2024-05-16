@@ -2,8 +2,11 @@ import clsx from 'clsx';
 import { memo, forwardRef } from 'react';
 import classes from './Button.module.css';
 
+// generates necessary color variables for the cartoon button based on input color
+// CODE SOURCE: https://codepen.io/Rybak/pen/xdzXNj (not the generateColorVariables func, but the css)
+// DESIGN SOURCE: https://dribbble.com/shots/3456012-game-button
 const generateColorVariables = (inputColor: string) => {
-	const regex = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/;
+	const regex = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/; // yup
 	const match = inputColor?.match(regex);
 	if (!match) return;
 	const inputHue = Number(match[1]);

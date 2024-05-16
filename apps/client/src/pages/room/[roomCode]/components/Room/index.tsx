@@ -23,6 +23,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		isStarted: false,
 		players: [],
 		selectedGame: null,
+		maxPlayers: 8,
 	});
 	const playersInGame = roomState.players.filter((player) => player.inGame);
 
@@ -107,6 +108,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	}, [roomCode, router]);
 
 	const handleSidebarToggle = () => {
+		// using refs to avoid rerendering entire game when chat toggles
 		const container = containerRef.current;
 		const wrapper = sidebarWrapperRef.current;
 		const button = openSidebarButtonRef.current;
@@ -170,6 +172,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 				</div>
 			</div>
 
+			{/* announces when game has started / ended */}
 			{createPortal(
 				<p aria-live="assertive" className="visuallyHidden">
 					{roomState.selectedGame && roomState.isStarted ? `a game of ${roomState.selectedGame} has started` : 'returned to lobby'}

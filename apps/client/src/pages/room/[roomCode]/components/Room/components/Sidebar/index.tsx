@@ -29,10 +29,6 @@ const ChatSection = ({ players, ourPlayer, closeSidebar, activeGame }: ChatSecti
 		setMessages((prevMessages) => [...prevMessages, message]);
 	};
 
-	const handleSendMessage = (message: string) => {
-		socket.emit('ROOM_CHAT_MESSAGE', message);
-	};
-
 	useEffect(() => {
 		const handlePlayerJoined = (player: Player) => {
 			handleReceiveMessage(createJoinedLeftMessage(player.username, 'joined'));
@@ -69,7 +65,7 @@ const ChatSection = ({ players, ourPlayer, closeSidebar, activeGame }: ChatSecti
 				closeSidebar={closeSidebar}
 			/>
 			<MessagesList messages={messages} ourPlayer={ourPlayer} />
-			<MessageInput onMessageSend={handleSendMessage} />
+			<MessageInput />
 		</aside>
 	);
 };

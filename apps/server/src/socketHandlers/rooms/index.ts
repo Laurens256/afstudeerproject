@@ -56,8 +56,8 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		return newAdminId;
 	};
 
-	socket.on('ROOM_CREATE', () => {
-		const roomCode = util.createRoom();
+	socket.on('ROOM_CREATE', ({ maxPlayers, isPrivate }) => {
+		const roomCode = util.createRoom({ maxPlayers, isPrivate });
 		socket.emit('ROOM_CREATE', roomCode);
 	});
 
@@ -76,6 +76,7 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 
 			socket.data = { roomCode, role, username };
 			socket.join(roomCode);
+			util.changePlayerCount(roomCode, 1);
 
 			io.to(roomCode).emit('ROOM_PLAYER_JOINED', {
 				socketId: socket.id,
@@ -221,6 +222,7 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		if (!roomCode) return;
 		io.to(roomCode).except(socket.id).emit('ROOM_PLAYER_LEFT', socket.id);
 		socket.leave(roomCode);
+		util.changePlayerCount(roomCode, -1);
 		socket.data = {};
 
 		if (!getRoomSockets(roomCode).length) {
