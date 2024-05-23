@@ -1,0 +1,82 @@
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+.maxPlayersInput {
+	-moz-appearance: textfield;
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+}
+.maxPlayersHint {
+	color: var(--secondary-text-black);
+}
+
+.privateRoomToggleContainer {
+	position: relative;
+
+	& input {
+		appearance: none;
+		position: absolute;
+		outline: none;
+	}
+
+	& input:focus-visible + label .toggle {
+		outline: 2px solid var(--primary-color);
+	}
+
+	& input:checked + label .toggle {
+		--toggle-bg: var(--primary-color);
+		&::before {
+			transform: translateX(calc(var(--ball-size) + var(--padding) + var(--extra-width) / 2));
+	}
+		&::after {
+			content: 'On';
+			right: auto;
+			left: calc(var(--padding) * 2);
+		}
+	}
+}
+.toggle {
+	--ball-size: 1.5rem;
+	--padding: 0.25rem;
+	--extra-width: 0.5rem;
+	position: relative;
+	width: calc(var(--ball-size) * 2 + var(--padding) * 2 + var(--extra-width));
+	padding: 0.1rem;
+	height: calc(var(--ball-size) + var(--padding) * 2);
+	background-color: var(--toggle-bg, var(--secondary-text-black));
+	border-radius: 5rem;
+	cursor: pointer;
+	transition: background-color 0.15s ease-in-out;
+	outline-offset: 2px;
+	margin-top: 0.2rem;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: var(--padding);
+		left: var(--padding);
+		width: var(--ball-size);
+		height: var(--ball-size);
+		background-color: var(--ball-color, var(--primary-text-white));
+		border-radius: 50%;
+		transition: transform 0.1s ease-in-out, background-color 0.15s ease-in-out;
+	}
+	&::after {
+		content: 'Off';
+		font-size: 0.75rem;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		right: calc(var(--padding) * 2);
+		color: var(--primary-text-white);
+	}
+}
+
+.submitButton {
+	font-size: 1.2rem;
+}

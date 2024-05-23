@@ -9,7 +9,7 @@
 	width: 10.5rem;
 	min-width: fit-content;
 
-	&[data-disabled="true"] {
+	&:disabled {
 		cursor: default;
 		opacity: 0.9;
 	}

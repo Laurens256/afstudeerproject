@@ -4,6 +4,8 @@ import socket from '@/socket';
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
 import { IconRefresh } from '@tabler/icons-react';
 import Head from 'next/head';
+import { useLocalStorage } from '@/hooks';
+import { validateUsername } from '@/utils';
 import classes from './NameInput.module.css';
 
 type NameInputProps = {
@@ -12,31 +14,22 @@ type NameInputProps = {
 };
 
 const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
-	const [unverifiedUsername, setUnverifiedUsername] = useState(
-		localStorage.getItem('username') || '',
-	);
+	const [unverifiedUsername, setUnverifiedUsername] = useLocalStorage({ key: 'username', defaultValue: '' });
 	const [inputError, setInputError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleNameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
 		const formData = new FormData(e.currentTarget);
-		const username = (formData.get('username') as string).trim();
+		const username = (formData.get('username') as string);
+		const { isValid, error } = validateUsername(username);
 
-		switch (true) {
-			case username.length < 2:
-				setInputError('Username must be at least 2 characters');
-				break;
-			case username.length > 20:
-				setInputError('Username can\'t be longer than 20 characters');
-				break;
-			default:
-				setInputError(null);
-				socket.emit('ROOM_JOIN', roomCode, username);
-				localStorage.setItem('username', username);
-				setIsLoading(true);
+		setInputError(error);
+
+		if (isValid) {
+			socket.emit('ROOM_JOIN', roomCode, username);
+			setIsLoading(true);
 		}
 	};
 
@@ -46,7 +39,7 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 			separator: '-',
 			style: 'capital',
 		}));
-		inputRef.current?.focus();
+		inputRef.current?.focus(); // focus input so generated name gets read by screenreader
 	};
 
 	useEffect(() => {
@@ -54,6 +47,7 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 			setInputError(error);
 			setIsLoading(false);
 			if (error === null) {
+				// when username is set, parent component will render room instead of this component
 				setUsername(username);
 			}
 		};

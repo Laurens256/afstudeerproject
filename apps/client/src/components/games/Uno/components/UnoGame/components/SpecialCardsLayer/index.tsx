@@ -10,6 +10,7 @@ type SpecialCardsLayerProps = {
 	chosenColor: UnoColor | null;
 };
 
+// layer for animations on special cards (draw 2/4, skip, reverse, color picker)
 const SpecialCardsLayer = ({ currentCard, isClockwise, chosenColor }: SpecialCardsLayerProps) => {
 	const [key, setKey] = useState(currentCard.cardId);
 	useEffect(() => {
@@ -55,14 +56,6 @@ const SpecialCardsLayer = ({ currentCard, isClockwise, chosenColor }: SpecialCar
 					</p>
 				)}
 			</div>
-
-			{/* <div className={clsx(
-				classes.directionIndicator,
-				!isClockwise && classes.counterClockwise,
-			)}
-			>
-				<IconRefresh />
-			</div> */}
 		</div>
 	);
 };

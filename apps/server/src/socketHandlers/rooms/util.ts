@@ -3,6 +3,7 @@ import { Games, type Player, type RoomState } from '@shared/types';
 export type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
 	[roomCode: string]: & Omit<RoomState, 'players' | 'socketsInGame'> & {
+		playersCount: number;
 	};
 };
 const rooms: Rooms = {};
@@ -23,23 +24,54 @@ const generateRoomCode = () => {
 	return code.toUpperCase();
 };
 
-const createRoom = (code?: string): string => {
+type CreateRoomProps = {
+	code?: string;
+	maxPlayers?: number;
+	isPrivate?: boolean;
+};
+const createRoom = ({ code, maxPlayers, isPrivate }: CreateRoomProps): string => {
 	const roomCode = code || generateRoomCode();
 
 	if (roomExists(roomCode)) {
-		return createRoom();
+		return createRoom({});
 	}
 
 	rooms[roomCode] = {
 		roomName: null,
-		isPrivate: false,
+		isPrivate: isPrivate || false,
 		isStarted: false,
 		selectedGame: Games.UNO,
+		playersCount: 0,
+		maxPlayers: maxPlayers || 8,
 	};
 	return roomCode;
 };
 
 const getRoom = (roomCode: string) => rooms[roomCode];
+
+const getPublicRooms = () => {
+	const publicRooms = Object.entries(rooms)
+		.filter(([, room]) => !room.isPrivate)
+		.map(([roomCode, room]) => ({
+			roomCode,
+			roomName: room.roomName || 'Room',
+			description: room.isStarted ? `Playing ${room.selectedGame}` : 'In lobby',
+			playersCount: room.playersCount,
+			maxPlayers: room.maxPlayers,
+		}));
+	return publicRooms;
+};
+
+const changePlayerCount = (roomCode: string, change: number) => {
+	const room = getRoom(roomCode);
+	if (!room) {
+		return null;
+	}
+
+	room.playersCount += change;
+	return room.playersCount;
+};
+
 const setRoomState = (roomCode: string, roomState: Partial<Omit<RoomState, 'players'>>) => {
 	const room = rooms[roomCode];
 	if (!room) {
@@ -58,19 +90,25 @@ const joinRoom = (inputCode: string, inputname: string) => {
 	const roomCode = inputCode.toUpperCase();
 	const username = inputname.trim();
 	let error = null;
+	let room = getRoom(roomCode);
 
-	if (!rooms[roomCode]) {
-		createRoom(roomCode);
+	if (!room) {
+		createRoom({ code: roomCode });
 	}
+	room = getRoom(roomCode);
+
 	if (username.length < 2) {
 		error = 'Username must be at least 2 characters';
 	}
 	if (username.length > 20) {
 		error = 'Username can\'t be longer than 20 characters';
 	}
+	if (room.playersCount >= room.maxPlayers) {
+		error = 'Room is full';
+	}
 
-	if (!error && rooms[roomCode].roomName === null) {
-		rooms[roomCode].roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
+	if (!error && room.roomName === null) {
+		room.roomName = `${username}'${username.endsWith('s') ? '' : 's'} Room`;
 	}
 
 	return { error, username, roomCode };
@@ -84,7 +122,9 @@ export default {
 	createRoom,
 	joinRoom,
 	getRoom,
+	getPublicRooms,
 	setRoomState,
 	roomExists,
 	deleteRoom,
+	changePlayerCount,
 };

@@ -98,6 +98,17 @@
 	flex-direction: column;
 	gap: 0.75rem;
 }
+.playersCountContainer {
+	display: flex;
+	gap: 0.5rem;
+	align-items: baseline;
+
+	& small {
+		color: var(--secondary-text-black);
+		font-size: 0.8rem;
+		font-weight: 600;
+	}
+}
 .playersList {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));

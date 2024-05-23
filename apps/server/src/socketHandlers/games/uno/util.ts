@@ -39,7 +39,6 @@ const generateDeck = (): UnoCard[] => {
 	return arrayUtil.shuffleArray([...wildCards, ...specialCards, ...numberCards]);
 };
 
-// TODO test drawPile refill logic
 const drawCards = (roomCode: string, socketId: string, numCards: number) => {
 	const game = games[roomCode];
 	const { drawPile } = game;

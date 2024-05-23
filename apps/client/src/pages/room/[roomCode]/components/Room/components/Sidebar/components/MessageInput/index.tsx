@@ -1,24 +1,23 @@
 import { Input, Button } from '@/components';
 import { useRef } from 'react';
 import { IconSend } from '@tabler/icons-react';
+import socket from '@/socket';
 import classes from './MessageInput.module.css';
 
-type MessageInputProps = {
-	onMessageSend: (message: string) => void;
-};
-const MessageInput = ({ onMessageSend }: MessageInputProps) => {
+const MessageInput = () => {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const message = inputRef.current?.value?.trim();
+		const input = inputRef.current;
+		const message = input?.value?.trim();
 
 		if (!message) {
 			return;
 		}
 
-		onMessageSend(message);
-		inputRef.current!.value = '';
+		socket.emit('ROOM_CHAT_MESSAGE', message);
+		input!.value = '';
 	};
 
 	return (

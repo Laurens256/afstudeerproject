@@ -33,4 +33,13 @@ export type RoomState = {
 	isStarted: boolean;
 	players: Player[];
 	selectedGame: GamesType | null;
+	maxPlayers: number;
+};
+
+export type PublicRoom = {
+	roomCode: string;
+	roomName: string;
+	description: string;
+	playersCount: number;
+	maxPlayers: number;
 };

@@ -5,7 +5,7 @@ import classes from './Input.module.css';
 const castArray = (value: string | string[]) => (Array.isArray(value) ? value : [value]);
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-	label: string;
+	label: React.ReactNode;
 	error?: string | string[] | null;
 	containerClassName?: string;
 	labelClassName?: string;

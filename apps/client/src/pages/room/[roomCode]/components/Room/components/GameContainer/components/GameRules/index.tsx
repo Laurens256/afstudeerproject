@@ -1,20 +1,21 @@
 import { Button } from '@/components';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { GamesType } from '@shared/types';
-import { IconVocabulary } from '@tabler/icons-react';
+import { IconVocabulary, IconX } from '@tabler/icons-react';
 import { Games } from '@shared/types';
-import { Fragment } from 'react';
 import classes from './GameRules.module.css';
 
 const rulesObj = {
 	[Games.UNO]: {
 		description: 'Chaos Cards is an Uno inspired game, meaning most of the same rules apply.',
-		rules: {
-			General: ['When it\'s your turn, you can play a card with the same face or color as the current card, or any card with a black background.',
-				'If you can\'t play a card, you must draw a card from the deck. After drawing a card you may play a card or end your turn.',
-				'If the player before you plays a (+2) or (+4) card, you can only play a (+2) or (+4) card. When multiple people play (+2) or (+4) cards in a row, the count of cards to draw is added together.',
-				'If you can\'t play a (+2) or (+4) card, you must draw the amount of cards specified by the draw count.'],
-		},
+		rules: [
+			'When it\'s your turn, you can play a card with the same face or color as the current card, or any card with a black background.',
+			'If you can\'t play a card, you must draw a card from the deck. After drawing a card you may play a card or end your turn.',
+			'If the player before you plays a (+2) or (+4) card, you can only play a (+2) or (+4) card. When multiple people play (+2) or (+4) cards in a row, the count of cards to draw is added together.',
+			'If you can\'t play a (+2) or (+4) card, you must draw the amount of cards specified by the draw count.',
+			'The order of players starts clockwise, but can be changed by playing a reverse card.',
+			'Playing a skip card skips the next player. When 2 players are playing, the person who played the skip card plays again.',
+		],
 	},
 };
 
@@ -39,22 +40,19 @@ const GameRules = ({ game }: SpectatorDialogProps) => {
 			<Dialog.Portal>
 				<Dialog.Overlay className={classes.overlay} />
 				<Dialog.Content className={classes.dialog}>
+					<Dialog.Close asChild>
+						<Button variant="light" className={classes.closeButton} aria-label="close rules">
+							<IconX />
+						</Button>
+					</Dialog.Close>
 					<div>
 						<Dialog.Title>{`${game} rules`}</Dialog.Title>
 						<Dialog.Description>{description}</Dialog.Description>
 					</div>
 
 					<ul className={classes.rulesList}>
-						{/* {rules.map((rule, index) => (
+						{rules.map((rule) => (
 							<li key={rule}>{rule}</li>
-						))} */}
-						{Object.entries(rules).map(([category, rulesPerCategory]) => (
-							<Fragment key={category}>
-								<li className={classes.ruleHeading}><h3>{category}</h3></li>
-								{rulesPerCategory.map((rule) => (
-									<li key={rule}>{rule}</li>
-								))}
-							</Fragment>
 						))}
 					</ul>
 				</Dialog.Content>

@@ -62,7 +62,7 @@ const JoinRoomForm = ({ className }: JoinRoomFormProps) => {
 				enterKeyHint="go"
 				placeholder="Room PIN"
 			/>
-			<Button className={classes.joinButton} aria-label="Join room" type="submit">
+			<Button className={classes.joinButton} type="submit">
 				Enter
 			</Button>
 		</form>

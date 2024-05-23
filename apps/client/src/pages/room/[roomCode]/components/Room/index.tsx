@@ -7,7 +7,7 @@ import { Button } from '@/components';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
 import { createPortal } from 'react-dom';
-import { Sidebar, RoomSettings, GameContainer } from './components';
+import { Sidebar, RoomLobby, GameContainer } from './components';
 import classes from './Room.module.css';
 
 type RoomProps = {
@@ -23,6 +23,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		isStarted: false,
 		players: [],
 		selectedGame: null,
+		maxPlayers: 8,
 	});
 	const playersInGame = roomState.players.filter((player) => player.inGame);
 
@@ -107,6 +108,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	}, [roomCode, router]);
 
 	const handleSidebarToggle = () => {
+		// using refs to avoid rerendering entire game when chat toggles
 		const container = containerRef.current;
 		const wrapper = sidebarWrapperRef.current;
 		const button = openSidebarButtonRef.current;
@@ -141,7 +143,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 								isSpectator={!ourPlayer.inGame}
 							/>
 						) : (
-							<RoomSettings
+							<RoomLobby
 								roomCode={roomCode}
 								roomState={roomState}
 								ourPlayer={ourPlayer}
@@ -170,6 +172,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 				</div>
 			</div>
 
+			{/* announces when game has started / ended */}
 			{createPortal(
 				<p aria-live="assertive" className="visuallyHidden">
 					{roomState.selectedGame && roomState.isStarted ? `a game of ${roomState.selectedGame} has started` : 'returned to lobby'}
