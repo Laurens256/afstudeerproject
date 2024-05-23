@@ -3,19 +3,18 @@ import socket from '@/socket';
 import { Button, Avatar, Input } from '@/components';
 import { IconCrown, IconCheck, IconPencil, IconLogout2 } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import { RoutePath } from '@/routes';
 import { useRouter } from 'next/router';
-import classes from './RoomSettings.module.css';
+import classes from './RoomLobby.module.css';
 
-type RoomSettingsProps = {
+type RoomLobbyProps = {
 	roomCode: string;
 	roomState: RoomState;
 	ourPlayer: Player;
 };
 
 // lobby area where players can see who is in the room and start the game
-const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => {
+const RoomLobby = ({ roomCode, roomState, ourPlayer }: RoomLobbyProps) => {
 	const { push } = useRouter();
 	const [localRoomName, setLocalRoomName] = useState<string | null>(null);
 	const headingRef = useRef<HTMLHeadingElement>(null);
@@ -62,7 +61,6 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 						<IconLogout2 />
 					</Button>
 				</div>
-				<Link aria-label="leave room" href={RoutePath.Home} className={classes.leaveRoom} />
 				<div className={classes.roomPinContainer}>
 					<h1 className={classes.roomPin} ref={headingRef} tabIndex={-1}>{`Room PIN: ${roomCode.toUpperCase()}`}</h1>
 					<p>Share this PIN with your friends to let them join the room.</p>
@@ -108,17 +106,29 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 				)}
 
 				<div className={classes.playersContainer}>
-					<h3>Players</h3>
+					<div>
+						<div className={classes.playersCountContainer}>
+							<h3>Players</h3>
+							<small>{`(${roomState.players.length} / ${roomState.maxPlayers})`}</small>
+						</div>
+					</div>
 					<ul className={classes.playersList}>
-						{roomState.players.map((player) => (
-							<li key={player.socketId} className={classes.playerListItem}>
-								<div className={classes.avatarContainer}>
-									<Avatar sizeRem={2} name={player.username} withBorder />
-									{player.role === 'admin' && <IconCrown className={classes.crown} />}
-								</div>
-								{player.username}
-							</li>
-						))}
+						{roomState.players.map((player) => {
+							const isAdmin = player.role === 'admin';
+							return (
+								<li
+									key={player.socketId}
+									className={classes.playerListItem}
+									aria-roledescription={isAdmin ? 'admin' : undefined}
+								>
+									<div className={classes.avatarContainer}>
+										<Avatar sizeRem={2} name={player.username} withBorder />
+										{isAdmin && <IconCrown className={classes.crown} />}
+									</div>
+									{player.username}
+								</li>
+							);
+						})}
 					</ul>
 				</div>
 
@@ -138,4 +148,4 @@ const RoomSettings = ({ roomCode, roomState, ourPlayer }: RoomSettingsProps) => 
 	);
 };
 
-export default RoomSettings;
+export default RoomLobby;

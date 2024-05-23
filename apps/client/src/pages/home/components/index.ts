@@ -1,3 +1,4 @@
 import CreateRoomForm from './CreateRoomForm';
+import PublicRooms from './PublicRooms';
 
-export { CreateRoomForm };
+export { CreateRoomForm, PublicRooms };

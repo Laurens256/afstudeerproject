@@ -1,9 +1,9 @@
 import Sidebar from './Sidebar';
-import RoomSettings from './RoomSettings';
+import RoomLobby from './RoomLobby';
 import GameContainer from './GameContainer';
 
 export {
 	Sidebar,
-	RoomSettings,
+	RoomLobby,
 	GameContainer,
 };

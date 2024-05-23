@@ -7,7 +7,7 @@ import { Button } from '@/components';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
 import { createPortal } from 'react-dom';
-import { Sidebar, RoomSettings, GameContainer } from './components';
+import { Sidebar, RoomLobby, GameContainer } from './components';
 import classes from './Room.module.css';
 
 type RoomProps = {
@@ -143,7 +143,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 								isSpectator={!ourPlayer.inGame}
 							/>
 						) : (
-							<RoomSettings
+							<RoomLobby
 								roomCode={roomCode}
 								roomState={roomState}
 								ourPlayer={ourPlayer}

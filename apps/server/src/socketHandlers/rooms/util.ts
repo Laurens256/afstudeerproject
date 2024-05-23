@@ -49,6 +49,19 @@ const createRoom = ({ code, maxPlayers, isPrivate }: CreateRoomProps): string =>
 
 const getRoom = (roomCode: string) => rooms[roomCode];
 
+const getPublicRooms = () => {
+	const publicRooms = Object.entries(rooms)
+		.filter(([, room]) => !room.isPrivate)
+		.map(([roomCode, room]) => ({
+			roomCode,
+			roomName: room.roomName || 'Room',
+			description: room.isStarted ? `Playing ${room.selectedGame}` : 'In lobby',
+			playersCount: room.playersCount,
+			maxPlayers: room.maxPlayers,
+		}));
+	return publicRooms;
+};
+
 const changePlayerCount = (roomCode: string, change: number) => {
 	const room = getRoom(roomCode);
 	if (!room) {
@@ -109,6 +122,7 @@ export default {
 	createRoom,
 	joinRoom,
 	getRoom,
+	getPublicRooms,
 	setRoomState,
 	roomExists,
 	deleteRoom,

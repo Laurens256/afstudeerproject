@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { RoutePath, generateRoute } from '@/routes';
 import * as Tabs from '@radix-ui/react-tabs';
 import classes from './Home.module.css';
-import { CreateRoomForm } from './components';
+import { CreateRoomForm, PublicRooms } from './components';
 
 const Home = () => {
 	const router = useRouter();
@@ -44,6 +44,8 @@ const Home = () => {
 					<CreateRoomForm />
 				</Tabs.Content>
 			</Tabs.Root>
+
+			<PublicRooms />
 		</main>
 	);
 };

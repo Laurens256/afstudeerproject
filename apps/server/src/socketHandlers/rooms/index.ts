@@ -199,6 +199,11 @@ const roomHandlers = (io: ExtendedServer, socket: ExtendedSocket) => {
 		handleGameEnd(roomCode, inGame);
 	});
 
+	socket.on('ROOM_GET_PUBLIC_ROOMS', () => {
+		const publicRooms = util.getPublicRooms();
+		socket.emit('ROOM_GET_PUBLIC_ROOMS', publicRooms);
+	});
+
 	const leaveGameAfterRoomLeave = (
 		roomCode: string,
 		socketId: string,
