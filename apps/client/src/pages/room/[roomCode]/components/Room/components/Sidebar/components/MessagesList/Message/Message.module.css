@@ -29,13 +29,12 @@
 	margin-block: 0.75rem;
 }
 
-/* TODO: colors */
 .iconJoinedLeft {
 	width: 1.25rem;
 	&.iconJoined {
-		color: green;
+		color: #008000;
 	}
 	&.iconLeft {
-		color: red;
+		color: #ff0000;
 	}
 }

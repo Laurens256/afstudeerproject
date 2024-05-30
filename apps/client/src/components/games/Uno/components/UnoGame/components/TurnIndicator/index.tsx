@@ -11,7 +11,7 @@ const TurnIndicator = ({ isOurTurn, username }: TurnIndicatorProps) => (
 		className={clsx(
 			'cartoonText',
 			classes.container,
-			!isOurTurn && 'visuallyHidden',
+			isOurTurn && classes.ourTurn,
 		)}
 	>
 		{`It's ${isOurTurn ? 'your' : username} turn`}

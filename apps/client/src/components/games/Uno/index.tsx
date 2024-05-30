@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import socket from '@/socket';
 import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
-import { GameHistory } from '@/components';
+import { GameHistory, WinnerModal, FullScreenLoader } from '@/components';
 import type { GameErrorToastProps } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { UnoGame, WinnerModal } from './components';
+import { UnoGame } from './components';
 import { cardToLabel } from './util';
 
 const endName = (name: string) => {
@@ -167,10 +167,9 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 
 	const ourPlayer = playersInGame.find((player) => player.socketId === socket.id) || null;
 	if (!gameState) {
-		// if (!gameState || !ourPlayer || ourCards === undefined) {
-		// TODO loader or error
-		return <p>Loading...</p>;
+		return <FullScreenLoader />;
 	}
+
 	const winner = gameState.winnerId
 		? playersInGame.find((player) => player.socketId === gameState.winnerId) : undefined;
 
@@ -188,8 +187,12 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 				currentPlayerUsername={endName(findUsernameBySocketId(gameState.currentPlayerId))}
 				showErrorToast={showErrorToast}
 			/>
-			{/* TODO: generic WinnerModal for all games */}
-			{winner && <WinnerModal winner={winner} ourPlayer={ourPlayer} />}
+			{winner && (
+				<WinnerModal
+					winner={winner}
+					ourPlayer={ourPlayer}
+				/>
+			)}
 			<GameHistory entries={gameHistory} />
 		</>
 	);
