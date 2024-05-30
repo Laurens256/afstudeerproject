@@ -67,6 +67,7 @@ const CardAnimation = ({
 		let fromEl: HTMLElement | null = null;
 		let toEl: HTMLElement | null = null;
 
+		// only show cards if it's the our player's turn or if cards were dropped on public pile
 		const canSeeCards = socket.id === playerWithCardDiff.socketId
 		|| droppedCards.length;
 
@@ -79,7 +80,6 @@ const CardAnimation = ({
 			fromEl = drawButtonRef.current;
 			toEl = cardPileRefs.current[playerWithCardDiff.socketId];
 		}
-		// only show cards if it's the current player's turn or if cards were dropped
 		if (!canSeeCards) {
 			cardsToAnimate = cardsToAnimate.map(() => null);
 		}
