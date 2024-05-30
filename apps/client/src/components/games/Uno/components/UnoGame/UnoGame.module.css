@@ -1,12 +1,10 @@
 
 
 .container {
-	--uno-card-height: 11.71875rem;
 	display: grid;
 	grid-template-columns: repeat(6, 1fr);
 	grid-template-rows: repeat(6, 1fr);
 	height: max(100%, 30rem);
-	/* width: max(100%, 70rem); */
 
 	& .middleSection {
 		grid-column: 2 / 6;

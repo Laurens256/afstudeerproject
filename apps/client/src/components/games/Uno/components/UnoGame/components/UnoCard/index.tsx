@@ -9,9 +9,10 @@ type UnoCardProps = {
 	card: UnoCard | null;
 	className?: string;
 	cardLabelPrefix?: string;
+	style?: React.CSSProperties;
 };
 
-const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProps) => {
+const UnoCardComponent = ({ card, className, cardLabelPrefix = '', style }: UnoCardProps) => {
 	let imgFilename = 'back';
 	if (card) {
 		const { type, value } = card;
@@ -38,7 +39,8 @@ const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProp
 				style={{
 					backgroundColor: card?.type === 'special-card' || card?.type === 'number-card'
 						? `var(--uno-color-${card.color})` : 'var(--uno-color-black)',
-				}}
+					...style,
+				} as React.CSSProperties}
 			/>
 		</div>
 	);
