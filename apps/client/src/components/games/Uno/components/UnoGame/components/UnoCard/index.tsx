@@ -28,7 +28,6 @@ const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProp
 				{`${cardLabelPrefix}${cardToLabel(card)}`}
 			</p>
 			<Image
-				// src={`https://placehold.co/150x225/png?text=${imgFilename}`}
 				src={`/img/uno/cards/${imgFilename}.png`}
 				loading="eager"
 				alt=""

@@ -3,7 +3,7 @@ import socket from '@/socket';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import type { Player, RoomState } from '@shared/types';
-import { Button } from '@/components';
+import { Button, FullScreenLoader } from '@/components';
 import clsx from 'clsx';
 import { IconMessage } from '@tabler/icons-react';
 import { createPortal } from 'react-dom';
@@ -98,7 +98,10 @@ const Room = ({ roomCode, username }: RoomProps) => {
 
 		router.events.on('routeChangeStart', handleRoomLeave);
 		router.events.on('beforeHistoryChange', handleRoomLeave);
-		socket.on('ROOM_KICKED', handleRoomKicked); // TODO: show message when kicked
+
+		// logic to kick users is not active so this is not needed
+		// leaving it here for future reference
+		socket.on('ROOM_KICKED', handleRoomKicked);
 
 		return () => {
 			router.events.off('routeChangeStart', handleRoomLeave);
@@ -123,9 +126,8 @@ const Room = ({ roomCode, username }: RoomProps) => {
 		button.inert = !isOpen;
 	};
 
-	if (!ourPlayer) { // should not happen
-		// TODO: 404 / loader (?)
-		return null;
+	if (!ourPlayer) {
+		return <FullScreenLoader />;
 	}
 
 	return (

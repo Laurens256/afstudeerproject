@@ -6,6 +6,8 @@ import JoinRoomForm from './JoinRoomForm';
 import { AudioProvider, AudioContext } from './AudioProvider';
 import GameErrorToastProvider from './GameErrorToastProvider';
 import GameHistory from './GameHistory';
+import WinnerModal from './WinnerModal';
+import FullScreenLoader from './FullScreenLoader';
 
 export {
 	Button,
@@ -16,4 +18,6 @@ export {
 	AudioProvider, AudioContext,
 	GameErrorToastProvider,
 	GameHistory,
+	WinnerModal,
+	FullScreenLoader,
 };

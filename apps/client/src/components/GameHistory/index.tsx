@@ -8,7 +8,7 @@ type GameHistoryProps = {
 // errors are handled by GameErrorToastProvider since they're also visible for non-screenreader users
 // ^^ also errors are not as relevant to store in history list
 const GameHistory = ({ entries, urgency = 'assertive' }: GameHistoryProps) => (
-	<div className="visuallyHidden">
+	<section className="visuallyHidden">
 		<ol aria-label="game history">
 			{entries.map(({ key, entry }) => (
 				<li key={key}>
@@ -19,7 +19,7 @@ const GameHistory = ({ entries, urgency = 'assertive' }: GameHistoryProps) => (
 		<p aria-live={urgency}>
 			{entries[0]?.entry}
 		</p>
-	</div>
+	</section>
 );
 
 export default GameHistory;

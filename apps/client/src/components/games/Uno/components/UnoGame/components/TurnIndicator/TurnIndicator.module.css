@@ -1,19 +1,22 @@
 .container {
 	--initial-transform: translateX(-50%);
-	--text-shadow-1: hsl(104, 85%, 15%);
-	--text-shadow-2: hsl(107, 85%, 12%);
+	--bg-color: var(--uno-color-blue);
+	--text-shadow-1: hsl(204, 85%, 15%);
+	--text-shadow-2: hsl(207, 85%, 12%);
+
 	--corner-clip: 1rem;
 
 	position: absolute;
 	left: 50%;
 	transform: var(--initial-transform);
 	top: min(15rem, 15%);
-	background-color: var(--uno-color-green);
+	background-color: var(--bg-color);
 	color: var(--primary-text-white);
 	padding: 0.5rem 2rem;
 	font-size: 2rem;
 	z-index: 3;
 	animation: fadeIn 0.4s ease-in-out;
+	text-align: center;
 
 	clip-path: polygon(
 		0 var(--corner-clip),
@@ -26,6 +29,28 @@
 		0% calc(100% - var(--corner-clip)),
 		0% var(--corner-clip)
 	);
+
+	&.ourTurn {
+		--bg-color: var(--uno-color-green);
+		--text-shadow-1: hsl(104, 85%, 15%);
+		--text-shadow-2: hsl(107, 85%, 12%);
+	}
+}
+
+@keyframes bounce {
+	0%,
+	20%,
+	50%,
+	80%,
+	100% {
+		transform: translateY(0);
+	}
+	40% {
+		transform: translateY(-30%);
+	}
+	60% {
+		transform: translateY(-15%);
+	}
 }
 
 @keyframes fadeIn {

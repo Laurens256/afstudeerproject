@@ -29,21 +29,23 @@
 	overflow: hidden;
 }
 .colorButton {
-	/* TODO styling */
 	position: relative;
+
+	&:focus-visible {
+		z-index: 2;
+	}
+
 	&::before {
-		width: 2rem;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background-color: black;
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		color: var(--primary-text-black);
+		font-size: 4rem;
+		text-align: center;
 	}
-
 	&:focus-visible::before {
-		content: '';
+		content: '\00d7'; /* ✖ */
 	}
 }
 
