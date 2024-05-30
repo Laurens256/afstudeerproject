@@ -1,0 +1,28 @@
+.container {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+.card {
+	position: absolute;
+	transition: transform 0.5s;
+	animation: moveCard 1s forwards;
+	animation-delay: calc(var(--index) * 0.1s);
+	opacity: 0;
+}
+
+/* 50% offset to make it appear as if coming from the center */
+@keyframes moveCard {
+	0% {
+		opacity: 1;
+		transform: translate(calc(var(--from-x) - 50%), calc(var(--from-y) - 50%));
+	}
+	50% {
+		transform: translate(calc(var(--to-x) - 50%), calc(var(--to-y) - 50%)) scale(1.15);
+		opacity: 1;
+	}
+	100% {
+		transform: translate(calc(var(--to-x) - 50%), calc(var(--to-y) - 50%)) scale(0.5);
+		opacity: 0;
+	}
+}

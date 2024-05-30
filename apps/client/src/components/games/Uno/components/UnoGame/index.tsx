@@ -1,12 +1,13 @@
 import type { Player, UnoCard, UnoGameState, UnoPlayer } from '@shared/types';
 import clsx from 'clsx';
 import socket from '@/socket';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import type { GameErrorToastProps } from '@/types';
-import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer, TurnIndicator } from './components';
+import { CardsList, CenterSection, OpponentCardsList, SpecialCardsLayer, TurnIndicator, CardAnimation } from './components';
 import classes from './UnoGame.module.css';
 import { useColorPicker } from './hooks';
 
+const POSITIONS = ['bottom', 'left', 'top', 'right'];
 type UnoGameProps = {
 	gameState: UnoGameState;
 	players: Player[];
@@ -46,6 +47,10 @@ const UnoGame = ({
 		ourPlayer ? ourPlayer.socketId : null,
 	);
 	const [getColorFromPicker, ColorPicker] = useColorPicker(sortedPlayers[0].cards);
+
+	const cardPileRefs = useRef<{ [socketId: string]: HTMLDivElement }>({});
+	const drawButtonRef = useRef<HTMLButtonElement>(null);
+	const dropPileRef = useRef<HTMLDivElement>(null);
 
 	const canPlayCard = (card: UnoCard) => {
 		if (!ourPlayer) {
@@ -139,14 +144,16 @@ const UnoGame = ({
 					cardDrawCounter={gameState.cardDrawCounter}
 					getColorFromPicker={getColorFromPicker}
 					showErrorToast={showErrorToast}
+					drawButtonRef={drawButtonRef}
+					dropPileRef={dropPileRef}
 				/>
 			</section>
 
 			{playersDividedBySection.map((playersPerPosition, i) => {
-				const position = ['bottom', 'left', 'top', 'right'][i];
+				const position = POSITIONS[i];
 				return (
 					<div
-						key={position[i]}
+						key={position}
 						className={clsx(classes[`${position}Position`], classes.cardListContainer)}
 					>
 						{playersPerPosition.map((player) => {
@@ -156,22 +163,28 @@ const UnoGame = ({
 								(p) => p.socketId === player.socketId,
 							)?.username || 'someone';
 							return (
-								isOurPlayer ? (
-									<CardsList
-										key={player.socketId}
-										cards={player.cards}
-										username={username}
-										isCurrentPlayer={isCurrentPlayer}
-										onCardClick={onPlayCard}
-									/>
-								) : (
-									<OpponentCardsList
-										key={player.socketId}
-										isCurrentPlayer={isCurrentPlayer}
-										cards={player.cards}
-										username={username}
-									/>
-								)
+								<div
+									ref={(el) => {
+										// eslint-disable-next-line no-param-reassign
+										if (el) cardPileRefs.current[player.socketId] = el;
+									}}
+									key={player.socketId}
+								>
+									{isOurPlayer ? (
+										<CardsList
+											cards={player.cards}
+											username={username}
+											isCurrentPlayer={isCurrentPlayer}
+											onCardClick={onPlayCard}
+										/>
+									) : (
+										<OpponentCardsList
+											isCurrentPlayer={isCurrentPlayer}
+											cards={player.cards}
+											username={username}
+										/>
+									)}
+								</div>
 							);
 						})}
 					</div>
@@ -182,6 +195,12 @@ const UnoGame = ({
 				currentCard={gameState.currentCard}
 				isClockwise={gameState.isClockwise}
 				chosenColor={gameState.wildcardColor}
+			/>
+			<CardAnimation
+				players={gameState.players}
+				drawButtonRef={drawButtonRef}
+				cardPileRefs={cardPileRefs}
+				dropPileRef={dropPileRef}
 			/>
 			<ColorPicker />
 		</div>

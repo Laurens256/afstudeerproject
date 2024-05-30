@@ -4,6 +4,7 @@ import CenterSection from './CenterSection';
 import OpponentCardsList from './OpponentCardsList';
 import SpecialCardsLayer from './SpecialCardsLayer';
 import TurnIndicator from './TurnIndicator';
+import CardAnimation from './CardAnimation';
 
 export {
 	CardsList,
@@ -12,4 +13,5 @@ export {
 	OpponentCardsList,
 	SpecialCardsLayer,
 	TurnIndicator,
+	CardAnimation,
 };

@@ -1,6 +1,6 @@
 import type { UnoCard } from '@shared/types';
 import Image from 'next/image';
-import { memo } from 'react';
+import React, { memo } from 'react';
 import clsx from 'clsx';
 import { cardToLabel } from '@/components/games/Uno/util';
 import classes from './UnoCard.module.css';
@@ -9,9 +9,11 @@ type UnoCardProps = {
 	card: UnoCard | null;
 	className?: string;
 	cardLabelPrefix?: string;
+	scale?: number;
+	style?: React.CSSProperties;
 };
 
-const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProps) => {
+const UnoCardComponent = ({ card, className, cardLabelPrefix = '', scale = 1, style }: UnoCardProps) => {
 	let imgFilename = 'back';
 	if (card) {
 		const { type, value } = card;
@@ -38,7 +40,9 @@ const UnoCardComponent = ({ card, className, cardLabelPrefix = '' }: UnoCardProp
 				style={{
 					backgroundColor: card?.type === 'special-card' || card?.type === 'number-card'
 						? `var(--uno-color-${card.color})` : 'var(--uno-color-black)',
-				}}
+					'--scale': scale,
+					...style,
+				} as React.CSSProperties}
 			/>
 		</div>
 	);

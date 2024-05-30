@@ -16,6 +16,8 @@ type CenterSectionProps = {
 	cardDrawCounter: number;
 	getColorFromPicker: () => Promise<UnoColor>;
 	showErrorToast: (props: GameErrorToastProps) => void;
+	drawButtonRef: React.RefObject<HTMLButtonElement>;
+	dropPileRef: React.RefObject<HTMLDivElement>;
 };
 const CenterSection = ({
 	currentCard,
@@ -27,6 +29,8 @@ const CenterSection = ({
 	cardDrawCounter,
 	getColorFromPicker,
 	showErrorToast,
+	drawButtonRef,
+	dropPileRef,
 }: CenterSectionProps) => {
 	const onDrawCard = async () => {
 		if (canDoAction && !hasDrawnCard) {
@@ -70,10 +74,11 @@ const CenterSection = ({
 				className={clsx(classes.skipTurnButton, classes.button)}
 				disabled={drawButtonDisabled}
 				cartoonColor={drawButtonDisabled ? disabledHsl : enabledHsl}
+				ref={drawButtonRef}
 			>
 				{`DRAW CARD${cardDrawCounter > 1 ? `S (${cardDrawCounter})` : ''}`}
 			</Button>
-			<div className={classes.cardsContainer}>
+			<div className={classes.cardsContainer} ref={dropPileRef}>
 				<UnoCardComponent card={currentCard} cardLabelPrefix="Current card: " />
 			</div>
 			<Button
