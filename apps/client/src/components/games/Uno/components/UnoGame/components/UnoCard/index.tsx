@@ -25,6 +25,7 @@ const UnoCardComponent = ({ card, className, cardLabelPrefix = '', style }: UnoC
 
 	return (
 		<div>
+			{/* visuallyHidden label instead of image alt so "img" prefix does not get read by screenreader */}
 			<p className="visuallyHidden">
 				{`${cardLabelPrefix}${cardToLabel(card)}`}
 			</p>

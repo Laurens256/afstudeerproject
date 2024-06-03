@@ -56,11 +56,8 @@ const PublicRooms = () => {
 			<div aria-busy={isLoading}>
 				{publicRooms.length ? (
 					<ul className={classes.list} aria-labelledby="public_rooms">
-						{publicRooms.map((room) => {
-							const {
-								roomCode, roomName, description, playersCount, maxPlayers,
-							} = room;
-							return (
+						{publicRooms.map(
+							({ roomCode, roomName, description, playersCount, maxPlayers }) => (
 								<li key={roomCode}>
 									<Link
 										href={generateRoute(RoutePath.Room, { roomCode })}
@@ -82,8 +79,8 @@ const PublicRooms = () => {
 										</div>
 									</Link>
 								</li>
-							);
-						})}
+							),
+						)}
 					</ul>
 				) : (
 					<div className={classes.noRooms}>

@@ -11,14 +11,6 @@ type WinnerModalProps = {
 	ourPlayer: Player | null;
 };
 const WinnerModal = ({ winner, ourPlayer }: WinnerModalProps) => {
-	// not very elegant but this cleans up server and client nicely
-	const onPlayAgain = () => {
-		socket.emit('ROOM_END_GAME');
-
-		setTimeout(() => {
-			socket.emit('ROOM_START_GAME');
-		}, 0);
-	};
 	const onBackToLobby = () => {
 		socket.emit('ROOM_END_GAME');
 	};
@@ -35,7 +27,7 @@ const WinnerModal = ({ winner, ourPlayer }: WinnerModalProps) => {
 					<Dialog.Title className={classes.title}>{`${winner.username} has won the game!`}</Dialog.Title>
 					{ourPlayer?.role === 'admin' ? (
 						<div className={classes.actionButtonsContainer}>
-							<Button onClick={onPlayAgain}>Play again</Button>
+							{/* <Button onClick={onPlayAgain}>Play again</Button> */}
 							<Button variant="outline" onClick={onBackToLobby}>Back to lobby</Button>
 						</div>
 					) : (
