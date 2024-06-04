@@ -29,7 +29,15 @@ const CardsList = ({
 			)}
 		>
 			{`It's ${currentPlayerUsername} turn`}
-			<span aria-hidden="true">...</span>
+			<span
+				className={clsx(
+					classes.loadingAnimation,
+					isOurTurn && classes.ourTurn,
+				)}
+				aria-hidden="true"
+			>
+				...
+			</span>
 		</p>
 		<ul
 			className={clsx(

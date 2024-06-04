@@ -18,7 +18,7 @@ const setCorrectPlayerOrder = (playersArr: UnoPlayer[], ourPlayerId: string | nu
 const dividePlayersBySection = (
 	players: UnoPlayer[],
 	ourPlayerId: string | null,
-): UnoPlayer[][] => {
+) => {
 	const sortedPlayers = setCorrectPlayerOrder(players, ourPlayerId);
 
 	const playersDividedBySection: UnoPlayer[][] = [[sortedPlayers[0]]];
@@ -36,7 +36,7 @@ const dividePlayersBySection = (
 		}));
 	}
 
-	return playersDividedBySection;
+	return { playersDividedBySection, ourUnoPlayer: sortedPlayers[0] };
 };
 
 type CanPlayCardProps = {

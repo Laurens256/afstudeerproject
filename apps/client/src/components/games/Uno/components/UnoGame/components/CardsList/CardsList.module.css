@@ -1,5 +1,8 @@
 .outer {
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .container {
@@ -36,34 +39,48 @@
 }
 
 .turnIndicator {
-	--bg-color: var(--uno-color-black);
-	--text-shadow-1: hsl(204, 85%, 15%);
-	--text-shadow-2: hsl(207, 85%, 12%);
-	/* TODO styling */
+  --bg-color: hsl(215, 11%, 48%);
+	--text-shadow-1: hsl(214, 13%, 25%);
+  --text-shadow-2: hsl(219, 13%, 20%);
 
 	position: absolute;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	top: 50%;
 	background-color: var(--bg-color);
 	color: var(--primary-text-white);
 	padding: 0.5rem 2rem;
+	border-radius: var(--sm-border-radius);
 	font-size: 2rem;
 	z-index: 2;
 	text-align: center;
-	transition: opacity 0.4s ease-in-out;
+	transition: opacity 0.4s ease-in-out 0.4s;
+
+	/* SOURCE: https://css-generators.com/ribbon-shapes/ */
+	--r: 2rem;
+	padding-inline: calc(var(--r) + 1rem);
+	line-height: 1.8;
+	clip-path: polygon(
+		0 0,
+		100% 0,
+		calc(100% - var(--r)) 50%,
+		100% 100%,
+		0 100%,
+		var(--r) 50%
+	);
 
 	&.ourTurn {
 		opacity: 0;
 	}
-
-	& span:first-of-type {
-		content: '\2026'; /* ... */
-		animation: ellipsis steps(4, end) 2s infinite;
-		clip-path: inset(0 100% 0 0);
-	}
 }
 
+.loadingAnimation {
+	content: '\2026'; /* ... */
+	animation: ellipsis steps(4, end) 2s infinite;
+	clip-path: inset(0 100% 0 0);
+
+	&.ourTurn {
+		animation: none;
+		clip-path: none;
+	}
+}
 @keyframes ellipsis {
 	to {
 		clip-path: inset(0 -34% 0 0);

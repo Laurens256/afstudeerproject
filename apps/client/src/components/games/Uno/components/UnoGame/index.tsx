@@ -34,7 +34,11 @@ const UnoGame = ({
 	currentPlayerUsername,
 	showErrorToast,
 }: UnoGameProps) => {
-	const [getColorFromPicker, ColorPickerComponent] = useColorPicker();
+	const { playersDividedBySection, ourUnoPlayer } = dividePlayersBySection(
+		gameState.players,
+		ourPlayer ? ourPlayer.socketId : null,
+	);
+	const [getColorFromPicker, ColorPickerComponent] = useColorPicker(ourUnoPlayer?.cards);
 	const cardPileRefs = useRef<{ [socketId: string]: HTMLDivElement }>({});
 	const drawButtonRef = useRef<HTMLButtonElement>(null);
 	const dropPileRef = useRef<HTMLDivElement>(null);
@@ -55,11 +59,6 @@ const UnoGame = ({
 			showErrorToast({ message: error });
 		}
 	};
-
-	const playersDividedBySection = dividePlayersBySection(
-		gameState.players,
-		ourPlayer ? ourPlayer.socketId : null,
-	);
 
 	return (
 		<div className={clsx(classes.container, classes[`players${players.length}`])}>
