@@ -1,4 +1,4 @@
-import { Games, type Player, type RoomState } from '@shared/types';
+import { Games, ROOM_CODE_LENGTH, type Player, type RoomState } from '@shared/types';
 
 export type ServerPlayer = Omit<Player, 'socketId'>;
 type Rooms = {
@@ -18,7 +18,7 @@ const generateRoomCode = () => {
 	const charsLength = chars.length;
 
 	let code = '';
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
 		code += chars[Math.floor(Math.random() * charsLength)];
 	}
 	return code.toUpperCase();
@@ -51,7 +51,7 @@ const getRoom = (roomCode: string) => rooms[roomCode];
 
 const getPublicRooms = () => {
 	const publicRooms = Object.entries(rooms)
-		.filter(([, room]) => !room.isPrivate)
+		.filter(([, { isPrivate, playersCount }]) => !isPrivate && playersCount)
 		.map(([roomCode, room]) => ({
 			roomCode,
 			roomName: room.roomName || 'Room',

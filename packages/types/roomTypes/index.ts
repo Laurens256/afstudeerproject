@@ -43,3 +43,5 @@ export type PublicRoom = {
 	playersCount: number;
 	maxPlayers: number;
 };
+
+export const ROOM_CODE_LENGTH = 6;

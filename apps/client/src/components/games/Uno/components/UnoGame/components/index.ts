@@ -3,7 +3,6 @@ import UnoCardComponent from './UnoCard';
 import CenterSection from './CenterSection';
 import OpponentCardsList from './OpponentCardsList';
 import SpecialCardsLayer from './SpecialCardsLayer';
-import TurnIndicator from './TurnIndicator';
 import CardAnimation from './CardAnimation';
 
 export {
@@ -12,6 +11,5 @@ export {
 	CenterSection,
 	OpponentCardsList,
 	SpecialCardsLayer,
-	TurnIndicator,
 	CardAnimation,
 };

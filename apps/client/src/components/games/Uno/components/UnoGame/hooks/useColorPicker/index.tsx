@@ -4,15 +4,15 @@ import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 import classes from './ColorPicker.module.css';
-import { cardToLabel } from '../../../../util';
+import UnoCardComponent from '../../components/UnoCard';
 
-// very cool hook B) allows async await color picker
+// very cool hook, allows awaiting user input asynchronously :0
 const useColorPicker = (cards: UnoCard[]) => {
 	const [open, setOpen] = useState(false);
 	const [resolver, setResolver] = useState<((value: UnoColor) => void) | null>(null);
 	const colors: UnoColor[] = ['red', 'yellow', 'green', 'blue'];
 
-	// truly a chat gippity moment, partially based on https://daveteu.medium.com/react-custom-confirmation-box-458cceba3f7b
+	// partially based on https://daveteu.medium.com/react-custom-confirmation-box-458cceba3f7b
 	const getColorFromPicker = async (): Promise<UnoColor> => {
 		setOpen(true);
 		let resolveFunc: (value: UnoColor) => void;
@@ -34,7 +34,9 @@ const useColorPicker = (cards: UnoCard[]) => {
 		<Dialog.Root open={open}>
 			<Dialog.Overlay className={classes.overlay} />
 			<Dialog.Content className={classes.container}>
-				<Dialog.Title className={classes.title}>Choose a color</Dialog.Title>
+				<Dialog.Title className={classes.title}>
+					What will the new color be?
+				</Dialog.Title>
 
 				<div className={classes.colorsContainer}>
 					{colors.map((color) => (
@@ -48,11 +50,13 @@ const useColorPicker = (cards: UnoCard[]) => {
 						/>
 					))}
 				</div>
-				<div className="visuallyHidden">
-					<h3>Your cards are:</h3>
-					<ul>
+				<div>
+					<h3>Your cards</h3>
+					<ul className={classes.cardsList}>
 						{cards.map((card) => (
-							<li key={card.cardId}>{cardToLabel(card)}</li>
+							<li key={card.cardId} className={classes.cardLi}>
+								<UnoCardComponent card={card} scale={0.75} />
+							</li>
 						))}
 					</ul>
 				</div>

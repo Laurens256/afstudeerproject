@@ -1,5 +1,5 @@
 .overlay {
-	background-color: rgba(0, 0, 0, 0.85);
+	background-color: rgba(0, 0, 0, 0.9);
 	position: fixed;
 	inset: 0;
 	animation: overlayShow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -9,19 +9,24 @@
 .container {
 	color: #fff;
 	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	inset: 0;
+	overflow-y: auto;
+	padding-block: min(5%, 2rem);
 	animation: contentShow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 	z-index: 11;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 2rem;
+	height: 100dvh;
 }
 
 .colorsContainer {
-	width: min(95%, 80rem);
+	min-width: 10rem;
+	min-height: 10rem;
+	max-width: 40rem;
+	max-height: 40rem;
+	flex-grow: 1;
 	aspect-ratio: 1;
 	border-radius: 50%;
 	display: grid;
@@ -72,4 +77,14 @@
 		opacity: 1;
 		transform: translate(-50%, -50%) scale(1);
 	}
+}
+
+.cardsList {
+	display: flex;
+	gap: 0.2rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.cardLi {
+	flex-shrink: 0;
 }

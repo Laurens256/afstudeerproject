@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Custom404 from '@/pages/404.page';
+import { ROOM_CODE_LENGTH } from '@shared/types';
+import { notFound } from '@/utils';
 import { NameInput, Room } from './components';
 
 const RoomContainer = () => {
@@ -8,8 +9,9 @@ const RoomContainer = () => {
 	const { roomCode } = router.query;
 	const [username, setUsername] = useState<string>('');
 
-	if (typeof roomCode !== 'string' || roomCode.length !== 6) {
-		return <Custom404 />;
+	const isValidRoomCode = typeof roomCode === 'string' && roomCode.length === ROOM_CODE_LENGTH;
+	if (!isValidRoomCode) {
+		return notFound();
 	}
 
 	// when username is set, render room, otherwise render name input
