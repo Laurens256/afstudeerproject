@@ -36,16 +36,14 @@
 }
 
 .turnIndicator {
-	--initial-transform: translate(-50%, -50%);
-	--bg-color: var(--uno-color-black, #050804);
+	--bg-color: var(--uno-color-black);
 	--text-shadow-1: hsl(204, 85%, 15%);
 	--text-shadow-2: hsl(207, 85%, 12%);
-
-	--corner-clip: 1rem;
+	/* TODO styling */
 
 	position: absolute;
 	left: 50%;
-	transform: var(--initial-transform);
+	transform: translate(-50%, -50%);
 	top: 50%;
 	background-color: var(--bg-color);
 	color: var(--primary-text-white);
@@ -57,5 +55,17 @@
 
 	&.ourTurn {
 		opacity: 0;
+	}
+
+	& span:first-of-type {
+		content: '\2026'; /* ... */
+		animation: ellipsis steps(4, end) 2s infinite;
+		clip-path: inset(0 100% 0 0);
+	}
+}
+
+@keyframes ellipsis {
+	to {
+		clip-path: inset(0 -34% 0 0);
 	}
 }

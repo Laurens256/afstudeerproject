@@ -22,7 +22,6 @@ const CardsList = ({
 }: CardsListProps) => (
 	<div className={classes.outer}>
 		<p
-			key={String(isOurTurn)}
 			className={clsx(
 				'cartoonText',
 				classes.turnIndicator,
@@ -30,6 +29,7 @@ const CardsList = ({
 			)}
 		>
 			{`It's ${currentPlayerUsername} turn`}
+			<span aria-hidden="true">...</span>
 		</p>
 		<ul
 			className={clsx(
