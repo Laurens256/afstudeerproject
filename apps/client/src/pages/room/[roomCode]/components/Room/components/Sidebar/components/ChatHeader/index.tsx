@@ -1,5 +1,5 @@
 import { Button } from '@/components';
-import { IconBell, IconBellOff, IconX, IconUsers } from '@tabler/icons-react';
+import { IconVolume, IconVolumeOff, IconX, IconUsers } from '@tabler/icons-react';
 import { useLocalStorage } from '@/hooks';
 import * as Popover from '@radix-ui/react-popover';
 import type { GamesType, Player } from '@shared/types';
@@ -32,7 +32,7 @@ const ChatHeader = ({ players, roomActiveGame, closeSidebar }: ChatHeaderProps) 
 					role="switch"
 					aria-checked={audioEnabled}
 				>
-					{audioEnabled ? <IconBell /> : <IconBellOff />}
+					{audioEnabled ? <IconVolume /> : <IconVolumeOff />}
 				</Button>
 
 				<Popover.Root>

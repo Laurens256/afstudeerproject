@@ -59,10 +59,6 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 		};
 	}, [setUsername]);
 
-	useEffect(() => {
-		inputRef.current?.focus();
-	}, []);
-
 	return (
 		<>
 			<Head>
@@ -80,7 +76,7 @@ const NameInput = ({ setUsername, roomCode }: NameInputProps) => {
 						maxLength={20}
 						value={unverifiedUsername}
 						onChange={(e) => setUnverifiedUsername(e.target.value)}
-						ref={inputRef}
+						autoFocus
 					>
 						<Button
 							onClick={generateRandomName}

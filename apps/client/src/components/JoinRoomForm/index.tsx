@@ -5,6 +5,7 @@ import socket from '@/socket';
 import { useRouter } from 'next/router';
 import { RoutePath, generateRoute } from '@/routes';
 import clsx from 'clsx';
+import { ROOM_CODE_LENGTH } from '@shared/types';
 import classes from './JoinRoomForm.module.css';
 
 type JoinRoomFormProps = {
@@ -20,8 +21,8 @@ const JoinRoomForm = ({ className }: JoinRoomFormProps) => {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (roomCode.length !== 6) {
-			setError('Room PIN must be 6 characters');
+		if (roomCode.length !== ROOM_CODE_LENGTH) {
+			setError(`Room PIN must be ${ROOM_CODE_LENGTH} characters`);
 			inputRef.current?.focus();
 			return;
 		}

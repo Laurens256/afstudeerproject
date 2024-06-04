@@ -3,7 +3,6 @@ import socket from '@/socket';
 import type { Player, UnoGameState, UnoCard, UnoColor } from '@shared/types';
 import { GameHistory, WinnerModal, FullScreenLoader } from '@/components';
 import type { GameErrorToastProps } from '@/types';
-import { v4 as uuidv4 } from 'uuid';
 import { stringUtil } from '@/utils';
 import { UnoGame } from './components';
 import { cardToLabel } from './util';
@@ -20,7 +19,7 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 	const [gameHistory, setGameHistory] = useState<{ key: string, entry: React.ReactNode }[]>([]);
 	const addGameHistoryEntry = (entry: React.ReactNode) => {
 		setGameHistory((prevGameHistory) => [{
-			key: uuidv4(), entry,
+			key: Date.now().toString(), entry,
 		}, ...prevGameHistory]);
 	};
 
@@ -43,7 +42,10 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 		socket.on('UNO_GET_GAME_STATE', handleGetGameState);
 
 		if (!gameState) {
-			if (playersInGame.map((player) => player.socketId).includes(socket.id)) {
+			const shouldBeInGame = playersInGame.map(
+				(player) => player.socketId,
+			).includes(socket.id);
+			if (shouldBeInGame) {
 				const expectedSocketIds = playersInGame.map((player) => player.socketId);
 				socket.emit('UNO_PLAYER_GET_INITIAL_STATE', expectedSocketIds);
 			} else {

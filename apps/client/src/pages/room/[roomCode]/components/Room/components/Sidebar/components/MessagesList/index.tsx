@@ -11,6 +11,7 @@ type MessagesListProps = {
 const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 	const listRef = useRef<HTMLOListElement>(null);
 	const audioContext = useContext(AudioContext);
+	const scrollPositionRef = useRef<number>(0);
 
 	// Scroll to the bottom of the chat if user was at bottom before new message
 	const checkShouldScrollToBottom = (addedElement: HTMLLIElement) => {
@@ -56,6 +57,9 @@ const MessagesList = ({ messages, ourPlayer }: MessagesListProps) => {
 			className={classes.messagesList}
 			ref={listRef}
 			aria-labelledby="game-chat-heading"
+			onScroll={(e) => {
+				scrollPositionRef.current = e.currentTarget.scrollTop;
+			}}
 		>
 			{messages.map((message, i) => (
 				<MessageComponent

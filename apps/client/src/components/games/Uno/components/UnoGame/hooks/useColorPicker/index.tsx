@@ -6,13 +6,13 @@ import clsx from 'clsx';
 import classes from './ColorPicker.module.css';
 import { cardToLabel } from '../../../../util';
 
-// very cool hook B) allows async await color picker
-const useColorPicker = (cards: UnoCard[]) => {
+// very cool hook, allows awaiting user input asynchronously :0
+const useColorPicker = (cards: UnoCard[] = []) => {
 	const [open, setOpen] = useState(false);
 	const [resolver, setResolver] = useState<((value: UnoColor) => void) | null>(null);
 	const colors: UnoColor[] = ['red', 'yellow', 'green', 'blue'];
 
-	// truly a chat gippity moment, partially based on https://daveteu.medium.com/react-custom-confirmation-box-458cceba3f7b
+	// partially based on https://daveteu.medium.com/react-custom-confirmation-box-458cceba3f7b
 	const getColorFromPicker = async (): Promise<UnoColor> => {
 		setOpen(true);
 		let resolveFunc: (value: UnoColor) => void;
@@ -34,7 +34,9 @@ const useColorPicker = (cards: UnoCard[]) => {
 		<Dialog.Root open={open}>
 			<Dialog.Overlay className={classes.overlay} />
 			<Dialog.Content className={classes.container}>
-				<Dialog.Title className={classes.title}>Choose a color</Dialog.Title>
+				<Dialog.Title className={classes.title}>
+					What&apos;ll the new color be?
+				</Dialog.Title>
 
 				<div className={classes.colorsContainer}>
 					{colors.map((color) => (

@@ -138,7 +138,7 @@ const RoomLobby = ({ roomCode, roomState, ourPlayer }: RoomLobbyProps) => {
 						className={classes.startGameButton}
 						disabled={!enoughPlayersToStart}
 					>
-						{enoughPlayersToStart ? 'Start Game' : 'You need at least 2 players to start the game'}
+						{enoughPlayersToStart ? 'Start Game' : 'Need one more player to start the game'}
 					</Button>
 				) : (
 					<p className={classes.waitingText}>Waiting for admin to start the game</p>
