@@ -43,6 +43,7 @@
 	--text-shadow-1: hsl(214, 13%, 25%);
   --text-shadow-2: hsl(219, 13%, 20%);
 
+	pointer-events: none;
 	position: absolute;
 	background-color: var(--bg-color);
 	color: var(--primary-text-white);

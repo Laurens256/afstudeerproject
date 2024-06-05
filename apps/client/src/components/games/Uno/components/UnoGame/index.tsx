@@ -98,6 +98,7 @@ const UnoGame = ({
 										if (el) cardPileRefs.current[player.socketId] = el;
 									}}
 									key={player.socketId}
+									className={clsx(isOurPlayer && classes.fullWidth)}
 								>
 									{isOurPlayer ? (
 										<CardsList

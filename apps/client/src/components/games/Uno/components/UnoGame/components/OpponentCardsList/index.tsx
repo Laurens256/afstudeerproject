@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { memo } from 'react';
 import type { UnoCard } from '@shared/types';
 import { Avatar } from '@/components';
 import classes from './OpponentCardsList.module.css';
@@ -44,4 +43,4 @@ const OpponentCardsList = ({ cards, isCurrentPlayer, username }: OpponentCardsLi
 	);
 };
 
-export default memo(OpponentCardsList);
+export default OpponentCardsList;
