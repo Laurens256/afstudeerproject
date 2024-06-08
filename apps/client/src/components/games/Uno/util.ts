@@ -1,16 +1,16 @@
 import type { UnoCard } from '@shared/types';
 
 const specialCardLabelMap = {
-	wild: 'Choose color',
-	'wild-draw-four': 'Draw four',
-	reverse: 'Reverse order',
-	skip: 'Next user skips turn',
-	'draw-two': 'Draw two',
+	wild: 'choose color',
+	'wild-draw-four': 'draw four',
+	reverse: 'reverse order',
+	skip: 'next user skips turn',
+	'draw-two': 'draw two',
 } as const;
 
 export const cardToLabel = (card: UnoCard | null) => {
 	if (!card) {
-		return 'Unknown card';
+		return 'unknown card';
 	}
 
 	const { type, value } = card;

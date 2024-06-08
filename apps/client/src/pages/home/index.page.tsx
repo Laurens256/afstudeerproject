@@ -24,6 +24,8 @@ const Home = () => {
 
 	return (
 		<main className={classes.main}>
+			<PublicRooms />
+
 			<Tabs.Root
 				defaultValue="join-tab"
 				// pass invalid orientation so both horizontal and vertical keyboard controls work
@@ -44,8 +46,6 @@ const Home = () => {
 					<CreateRoomForm />
 				</Tabs.Content>
 			</Tabs.Root>
-
-			<PublicRooms />
 		</main>
 	);
 };

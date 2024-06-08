@@ -50,13 +50,12 @@ const CardsList = ({
 			{cards.map((card) => (
 				<li key={card.cardId} className={classes.cardContainer}>
 					<Button
-						aria-roledescription="card"
 						variant="unstyled"
 						onClick={() => onCardClick(card)}
 						className={classes.cardButtonWrapper}
 						disabled={!isOurTurn}
 					>
-						<UnoCardComponent key={card.cardId} card={card} />
+						<UnoCardComponent key={card.cardId} card={card} cardLabelSuffix="card" />
 					</Button>
 				</li>
 			))}
