@@ -83,7 +83,11 @@ const Uno = ({ playersInGame, showErrorToast }: UnoProps) => {
 					&& socket.id === cardReceiver.socketId
 						? ' you can now play a card or end your turn'
 						: ' they still need to end their turn';
-					addGameHistoryEntry(`${findUsernameBySocketId(socketId)} drew ${cards.length} card${stringUtil.pluralizeUsername(cards.length)}.${canPlayOrEndTurn}`);
+					const canSeeCards = cardReceiver.socketId === socket.id;
+					const cardString = canSeeCards && cards.length === 1
+						? `a ${cardToLabel(cards[0])} card`
+						: `${cards.length} card${stringUtil.pluralizeUsername(cards.length)}`;
+					addGameHistoryEntry(`${findUsernameBySocketId(socketId)} drew ${cardString}.${canPlayOrEndTurn}`);
 				}
 				newGameState.cardDrawCounter = 0;
 				return newGameState;

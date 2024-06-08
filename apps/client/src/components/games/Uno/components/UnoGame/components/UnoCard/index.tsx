@@ -9,11 +9,14 @@ type UnoCardProps = {
 	card: UnoCard | null;
 	className?: string;
 	cardLabelPrefix?: string;
+	cardLabelSuffix?: string;
 	style?: React.CSSProperties;
 	scale?: number;
 };
 
-const UnoCardComponent = ({ card, className, cardLabelPrefix = '', style, scale = 1 }: UnoCardProps) => {
+const UnoCardComponent = ({
+	card, className, cardLabelPrefix = '', cardLabelSuffix = '', style, scale = 1,
+}: UnoCardProps) => {
 	let imgFilename = 'back';
 	if (card) {
 		const { type, value } = card;
@@ -28,7 +31,7 @@ const UnoCardComponent = ({ card, className, cardLabelPrefix = '', style, scale 
 		<div>
 			{/* visuallyHidden label instead of image alt so "img" prefix does not get read by screenreader */}
 			<p className="visuallyHidden">
-				{`${cardLabelPrefix}${cardToLabel(card)}`}
+				{`${cardLabelPrefix}${cardToLabel(card)}${cardLabelSuffix}`}
 			</p>
 			<Image
 				src={`/img/uno/cards/${imgFilename}.png`}

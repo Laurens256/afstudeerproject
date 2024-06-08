@@ -31,7 +31,7 @@ const Room = ({ roomCode, username }: RoomProps) => {
 	const sidebarWrapperRef = useRef<HTMLDivElement>(null);
 	const openSidebarButtonRef = useRef<HTMLButtonElement>(null);
 
-	const ourPlayer = roomState.players.find((player) => player.username === username);
+	const ourPlayer = roomState.players.find((player) => player.socketId === socket.id);
 
 	useEffect(() => {
 		if (!roomCode || !username) {
