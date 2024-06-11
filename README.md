@@ -36,4 +36,17 @@ npm run dev
 
 ## Requirements
 
-- Node.js >=v20.14.0
+- Node.js >=v20.10.0
+
+## Sources
+
+Sources listed are also mentioned in the code where they are used.
+
+- Chat message sfx by floraphonic: https://pixabay.com/sound-effects/happy-pop-2-185287/
+- Join / leave room sfx by SoundsForYou: https://pixabay.com/sound-effects/notifications-sound-127856/
+- Game button design: https://dribbble.com/shots/3456012-game-button
+- Game button design code: https://codepen.io/Rybak/pen/xdzXNj
+- CSS loader animation: https://cssloaders.github.io/
+- CSS ribbon: https://css-generators.com/ribbon-shapes/
+- useLocalStorage hook: https://github.com/mantinedev/mantine/tree/master/packages/%40mantine/hooks/src/use-local-storage
+- usePreviousState hook: https://stackoverflow.com/a/57706747/16071690

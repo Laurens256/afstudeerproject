@@ -18,12 +18,6 @@
 .privateRoomToggleContainer {
 	position: relative;
 
-	& input {
-		appearance: none;
-		position: absolute;
-		outline: none;
-	}
-
 	& input:focus-visible + label .toggle {
 		outline: 2px solid var(--primary-color);
 	}

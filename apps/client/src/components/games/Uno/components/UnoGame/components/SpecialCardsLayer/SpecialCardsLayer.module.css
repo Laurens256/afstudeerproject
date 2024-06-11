@@ -10,9 +10,7 @@
 .fadeContainer {
 	position: absolute;
 	opacity: 1;
-	/* background-color: blue; */
 	animation: fadeInAndDrop 1.5s forwards ease;
-	/* animation-iteration-count: infinite; */
 	display: flex;
 	justify-content: center;
 	align-items: center;

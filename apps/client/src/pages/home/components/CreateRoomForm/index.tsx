@@ -60,6 +60,7 @@ const CreateRoomForm = () => {
 					type="checkbox"
 					checked={isPrivate}
 					onChange={(e) => setIsPrivate(e.target.checked)}
+					className="visuallyHidden"
 				/>
 				<label htmlFor="private_toggle">
 					Private room

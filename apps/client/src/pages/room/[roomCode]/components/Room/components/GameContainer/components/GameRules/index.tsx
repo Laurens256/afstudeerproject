@@ -33,6 +33,7 @@ const GameRules = ({ game }: SpectatorDialogProps) => {
 					className={classes.openButton}
 					aria-label="view rules"
 					withCartoonRay={false}
+					autoFocus
 				>
 					<IconVocabulary />
 				</Button>

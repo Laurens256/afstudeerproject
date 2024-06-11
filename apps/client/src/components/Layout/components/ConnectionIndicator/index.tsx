@@ -54,11 +54,12 @@ const ConnectionIndicator = () => {
 		}
 	}, [isDisconnected, isSocketRoute]);
 
+	if (!isSocketRoute || !showDisconnectToast) return null;
+
 	return (
 		<div
 			className={clsx(
 				classes.root,
-				!showDisconnectToast && 'visuallyHidden',
 				isDisconnected && classes.disconnected,
 			)}
 			aria-live="assertive"

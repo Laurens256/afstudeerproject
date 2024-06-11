@@ -1,4 +1,0 @@
-chat_notification_old: https://pixabay.com/sound-effects/notifications-sound-127856/
-chat_notification: https://tuna.voicemod.net/sound/5b4a141e-c379-4e18-953c-fff5f75aa82a
-room_join: https://tuna.voicemod.net/sound/f5129454-7b7e-45f7-9ce1-b24df6db9521
-room_leave: https://tuna.voicemod.net/sound/09240e25-70e5-4505-916b-aad56e7d78bf

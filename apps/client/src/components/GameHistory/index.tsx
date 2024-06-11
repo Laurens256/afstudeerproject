@@ -15,6 +15,7 @@ const GameHistory = ({ entries, urgency = 'assertive' }: GameHistoryProps) => (
 					{entry}
 				</li>
 			))}
+			<li>The game started</li>
 		</ol>
 		<p aria-live={urgency}>
 			{entries[0]?.entry}
